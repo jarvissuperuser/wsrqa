@@ -82,15 +82,15 @@ var runDiffP = (resolve,reject)=>{
 	.compareTo(testImg).ignoreNothing().onComplete(function(data){
 		if (data.misMatchPercentage > 5){
 			console.log("name:" + project + ",datafailed:true")
-			//channelWrapper.sendToQueue(QueueName, {diff: 'Test Failed on_' + name + 'See diff image'})
-			//channelWrapper.sendToQueue(QueueName, {failed: data})
+			channelWrapper.sendToQueue(QueueName, {diff: 'Test Failed on_' + extractFile(testImg)+ 'See diff image'})
+			channelWrapper.sendToQueue(QueueName, {failed: data})
 			data.getDiffImage().pack().pipe(fs.
 			createWriteStream('./public/images/' + project + '/' + project + '_' +
 			timestamp + '_diff.png'));
 			resolve();
 		}else{
-			//channelWrapper.sendToQueue(QueueName, {diff: 'Test Passed on_' + name + '_Hoory Have some beers'})
-			//channelWrapper.sendToQueue(QueueName, {passed: data})
+			channelWrapper.sendToQueue(QueueName, {diff: 'Test Passed on_' + extractFile(testImg)+ '_Hoory Have some beers'})
+			channelWrapper.sendToQueue(QueueName, {passed: data})
 			console.log("name:"+project+",datafailed:false");
 			reject();
 		}
@@ -146,12 +146,13 @@ var checkFilesP = (resolve,reject)=>{
 				});
 				console.log(filesExist,extractFile(filesExist.test?testImg:pivotImg),
 					"list file .done");
+				channelWrapper.sendToQueue(QueueName, {fail: 'failed to create dir'});
 				resolve();
 			}
 			else{
 				fs.emptyDir('./public/images/' + project + '/', err => {
 					if (err){
-						//channelWrapper.sendToQueue(QueueName, {fail: 'failed to delete images'})
+						channelWrapper.sendToQueue(QueueName, {fail: 'failed to create dir'});
 						console.log("files error",err);
 						reject(process.exit('0'));
 					}
@@ -191,7 +192,8 @@ const getScreens = ()=> {
 	}
 };
 var getScreensP = (resolve,reject) => {
-	fileName = (filesExist.pivot) ? './public/images/' + project + '/' + name + '_' + timestamp + '.png' : './public/images/' + project + '/' + name + '.png' ;
+	fileName = (filesExist.pivot) ? 
+	'./public/images/' + project + '/' + name + '_' + timestamp + '.png' : './public/images/' + project + '/' + name + '.png' ;
 
 	try {
 		console.log(fileName, "attempt for image");
@@ -201,7 +203,7 @@ var getScreensP = (resolve,reject) => {
 			///if (err) throw err.message;
 
 			//if (true){
-				//channelWrapper.sendToQueue(QueueName, {screens: 'running test screen for_' + name})
+			channelWrapper.sendToQueue(QueueName, {screens: 'running test screen for_' + name})
 			console.log("img error or rundiff");
 			if (err){
 				console.log(err);
@@ -209,7 +211,7 @@ var getScreensP = (resolve,reject) => {
 			}
 				//else if (filesExist.pivot&&filesExist.test)
 		    	//runDiff(name,timestamp);
-				//          channelWrapper.sendToQueue(QueueName, {screens: 'building test screen for_' + name})
+			channelWrapper.sendToQueue(QueueName, {screens: 'building test screen for_' + name})
 			console.log("Building test cases");
 			resolve()
 				//res.write("yes:"+err.message);
