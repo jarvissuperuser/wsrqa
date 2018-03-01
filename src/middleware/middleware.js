@@ -2,7 +2,7 @@ var webshot = require("webshot");
 var moment = require("moment");
 var resemble = require("node-resemble-js");
 var fs = require('fs-extra');
-var amqp = require('amqplib');
+//var amqp = require('amqplib');
 var amqp = require('amqp-connection-manager');
 var async = require("async");
 
@@ -18,7 +18,7 @@ let QueueName = '';
 var filesExist;
 var channelWrapper;
 var timestamp;
-var connection = amqp.connect(['amqp://guest:guest@localhost:5672']) ;//guest only when client is local on server host
+var connection = amqp.connect(['amqp://admin:root1234@localhost:5672']) ;//guest only when client is local on server host
 
 var options = {
 	screenSize : {
@@ -58,13 +58,13 @@ const runDiff  = (name,timestamp) => {
 		.compareTo(testImg).ignoreNothing().onComplete(function(data){
 			if (data.misMatchPercentage > 5){
 				console.log("name:" + name + ",datafailed:true",'./public/images/' + project + '/' + name + '_' + timestamp + '_diff.png');
-				//channelWrapper.sendToQueue(QueueName, {diff: 'Test Failed on_' + name + 'See diff image'})
+				channelWrapper.sendToQueue(QueueName, {diff: 'Test Failed on_' + extractFile(testImg) + 'See diff image'})
 				//channelWrapper.sendToQueue(QueueName, {failed: data})
 				data.getDiffImage().pack().pipe(fs.
 				createWriteStream('./public/images/' + project + '/' + name + '_' + timestamp + '_diff.png'));
 			}else{
-				//channelWrapper.sendToQueue(QueueName, {diff: 'Test Passed on_' + name + '_Hoory Have some beers'})
-				//channelWrapper.sendToQueue(QueueName, {passed: data})
+				channelWrapper.sendToQueue(QueueName, {diff: 'Test Passed on_' + extractImg(testImg)+ '_Hoory Have some beers'})
+				channelWrapper.sendToQueue(QueueName, {passed: data})
 				console.log("name:"+name+",datafailed:false");
 			}
 
@@ -263,13 +263,13 @@ module.exports = async(p,m,t) => {
 	filesExist = {test:false,pivot:false};
 	//preconfig = paths
 	//checkFiles();
-	/*channelWrapper = connection.createChannel({
+	channelWrapper = connection.createChannel({
           json: true,
           setup: function(channel) {
 
-              return channel.assertExchange(QueueName, {durable: true});
+              return channel.assertExchange(project,"headers" ,{durable: true});
           }
-  });*/
+  });
 	//console.log("working on err")
 	//if(runTests !== "yes"){
 		//fs.emptyDir('./public/images/' + project + '/', err => {
