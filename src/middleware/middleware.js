@@ -267,7 +267,7 @@ module.exports = async(p,m,t) => {
           json: true,
           setup: function(channel) {
 
-              return channel.assertExchange(project,"headers" ,{durable: true});
+              return channel.assertExchange(project,"fanout" ,{durable: true});
           }
   });
 	//console.log("working on err")
