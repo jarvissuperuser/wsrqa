@@ -76,59 +76,6 @@ const runDiff  = (name,timestamp) => {
 	}
 };
 
-var runDiffP = (resolve,reject)=>{
-	if(filesExist.pivot&&filesExist.test)
-	resemble(pivotImg)
-	.compareTo(testImg).ignoreNothing().onComplete(function(data){
-		if (data.misMatchPercentage > 5){
-			console.log("name:" + project + ",datafailed:true")
-			channelWrapper.sendToQueue(QueueName,new Buffer('diff: Test Failed on_' + extractFile(testImg)+ 'See diff image'));
-			channelWrapper.sendToQueue(QueueName, new Buffer("dataFailed"));
-			data.getDiffImage().pack().pipe(fs.
-			createWriteStream('./public/images/' + project + '/' + project + '_' +
-			timestamp + '_diff.png'));
-			resolve();
-		}else{
-			channelWrapper.sendToQueue(QueueName, new Buffer('Test Passed on_' + extractFile(testImg)+ '_Hoory Have some beers'));
-			//channelWrapper.sendToQueue(QueueName,'null' ,new Buffer( btoa(data)));
-			console.log("name:"+project+",datafailed:false,",QueueName);
-			reject();
-		}
-
-	});
-	else
-		console.log("runnDiff error");
-}
-
-const checkFiles= () => {
-	let parentDir = getParentDir(fileName);
-	fs.readdir(parentDir,(err,files)=>{
-			if (!err){
-				console.log("listing files");
-				files.forEach(file=>{
-					if (file === extractFile(pivotImg)){
-						filesExist["pivot"] = true;
-					}
-					if (file === extractFile(testImg)){
-						filesExist["pivot"] = true;
-					}
-					console.log(file);
-				});
-				console.log(filesExist.pivot,extractFile(pivotImg),"list file .done");
-			}
-			else{
-				fs.emptyDir('./public/images/' + project + '/', err => {
-					if (err){
-						//channelWrapper.sendToQueue(QueueName, {fail: 'failed to delete images'})
-						console.log("files error",err);
-						process.exit('0');
-					}
-					console.log(err,"here");
-				});
-			}
-		});
-}
-
 var checkFilesP = (resolve,reject)=>{
 	let parentDir = getParentDir(fileName);
 	fs.readdir(parentDir,(err,files)=>{
@@ -157,50 +104,17 @@ var checkFilesP = (resolve,reject)=>{
 					console.log("Creating Project here", err);
 					resolve();
 				});
-
-
 			}
 		});
 }
-const getScreens = ()=> {
 
-//    channelWrapper.sendToQueue(QueueName, {screens: 'geting screen_' + name})
-	fileName = (filesExist.pivot) ? './public/images/' + project + '/' + name + '_' + timestamp + '.png' : './public/images/' + project + '/' + name + '.png' ;
-
-	try {
-		console.log(fileName, "attempt for image");
-		webshot(testLocations, fileName, options, function(err) {
-			console.log("test err");
-			//await checkFiles();
-			///if (err) throw err.message;
-			if (true){
-				//channelWrapper.sendToQueue(QueueName, {screens: 'running test screen for_' + name})
-				console.log("img error or rundiff");
-				if (err)
-					console.log(err);
-				//else if (filesExist.pivot&&filesExist.test)
-		    	//runDiff(name,timestamp);
-				//          channelWrapper.sendToQueue(QueueName, {screens: 'building test screen for_' + name})
-				console.log("Building test cases");
-				//res.write("yes:"+err.message);
-			}
-		});
-	}catch(ex){
-		console.log("exception getscreen",ex);
-	}
-};
 var getScreensP = (resolve,reject) => {
-	fileName = (filesExist.pivot) ? 
+	fileName = (filesExist.pivot) ?
 	'./public/images/' + project + '/' + name + '_' + timestamp + '.png' : './public/images/' + project + '/' + name + '.png' ;
 
 	try {
 		console.log(fileName, "attempt for image");
 		webshot(testLocations, fileName, options, function(err) {
-			//console.log("test err");
-			//await checkFiles();
-			///if (err) throw err.message;
-
-			//if (true){
 			channelWrapper.sendToQueue(QueueName, new Buffer( 'screens:running test screen for_' ));
 			console.log("img error or rundiff");
 			if (err){
@@ -231,13 +145,8 @@ var arrayToPath = (arr) => {
 }
 var getParentDir = (path) =>{
 	try{
-		var splitPath = path.split('/');// only for unix/unix-like
-		//splitPath.reverse();
-		//console.log(splitPath);
+		var splitPath = path.split('/');
 		splitPath.pop();
-		//console.log(splitPath);
-		//splitPath.reverse();
-		//console.log(splitPath);
 		return  arrayToPath(splitPath);
 	}catch(ex){
 		console.log(ex);
@@ -274,28 +183,7 @@ module.exports = async(p,m,t) => {
               return channel.assertQueue(QueueName,{durable: true});
           }
   });
-	//channelWrapper.addSetup(function(channel){
-	//	Promise.all([
-	//		channel.assertQueue(QueueName,project,"diff")
-	//	]);
-	//});
-	//console.log("working on err")
-	//if(runTests !== "yes"){
-		//fs.emptyDir('./public/images/' + project + '/', err => {
-			//if (err){
-				//       channelWrapper.sendToQueue(QueueName, {fail: 'failed to delete images'})
-		//	}
-			//console.log(err,"here");
-		//});
-	//}
 	testLocations = testurls[project];
-
-//        for(let page in testLocations){
-//        getScreens(page,testLocations[page]);
-//		console.log(testLocation[page],page);
-	//        }
-
-	//var arrCBs = [];
 	var pr = new Promise(checkFilesP);
 	pr.then(()=>{
 		return new Promise(getScreensP);
@@ -304,21 +192,10 @@ module.exports = async(p,m,t) => {
 	}).then((f)=>{
 		if (filesExist.test)
 			runDiff(name,timestamp);
-		else 
+		else
 			console.log("nothing to test':'diff avoided");
 	}).catch((ex)=>{
 		console.error(ex,"app error");
 	});
-	/*async.waterfall([
-		await checkFiles();
-		await getScreens();
-		await checkFiles();
-		await runDiff(name,timestamp);*/
-	//],
-//	function(err){console.log(err);});
-
-
-	//getScreens(project,testLocations);
-	//console.log(testLocations,testurls);
 };
 
