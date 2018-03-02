@@ -58,13 +58,13 @@ const runDiff  = (name,timestamp) => {
 		.compareTo(testImg).ignoreNothing().onComplete(function(data){
 			if (data.misMatchPercentage > 5){
 				console.log("name:" + name + ",datafailed:true",'./public/images/' + project + '/' + name + '_' + timestamp + '_diff.png');
-				channelWrapper.sendToQueue(QueueName, {diff: 'Test Failed on_' + extractFile(testImg) + 'See diff image'})
+				channelWrapper.publish(QueueName,"diff",new Buffer('diff: Test Failed on_' + extractFile(testImg) + 'See diff image'));
 				//channelWrapper.sendToQueue(QueueName, {failed: data})
 				data.getDiffImage().pack().pipe(fs.
 				createWriteStream('./public/images/' + project + '/' + name + '_' + timestamp + '_diff.png'));
 			}else{
-				channelWrapper.sendToQueue(QueueName, {diff: 'Test Passed on_' + extractImg(testImg)+ '_Hoory Have some beers'})
-				channelWrapper.sendToQueue(QueueName, {passed: data})
+				channelWrapper.publish(QueueName,'diff',new Buffer('Test Passed on_' + extractImg(testImg)+ '_Hoory Have some beers'));
+				//channelWrapper.sendToQueue(QueueName, {passed: data})
 				console.log("name:"+name+",datafailed:false");
 			}
 
@@ -82,16 +82,16 @@ var runDiffP = (resolve,reject)=>{
 	.compareTo(testImg).ignoreNothing().onComplete(function(data){
 		if (data.misMatchPercentage > 5){
 			console.log("name:" + project + ",datafailed:true")
-			channelWrapper.sendToQueue(QueueName, new Buffer('diff: Test Failed on_' + extractFile(testImg)+ 'See diff image'));
-			channelWrapper.sendToQueue(QueueName, new Buffer("dataFailed"));
+			channelWrapper.publish(QueueName, "diff" ,new Buffer('diff: Test Failed on_' + extractFile(testImg)+ 'See diff image'));
+			//channelWrapper.sendToQueue(QueueName, new Buffer("dataFailed"));
 			data.getDiffImage().pack().pipe(fs.
 			createWriteStream('./public/images/' + project + '/' + project + '_' +
 			timestamp + '_diff.png'));
 			resolve();
 		}else{
-			channelWrapper.sendToQueue(QueueName, {diff: 'Test Passed on_' + extractFile(testImg)+ '_Hoory Have some beers'});
-			channelWrapper.sendToQueue(QueueName, new Buffer( btoa(data));
-			console.log("name:"+project+",datafailed:false");
+			channelWrapper.publish(QueueName, {diff: 'Test Passed on_' + extractFile(testImg)+ '_Hoory Have some beers'});
+			channelWrapper.publish(QueueName,'null' ,new Buffer( btoa(data)));
+			console.log("name:"+project+",datafailed:false,",QueueName);
 			reject();
 		}
 
@@ -125,8 +125,6 @@ const checkFiles= () => {
 					}
 					console.log(err,"here");
 				});
-
-
 			}
 		});
 }
@@ -146,13 +144,13 @@ var checkFilesP = (resolve,reject)=>{
 				});
 				console.log(filesExist,extractFile(filesExist.test?testImg:pivotImg),
 					"list file .done");
-				channelWrapper.sendToQueue(QueueName, new Buffer('fail: failed to create dir'));
+				channelWrapper.publish(QueueName,"msg", new Buffer('fail: failed to create dir'));
 				resolve();
 			}
 			else{
 				fs.emptyDir('./public/images/' + project + '/', err => {
 					if (err){
-						channelWrapper.sendToQueue(QueueName, new Buffer( 'failed to create dir'));
+						channelWrapper.dir(QueueName,'fail',new Buffer( 'failed to create dir'));
 						console.log("files error",err);
 						reject(process.exit('0'));
 					}
@@ -211,8 +209,14 @@ var getScreensP = (resolve,reject) => {
 			}
 				//else if (filesExist.pivot&&filesExist.test)
 		    	//runDiff(name,timestamp);
-			channelWrapper.sendToQueue(QueueName, new Buffer('screens:building test screen for_' + name));
-			console.log("Building test cases");
+			channelWrapper.publish(QueueName, "screens",new Buffer('screens:building test screen for_' + name))
+			.then(function(){
+				console.log("rabbit done")
+			})
+			.catch(function(end){
+				console.log(end);
+			});
+			console.log("Building test cases",QueueName);
 			resolve()
 				//res.write("yes:"+err.message);
 			//}
@@ -255,7 +259,7 @@ module.exports = async(p,m,t) => {
 
 	timestamp = moment().format("MM-D-YY-h-mm-s");
 	console.log("Loading Tests app at " + timestamp);
-	QueueName = project+ '_' + timestamp;
+	QueueName = "t_" + timestamp;
 	name= (projects[p]===undefined)?project:projects[p];
 	testImg = './public/images/' + project + '/' + name + '_' + timestamp + '.png';
 	pivotImg = './public/images/' + project + '/' + name + '.png' ;
@@ -270,6 +274,11 @@ module.exports = async(p,m,t) => {
               return channel.assertExchange(project,"direct" ,{durable: true});
           }
   });
+	//channelWrapper.addSetup(function(channel){
+	//	Promise.all([
+	//		channel.assertQueue(QueueName,project,"diff")
+	//	]);
+	//});
 	//console.log("working on err")
 	//if(runTests !== "yes"){
 		//fs.emptyDir('./public/images/' + project + '/', err => {
