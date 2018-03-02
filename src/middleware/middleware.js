@@ -82,15 +82,15 @@ var runDiffP = (resolve,reject)=>{
 	.compareTo(testImg).ignoreNothing().onComplete(function(data){
 		if (data.misMatchPercentage > 5){
 			console.log("name:" + project + ",datafailed:true")
-			channelWrapper.sendToQueue(QueueName, {diff: 'Test Failed on_' + extractFile(testImg)+ 'See diff image'})
-			channelWrapper.sendToQueue(QueueName, {failed: data})
+			channelWrapper.sendToQueue(QueueName, new Buffer('diff: Test Failed on_' + extractFile(testImg)+ 'See diff image'));
+			channelWrapper.sendToQueue(QueueName, new Buffer("dataFailed"));
 			data.getDiffImage().pack().pipe(fs.
 			createWriteStream('./public/images/' + project + '/' + project + '_' +
 			timestamp + '_diff.png'));
 			resolve();
 		}else{
-			channelWrapper.sendToQueue(QueueName, {diff: 'Test Passed on_' + extractFile(testImg)+ '_Hoory Have some beers'})
-			channelWrapper.sendToQueue(QueueName, {passed: data})
+			channelWrapper.sendToQueue(QueueName, {diff: 'Test Passed on_' + extractFile(testImg)+ '_Hoory Have some beers'});
+			channelWrapper.sendToQueue(QueueName, new Buffer( btoa(data));
 			console.log("name:"+project+",datafailed:false");
 			reject();
 		}
@@ -146,13 +146,13 @@ var checkFilesP = (resolve,reject)=>{
 				});
 				console.log(filesExist,extractFile(filesExist.test?testImg:pivotImg),
 					"list file .done");
-				channelWrapper.sendToQueue(QueueName, {fail: 'failed to create dir'});
+				channelWrapper.sendToQueue(QueueName, new Buffer('fail: failed to create dir'));
 				resolve();
 			}
 			else{
 				fs.emptyDir('./public/images/' + project + '/', err => {
 					if (err){
-						channelWrapper.sendToQueue(QueueName, {fail: 'failed to create dir'});
+						channelWrapper.sendToQueue(QueueName, new Buffer( 'failed to create dir'));
 						console.log("files error",err);
 						reject(process.exit('0'));
 					}
@@ -203,7 +203,7 @@ var getScreensP = (resolve,reject) => {
 			///if (err) throw err.message;
 
 			//if (true){
-			channelWrapper.sendToQueue(QueueName, {screens: 'running test screen for_' + name})
+			channelWrapper.sendToQueue(QueueName, new Buffer( 'screens:running test screen for_' ));
 			console.log("img error or rundiff");
 			if (err){
 				console.log(err);
@@ -211,7 +211,7 @@ var getScreensP = (resolve,reject) => {
 			}
 				//else if (filesExist.pivot&&filesExist.test)
 		    	//runDiff(name,timestamp);
-			channelWrapper.sendToQueue(QueueName, {screens: 'building test screen for_' + name})
+			channelWrapper.sendToQueue(QueueName, new Buffer('screens:building test screen for_' + name));
 			console.log("Building test cases");
 			resolve()
 				//res.write("yes:"+err.message);
@@ -267,7 +267,7 @@ module.exports = async(p,m,t) => {
           json: true,
           setup: function(channel) {
 
-              return channel.assertExchange(project,"fanout" ,{durable: true});
+              return channel.assertExchange(project,"direct" ,{durable: true});
           }
   });
 	//console.log("working on err")
