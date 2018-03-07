@@ -166,7 +166,7 @@ module.exports = async(p,m,t) => {
 	});
 	//preconfig = paths
 	//checkFiles();
-	//	testLocations = testurls[project];
+	testLocations = testurls[project];
 	var pr = new Promise(checkFilesP);
 	pr.then(()=>{
 		return new Promise(getScreensP);
