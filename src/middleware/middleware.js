@@ -2,12 +2,13 @@ var webshot = require("webshot");
 var moment = require("moment");
 var resemble = require("node-resemble-js");
 var fs = require('fs-extra');
-//var amqp = require('amqplib');
+var dbl = require('../sqlite_con_man');
 var amqp = require('amqp-connection-manager');
 var async = require("async");
 
 const desktopAgent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36';
 const modbileAgent = '';
+var db =  new dbl("../app.db");
 let project = '';
 let isMobile = '';
 let runTests = '';
@@ -52,19 +53,14 @@ var testLocations;
 const runDiff  = (name,timestamp) => {
 
 	try{
-	//  channelWrapper.sendToQueue(QueueName, {diff: 'running diff on_' + name})
 		if(filesExist.pivot&&filesExist.test)
 		resemble(pivotImg)
 		.compareTo(testImg).ignoreNothing().onComplete(function(data){
 			if (data.misMatchPercentage > 5){
 				console.log("name:" + name + ",datafailed:true",'./public/images/' + project + '/' + name + '_' + timestamp + '_diff.png');
-				channelWrapper.sendToQueue(QueueName,new Buffer('diff: Test Failed on_' + extractFile(testImg) + 'See diff image'));
-				//channelWrapper.sendToQueue(QueueName, {failed: data})
 				data.getDiffImage().pack().pipe(fs.
 				createWriteStream('./public/images/' + project + '/' + name + '_' + timestamp + '_diff.png'));
 			}else{
-				channelWrapper.sendToQueue(QueueName,new Buffer('Test Passed on_' + extractImg(testImg)+ '_Hoory Have some beers'));
-				//channelWrapper.sendToQueue(QueueName, {passed: data})
 				console.log("name:"+name+",datafailed:false");
 			}
 
@@ -91,13 +87,11 @@ var checkFilesP = (resolve,reject)=>{
 				});
 				console.log(filesExist,extractFile(filesExist.test?testImg:pivotImg),
 					"list file .done");
-				channelWrapper.sendToQueue(QueueName, new Buffer('fail: failed to create dir'));
 				resolve();
 			}
 			else{
 				fs.emptyDir('./public/images/' + project + '/', err => {
 					if (err){
-						channelWrapper.dir(QueueName,'fail',new Buffer( 'failed to create dir'));
 						console.log("files error",err);
 						reject(process.exit('0'));
 					}
@@ -115,7 +109,6 @@ var getScreensP = (resolve,reject) => {
 	try {
 		console.log(fileName, "attempt for image");
 		webshot(testLocations, fileName, options, function(err) {
-			channelWrapper.sendToQueue(QueueName, new Buffer( 'screens:running test screen for_' ));
 			console.log("img error or rundiff");
 			if (err){
 				console.log(err);
@@ -123,13 +116,6 @@ var getScreensP = (resolve,reject) => {
 			}
 				//else if (filesExist.pivot&&filesExist.test)
 		    	//runDiff(name,timestamp);
-			channelWrapper.sendToQueue(QueueName,new Buffer('screens:building test screen for_' + name))
-			.then(function(){
-				console.log("rabbit done")
-			})
-			.catch(function(end){
-				console.log(end);
-			});
 			console.log("Building test cases",QueueName);
 			resolve()
 				//res.write("yes:"+err.message);
@@ -168,22 +154,19 @@ module.exports = async(p,m,t) => {
 
 	timestamp = moment().format("MM-D-YY-h-mm-s");
 	console.log("Loading Tests app at " + timestamp);
-	QueueName = "t_" + timestamp;
 	name= (projects[p]===undefined)?project:projects[p];
 	testImg = './public/images/' + project + '/' + name + '_' + timestamp + '.png';
 	pivotImg = './public/images/' + project + '/' + name + '.png' ;
 	fileName = (runTests === 'yes') ? testImg: pivotImg ;
 	filesExist = {test:false,pivot:false};
+	QueueName =  name + timestamp;
+	db.multiquery(["insert into test(t_name) values('"+QueueName+"')"]);
+	db.e.on('done',()=>{
+		console.log(db.datamulti);
+	});
 	//preconfig = paths
 	//checkFiles();
-	channelWrapper = connection.createChannel({
-          json: true,
-          setup: function(channel) {
-
-              return channel.assertQueue(QueueName,{durable: true});
-          }
-  });
-	testLocations = testurls[project];
+	//	testLocations = testurls[project];
 	var pr = new Promise(checkFilesP);
 	pr.then(()=>{
 		return new Promise(getScreensP);

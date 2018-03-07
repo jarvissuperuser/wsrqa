@@ -7,7 +7,7 @@
 var app = require('../app');
 var debug = require('debug')('testapp:server');
 var http = require('http');
-
+var dlib = require('../sqlite_con_man');
 /**
  * Get port from environment and store in Express.
  */
@@ -80,6 +80,20 @@ function onError(error) {
 /**
  * Event listener for HTTP server "listening" event.
  */
+// connect sqlite db;
+var db = new dlib(../app.db);
+db.multiquery([
+	"CREATE TABLE IF NOT EXISTS test("+
+		"id INTEGER PRIMARY KEY,"+
+		"t_name VARCHAR(50),"+
+		"t_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP)",
+	"CREATE TABLE IF NOT EXISTS log_info("+
+		"id INTEGER PRIMARY KEY,"+
+		"log_info VARCHAR(200),"+
+		"log_image VARCHAR(100))"]);
+db.e.on('done',()=>{
+	console.log(db.datamulti,"done setup")
+});
 
 function onListening() {
   var addr = server.address();
