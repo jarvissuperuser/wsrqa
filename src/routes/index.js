@@ -6,7 +6,7 @@ var dbl = require("../sqlite_con_man");
 //var dbo = new dbl("../app.db");
 /* GET home page. */
 router.get('/', function(req, res, next) {
-    res.render('index', { title: 'Express' });
+    res.render('index', { title: 'Express', asts: ["what", "is", "new"] });
 });
 
 module.exports = router;
