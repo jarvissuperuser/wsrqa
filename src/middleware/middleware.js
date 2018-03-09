@@ -164,12 +164,16 @@ module.exports = async(p, m, t) => {
     dbi.e.on('done', () => {
         //console.log(db.datamulti[0, 0].length);
         var d = dbi.datamulti[0];
-        console.log(d);
-        if (d.length !== 0) {
-            dbi.multiquery(["select last_insert_rowid() as rid "]);
+        //console.log(d);
+        if (d && stopper) {
             stopper = false;
-        } else if (d) {
-            console.log(d, stopper,dbi.datamulti);
+            dbi.db.all("select last_insert_rowid() as id", (err, rows) => {
+                rows.forEach((row) => {
+                    console.log(row);
+                });
+            });
+        } else if (d && !stopper) {
+            console.log(d, stopper, dbi.datamulti);
             stopper = false;
         }
     });
