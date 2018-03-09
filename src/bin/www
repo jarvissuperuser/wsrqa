@@ -88,6 +88,7 @@ var db = new dlib('../app.db');
 function listenCB() {
     console.log(db.datamulti, "done setup");
     db.e.removeListener('done', listenCB);
+    db.db.close();
     db = null; //delete
 }
 db.multiquery([

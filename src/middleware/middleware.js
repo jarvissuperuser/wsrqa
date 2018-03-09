@@ -66,7 +66,7 @@ const runDiff = (name, timestamp) => {
 
             });
         else
-            throw ("runnDiff error");
+            throw ("runDiff error");
     } catch (ex) {
         console.log(ex, "no file found");
     }
@@ -140,10 +140,16 @@ var getParentDir = (path) => {
 };
 var extractFile = (filePath) => {
     var arr = filePath.split("/"); //unix/unix-like
-    //console.log(arr,filePath,"extractFile");
     arr.reverse();
     return arr[0];
 };
+
+var logToDataBase = (qry) => {
+    if (project_id !== 0)
+        dbi.db.all(qry, function(err, row) {
+            console.log(this.lastID);
+        });
+}
 
 module.exports = async(p, m, t) => {
 
@@ -164,18 +170,12 @@ module.exports = async(p, m, t) => {
     dbi.e.on('done', () => {
         //console.log(db.datamulti[0, 0].length);
         var d = dbi.datamulti[0];
-        //console.log(d);
-        if (d && stopper) {
-            stopper = false;
-            dbi.db.all("select last_insert_rowid() as id", (err, rows) => {
-                rows.forEach((row) => {
-                    console.log(row);
-                });
+        stopper = false;
+        dbi.db.all("select id from test order by id desc limit 1", (err, rows) => {
+            rows.forEach((row) => {
+                project_id = row.id;
             });
-        } else if (d && !stopper) {
-            console.log(d, stopper, dbi.datamulti);
-            stopper = false;
-        }
+        });
     });
     //preconfig = paths
     //checkFiles();
