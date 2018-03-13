@@ -1,6 +1,6 @@
 var b = {}
-document.onload = function(){
-	var b.btns = document.querySelectorAll("button");
+var onload = function(){
+	b.btns = document.querySelectorAll("button");
 
 	b.btns.forEach((btn)=>{
 		btn.addEventListener('click',(e)=>{
@@ -10,8 +10,10 @@ document.onload = function(){
 			}
 			if (id){
 				var did = id.split('_')[1];
-				window.location = "./users/?test=" + did;
+				window.location = "./record/?test=" + did;
 			}
 		});
 	});
 }
+document.addEventListener('DOMContentReady',onload);
+

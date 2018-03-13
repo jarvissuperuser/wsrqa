@@ -9,12 +9,18 @@ var arr = {};
 /* GET home page. */
 router.get('/', function(req, res, next) {
     dbo.db.all("select * from test", (err, rows) => {
-        rows.forEach(row => {
+        if (rows)
+				rows.forEach(row => {
             var name = row.t_name;
             arr[name] =row.id;
         });
-        res.render('index', { title: 'Express', asts: arr });
+				//if (rows)
+        res.render('index', { title: 'Tests Performed', asts: arr });
+
+				dbo.db.close();
+
     });
+
 });
 
 module.exports = router;
