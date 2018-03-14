@@ -58,8 +58,11 @@ const runDiff = (name, timestamp) => {
             resemble(pivotImg)
             .compareTo(testImg).ignoreNothing().onComplete(function(data) {
                 if (data.misMatchPercentage > 5) {
-                    console.log("name:" + name + ",datafailed:true", './public/images/' + project + '/' + name + '_' + timestamp + '_diff.png');
-                    data.getDiffImage().pack().pipe(fs.createWriteStream('./public/images/' + project + '/' + name + '_' + timestamp + '_diff.png'));
+									var diff_img = './public/images/' + project + '/' + name + '_' + timestamp + '_diff.png';
+                    console.log("name:" + name + ",datafailed:true", diff_img);
+                    data.getDiffImage().pack().pipe(fs.createWriteStream(diff_img));
+										var data_info = "Image Difference Registered:" + data.misMatchPercentage +" .";
+										logToDataBase("insert into log_info (t_id,log_info,log_img) vs ("+project_id+",'"++"','"++"')");
                 } else {
                     console.log("name:" + name + ",datafailed:false");
                 }

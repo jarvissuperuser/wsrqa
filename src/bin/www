@@ -99,6 +99,7 @@ db.multiquery([
     "CREATE TABLE IF NOT EXISTS log_info(" +
     "id INTEGER PRIMARY KEY," +
     "log_info VARCHAR(200)," +
+		"t_id INTEGER," +
     "log_image VARCHAR(100))"
 ]);
 db.e.on('done', listenCB);
