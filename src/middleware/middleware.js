@@ -50,7 +50,19 @@ var projects = {
 };
 
 var testLocations;
-
+var logToDataBase = (qry) => {
+    if (project_id !== 0)
+        dbi.db.all(qry, function(err, row) {
+					if (err){
+						console.log(err,qry,"logToDb Failed");
+					}
+					else
+            console.log(dbi.db.lastID,"log in to db");
+        });
+		else{
+			console.log('no project_id');
+		}
+}
 const runDiff = (name, timestamp) => {
 
     try {
@@ -61,8 +73,9 @@ const runDiff = (name, timestamp) => {
 									var diff_img = './public/images/' + project + '/' + name + '_' + timestamp + '_diff.png';
                     console.log("name:" + name + ",datafailed:true", diff_img);
                     data.getDiffImage().pack().pipe(fs.createWriteStream(diff_img));
-										var data_info = "Image Difference Registered:" + data.misMatchPercentage +" .";
-										logToDataBase("insert into log_info (t_id,log_info,log_img) vs ("+project_id+",'"++"','"++"')");
+										var data_info = "Image Difference Registered:" + data.misMatchPercentage +"\%.";
+										logToDataBase("insert into log_info (t_id,log_info,log_image) values ("+
+										project_id+",\""+data_info+"\",\""+extractFile(diff_img)+"\")");
                 } else {
                     console.log("name:" + name + ",datafailed:false");
                 }
@@ -88,8 +101,14 @@ var checkFilesP = (resolve, reject) => {
                     filesExist["test"] = true;
                 }
             });
-            console.log(filesExist, extractFile(filesExist.test ? testImg : pivotImg),
+						var fileFound = filesExist.test ? testImg : pivotImg;
+            console.log(filesExist, extractFile(fileFound),
                 "list file .done");
+						var message = "Test Found "+ (filesExist.test?"Pivot Img":"Test Img");
+						logToDataBase("insert into log_info(t_id,log_info,log_image) values("
+						+ (project_id===undefined?0:project_id)+",\""
+						+ message+"\",\""
+						+extractFile(fileFound)+"\")");
             resolve();
         } else {
             fs.emptyDir('./public/images/' + project + '/', err => {
@@ -97,6 +116,11 @@ var checkFilesP = (resolve, reject) => {
                     console.log("files error", err);
                     reject(process.exit('0'));
                 }
+								var message = "Project created here";
+								logToDataBase("insert into log_info(t_id,log_info,log_image) values("
+							             +project_id?project_id:0+",\""
+							             + message+"\",\""
+							             + 0 +"\")");
                 console.log("Creating Project here", err);
                 resolve();
             });
@@ -147,12 +171,7 @@ var extractFile = (filePath) => {
     return arr[0];
 };
 
-var logToDataBase = (qry) => {
-    if (project_id !== 0)
-        dbi.db.all(qry, function(err, row) {
-            console.log(this.lastID);
-        });
-}
+
 
 module.exports = async(p, m, t) => {
 
@@ -169,7 +188,7 @@ module.exports = async(p, m, t) => {
     filesExist = { test: false, pivot: false };
     QueueName = name + "_" + timestamp;
     var stopper = true;
-    dbi.multiquery(["insert into test(t_name) values('" + QueueName + "')"]);
+    dbi.multiquery(["insert into test(t_name) values('" + name + "')"]);
     dbi.e.on('done', () => {
         //console.log(db.datamulti[0, 0].length);
         var d = dbi.datamulti[0];

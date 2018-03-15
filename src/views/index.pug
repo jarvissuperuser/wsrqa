@@ -4,6 +4,6 @@ block content
   h1= title
   p Welcome to #{title}
 
-  each ast, index in asts
-    button(id=`t_${ast}`)= index 
+  each ast in asts
+    button(id=`t_${ast.id}`)= ast.name 
     br/

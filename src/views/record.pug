@@ -4,6 +4,8 @@ block content
   h1= title
   p Welcome to #{title}
 
-  each result in res
-    p= result 
+  p= JSON.stringify(asts)
+  each result in asts
+    p= result.info 
+    img(src='/images/tl_home/'+result.image alt=result.image)/
     br/
