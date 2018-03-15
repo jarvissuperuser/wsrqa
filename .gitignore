@@ -3,3 +3,4 @@ src/node_modules/*
 src/public/images/*
 .DS_Store
 .idea/*
+app.db
