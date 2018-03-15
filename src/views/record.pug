@@ -7,5 +7,5 @@ block content
   p= JSON.stringify(asts)
   each result in asts
     p= result.info 
-    img(src='/images/tl_home/'+result.image alt=result.image)/
+    img(src=`/images/${result.project}/${result.image}` alt=result.image)/
     br/
