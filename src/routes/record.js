@@ -8,6 +8,10 @@ var dbl = require("../sqlite_con_man");
 var arr = {};
 var rsa = [];
 /** helper functions */
+var get_project = (image) =>{
+	if (image.test("timeslive")){
+	}
+}
 var get_project = (image)=>{
 	var sp = image.split('_');
 	if (sp.length>1)
