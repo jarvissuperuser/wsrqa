@@ -7,7 +7,7 @@ var dbl = require("../sqlite_con_man");
  var dbo = new dbl("../app.db");
 var arr = {};
 var rsa = [];
-var testCases = [\timeslive+\,\businesslive+\,\wanted+\,\sowetanlive\];
+var testCases = [/timeslive+/g,/businesslive+/g,/wanted+/g,/sowetanlive+/g];
 var resset = ["tl_home","bl_home","w_home","sl_home","tl_article"];
 /** helper functions */
 var get_project = (image) =>{
