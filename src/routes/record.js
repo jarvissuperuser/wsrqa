@@ -7,14 +7,17 @@ var dbl = require("../sqlite_con_man");
  var dbo = new dbl("../app.db");
 var arr = {};
 var rsa = [];
-var testCases = [/timeslive+/g,/businesslive+/g,/wanted+/g,/sowetanlive+/g];
+var testCases = [/timeslive+/g,/businesslive+/g,/wanted+/g,/sowetanlive+/g,/tl_home+/g,/bl_home/g,/w_home+/g,/sl_home+/g];
 var resset = ["tl_home","bl_home","w_home","sl_home","tl_article"];
+var dirPath = "";
 /** helper functions */
 var get_project = (image) =>{
 	var x = 0;
 	testCases.forEach((rgx)=>{
-		if (rgx.test(image))
-			return resset[x];
+		if (rgx.test(image)){
+			dirPath = resset[x%4];
+			console.log('testCase',x,rgx.test(image),dirPath);
+		}
 		x=x+1;
 	});
 }
@@ -32,9 +35,10 @@ router.get('/', function(req, rest, next) {
 		dbo.db.all("select * from log_info where t_id ="+ req.query.test, (err, rows) => {
         rows.forEach(row => {
 						arr = {};
+						get_project(row.log_image);
             arr['image'] =row.log_image;
 						arr['info']=row.log_info;
-						arr['project']= get_project(row.log_image);
+						arr['project']= dirPath;
 						rsa.push(arr);
         });
         rest.render('record', { title: 'Regression for '+req.query.test , asts: rsa });
