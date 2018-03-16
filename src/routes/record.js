@@ -7,18 +7,26 @@ var dbl = require("../sqlite_con_man");
  var dbo = new dbl("../app.db");
 var arr = {};
 var rsa = [];
+var testCases = [\timeslive+\,\businesslive+\,\wanted+\,\sowetanlive\];
+var resset = ["tl_home","bl_home","w_home","sl_home","tl_article"];
 /** helper functions */
 var get_project = (image) =>{
-	if (image.test("timeslive")){
-	}
+	var x = 0;
+	testCases.forEach((rgx)=>{
+		if (rgx.test(image))
+			return resset[x];
+		x=x+1;
+	});
 }
+/** deprecated 
+
 var get_project = (image)=>{
 	var sp = image.split('_');
 	if (sp.length>1)
 		return sp[0]+"_"+sp[1];
 	else 
 		return undefined;
-};
+};*/
 /* GET record page. */
 router.get('/', function(req, rest, next) {
 		dbo.db.all("select * from log_info where t_id ="+ req.query.test, (err, rows) => {

@@ -44,7 +44,7 @@ var testurls = {
 var projects = {
     "tl_home": "timeslive",
     "tl_article": "timeslive",
-    "bl_live": "businesslive",
+    "bl_home": "businesslive",
     "sl_home": "sowetanlive",
     "w_home": "wanted"
 };
