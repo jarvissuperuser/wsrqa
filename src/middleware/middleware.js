@@ -64,7 +64,7 @@ var logToDataBase = (qry) => {
 			console.log('no project_id');
 		}
     }catch(ex){
-        console.log("logToDataBase failed",ex);
+        console.log("logToDataBase failed",ex,qry);
     }
 }
 const runDiff = (name, timestamp) => {
