@@ -9,6 +9,14 @@ block content
     a(class=`btn` href=`/regressiontest/?t=yes&p=tl_home&m=no` target=`_blank`)= `Test TimesLive site`
     a(class=`btn` href=`/regressiontest/?t=yes&p=w_home&m=no` target=`_blank`)= `Test WantedOnline site`
   p= `Test Results list`
-  each btn in asts
-    button(id=`t_${btn.id}`)= btn.name 
-    br/
+  
+  if asts[0]
+    each btn in asts
+      button(id=`t_${btn.id}`)= btn.name 
+      br/
+  
+    a(class=`btn` href=`./?offset=${asts[0].next}`)= `NEXT Set`
+    p= `STATUS total Results=${asts[0].total} Offset=${asts[0].point}`
+
+  else
+    p= `No Tests Performed yet`
