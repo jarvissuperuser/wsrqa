@@ -82,6 +82,7 @@ const runDiff = (name, timestamp) => {
                     logToDataBase("insert into log_info (t_id,log_info,log_image) values ("+
 										project_id+",\""+data_info+"\",\""+extractFile(testImg)+"\")");
                 }
+                logToDataBase("update test set t_val='" +data.misMatchPercentage + "' where id="+project_id+";");
 
             });
         else
