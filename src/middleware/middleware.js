@@ -44,13 +44,14 @@ var testurls = {
 var projects = {
     "tl_home": "timeslive",
     "tl_article": "timeslive",
-    "bl_live": "businesslive",
+    "bl_home": "businesslive",
     "sl_home": "sowetanlive",
     "w_home": "wanted"
 };
 
 var testLocations;
 var logToDataBase = (qry) => {
+    try{
     if (project_id !== 0)
         dbi.db.all(qry, function(err, row) {
 					if (err){
@@ -62,6 +63,9 @@ var logToDataBase = (qry) => {
 		else{
 			console.log('no project_id');
 		}
+    }catch(ex){
+        console.log("logToDataBase failed",ex,qry);
+    }
 }
 const runDiff = (name, timestamp) => {
 
@@ -69,16 +73,20 @@ const runDiff = (name, timestamp) => {
         if (filesExist.pivot && filesExist.test)
             resemble(pivotImg)
             .compareTo(testImg).ignoreNothing().onComplete(function(data) {
+                var data_info = "Image Difference Registered:" + data.misMatchPercentage +"\%.";
                 if (data.misMatchPercentage > 5) {
 									var diff_img = './public/images/' + project + '/' + name + '_' + timestamp + '_diff.png';
                     console.log("name:" + name + ",datafailed:true", diff_img);
                     data.getDiffImage().pack().pipe(fs.createWriteStream(diff_img));
-										var data_info = "Image Difference Registered:" + data.misMatchPercentage +"\%.";
+										
 										logToDataBase("insert into log_info (t_id,log_info,log_image) values ("+
 										project_id+",\""+data_info+"\",\""+extractFile(diff_img)+"\")");
                 } else {
                     console.log("name:" + name + ",datafailed:false");
+                    logToDataBase("insert into log_info (t_id,log_info,log_image) values ("+
+										project_id+",\""+data_info+"\",\""+extractFile(testImg)+"\")");
                 }
+                logToDataBase("update test set t_val='" +data.misMatchPercentage + "' where id="+project_id+";");
 
             });
         else

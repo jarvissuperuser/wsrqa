@@ -5,7 +5,9 @@ block content
   p Welcome to #{title}
 
   p= JSON.stringify(asts)
-  each result in asts
-    p= result.info 
-    img(src='/images/tl_home/'+result.image alt=result.image)/
-    br/
+  div(style=`display:block;margin-top:25px`)
+    each result in asts
+      div(style=`display:inline-block;margin-right:7px;`)
+        h4= result.info 
+        img(src=`/images/${result.project}/${result.image}` alt=result.image)/
+    

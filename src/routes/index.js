@@ -14,7 +14,7 @@ router.get('/', function(req, res, next) {
         if (rows)
 				rows.forEach(row => {
 					arr = [];
-            var name = row.t_name +"@"+row.t_timestamp;
+            var name = row.t_name +"@"+row.t_timestamp+">> "+row.t_val+"%";
             arr['id'] =row.id;
 						arr['name'] = name;
 						rsa.push(arr)
