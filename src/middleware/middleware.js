@@ -51,6 +51,7 @@ var projects = {
 
 var testLocations;
 var logToDataBase = (qry) => {
+    try{
     if (project_id !== 0)
         dbi.db.all(qry, function(err, row) {
 					if (err){
@@ -62,6 +63,9 @@ var logToDataBase = (qry) => {
 		else{
 			console.log('no project_id');
 		}
+    }catch(ex){
+        console.log("logToDataBase failed",ex);
+    }
 }
 const runDiff = (name, timestamp) => {
 
