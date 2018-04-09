@@ -3,7 +3,12 @@ extends layout
 block content
   h1= title
   p Welcome to #{title}
-
+  
+  div(class=`i-block`)
+    a(class=`btn` href=`/regressiontest/?t=yes&p=bl_home&m=no` target=`_blank`)= `Test BusinessLive site`
+    a(class=`btn` href=`/regressiontest/?t=yes&p=tl_home&m=no` target=`_blank`)= `Test TimesLive site`
+    a(class=`btn` href=`/regressiontest/?t=yes&p=w_home&m=no` target=`_blank`)= `Test WantedOnline site`
+  p= `Test Results list`
   each btn in asts
     button(id=`t_${btn.id}`)= btn.name 
     br/

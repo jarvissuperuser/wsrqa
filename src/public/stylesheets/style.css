@@ -11,3 +11,20 @@ img {
 	height: auto;
 	width: 30vw;
 }
+
+.i-block{
+/*     display:inline-block; */
+}
+
+.btn{
+    display:inline-block;
+    text-decoration: none;
+    background-color: lime;
+    vertical-align:middle;
+    padding:8px 16px;
+    border: 1px white solid;
+    color: black;
+}
+.btn:hover{
+    box-shadow:0 8px 16px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+}
