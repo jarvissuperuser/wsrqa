@@ -19,4 +19,5 @@ block content
     p= `STATUS total Results=${asts[0].total} Offset=${asts[0].point}`
 
   else
-    p= `No Tests Performed yet`
+    p= `No Tests Found`
+    a(class=`btn` href=`./?offset=0`)= `Refresh Page`
