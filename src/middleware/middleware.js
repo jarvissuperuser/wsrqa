@@ -5,7 +5,9 @@ var fs = require('fs-extra');
 var dbl = require('../sqlite_con_man');
 var amqp = require('amqp-connection-manager');
 var async = require("async");
+var UJC = require('./userjourney');
 
+var uj = new UJC();
 const desktopAgent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36';
 const modbileAgent = '';
 var dbi = new dbl("../app.db");
@@ -50,174 +52,38 @@ var projects = {
 };
 
 var testLocations;
-var logToDataBase = (qry) => {
-    try{
-    if (project_id !== 0)
-        dbi.db.all(qry, function(err, row) {
-					if (err){
-						console.log(err,qry,"logToDb Failed");
-					}
-					else
-            console.log(dbi.db.lastID,"log in to db");
-        });
-		else{
-			console.log('no project_id');
-		}
-    }catch(ex){
-        console.log("logToDataBase failed",ex,qry);
-    }
-}
-const runDiff = (name, timestamp) => {
-
-    try {
-        if (filesExist.pivot && filesExist.test)
-            resemble(pivotImg)
-            .compareTo(testImg).ignoreNothing().onComplete(function(data) {
-                var data_info = "Image Difference Registered:" + data.misMatchPercentage +"\%.";
-                if (data.misMatchPercentage > 5) {
-									var diff_img = './public/images/' + project + '/' + name + '_' + timestamp + '_diff.png';
-                    console.log("name:" + name + ",datafailed:true", diff_img);
-                    data.getDiffImage().pack().pipe(fs.createWriteStream(diff_img));
-										
-										logToDataBase("insert into log_info (t_id,log_info,log_image) values ("+
-										project_id+",\""+data_info+"\",\""+extractFile(diff_img)+"\")");
-                } else {
-                    console.log("name:" + name + ",datafailed:false");
-                    logToDataBase("insert into log_info (t_id,log_info,log_image) values ("+
-										project_id+",\""+data_info+"\",\""+extractFile(testImg)+"\")");
-                }
-                logToDataBase("update test set t_val='" +data.misMatchPercentage + "' where id="+project_id+";");
-
-            });
-        else
-            throw ("runDiff error");
-    } catch (ex) {
-        console.log(ex, "no file found");
-    }
-};
-
-var checkFilesP = (resolve, reject) => {
-    let parentDir = getParentDir(fileName);
-    fs.readdir(parentDir, (err, files) => {
-        if (!err) {
-            console.log("listing files");
-            files.forEach(file => {
-                if (file === extractFile(pivotImg)) {
-                    filesExist["pivot"] = true;
-                }
-                if (file === extractFile(testImg)) {
-                    filesExist["test"] = true;
-                }
-            });
-						var fileFound = filesExist.test ? testImg : pivotImg;
-            console.log(filesExist, extractFile(fileFound),
-                "list file .done");
-						var message = "Test Found "+ (filesExist.test?"Pivot Img":"Test Img");
-						logToDataBase("insert into log_info(t_id,log_info,log_image) values("
-						+ (project_id===undefined?0:project_id)+",\""
-						+ message+"\",\""
-						+extractFile(fileFound)+"\")");
-            resolve();
-        } else {
-            fs.emptyDir('./public/images/' + project + '/', err => {
-                if (err) {
-                    console.log("files error", err);
-                    reject(process.exit('0'));
-                }
-								var message = "Project created here";
-								logToDataBase("insert into log_info(t_id,log_info,log_image) values("
-							             +project_id?project_id:0+",\""
-							             + message+"\",\""
-							             + 0 +"\")");
-                console.log("Creating Project here", err);
-                resolve();
-            });
-        }
-    });
-}
-
-var getScreensP = (resolve, reject) => {
-    fileName = (filesExist.pivot) ?
-        './public/images/' + project + '/' + name + '_' + timestamp + '.png' : './public/images/' + project + '/' + name + '.png';
-
-    try {
-        console.log(fileName, "attempt for image");
-        webshot(testLocations, fileName, options, function(err) {
-            console.log("img error or rundiff");
-            if (err) {
-                console.log(err);
-                reject(err);
-            }
-            //else if (filesExist.pivot&&filesExist.test)
-            //runDiff(name,timestamp);
-            console.log("Building test cases", QueueName);
-            resolve()
-                //res.write("yes:"+err.message);
-                //}
-        });
-    } catch (ex) {
-        console.log("exception getscreen", ex);
-    }
-}
-
-var arrayToPath = (arr) => {
-    return arr.join('/');
-}
-var getParentDir = (path) => {
-    try {
-        var splitPath = path.split('/');
-        splitPath.pop();
-        return arrayToPath(splitPath);
-    } catch (ex) {
-        console.log(ex);
-    }
-
-};
-var extractFile = (filePath) => {
-    var arr = filePath.split("/"); //unix/unix-like
-    arr.reverse();
-    return arr[0];
-};
-
-
 
 module.exports = async(p, m, t) => {
 
     project = p;
     isMobile = m;
     runTests = t;
-
-    timestamp = moment().format("MM-D-YY-h-mm-s");
-    console.log("Loading Tests app at " + timestamp);
-    name = (projects[p] === undefined) ? project : projects[p];
-    testImg = './public/images/' + project + '/' + name + '_' + timestamp + '.png';
-    pivotImg = './public/images/' + project + '/' + name + '.png';
-    fileName = (runTests === 'yes') ? testImg : pivotImg;
-    filesExist = { test: false, pivot: false };
-    QueueName = name + "_" + timestamp;
-    var stopper = true;
-    dbi.multiquery(["insert into test(t_name) values('" + name + "')"]);
-    dbi.e.on('done', () => {
+    uj.timestamp = moment().format("MM-D-YY-h-mm-s");
+    uj.setup("./project/images/",projects,project);
+    console.log("Loading Tests app at " + uj.timestamp);
+    uj.name = (projects[p] === undefined) ? project : projects[p];
+    uj.dbi.multiquery(["insert into test(t_name) values('" + name + "')"]);
+    uj.dbi.e.on('done', () => {
         //console.log(db.datamulti[0, 0].length);
-        var d = dbi.datamulti[0];
+        var d = uj.dbi.datamulti[0];
         stopper = false;
-        dbi.db.all("select id from test order by id desc limit 1", (err, rows) => {
+        uj.dbi.db.all("select id from test order by id desc limit 1", (err, rows) => {
             rows.forEach((row) => {
-                project_id = row.id;
+                uj.project_id = row.id;
             });
         });
     });
     //preconfig = paths
     //checkFiles();
-    testLocations = testurls[project];
-    var pr = new Promise(checkFilesP);
+    uj.testLocations = testurls[project];
+    var pr = new Promise(uj.checkFilesP);
     pr.then(() => {
-        return new Promise(getScreensP);
+        return new Promise(uj.getScreensP);
     }).then((gsp) => {
-        return new Promise(checkFilesP);
+        return new Promise(uj.checkFilesP);
     }).then((f) => {
-        if (filesExist.test)
-            runDiff(name, timestamp);
+        if (uj.filesExist.test)
+            uj.runDiff(uj.name, uj.timestamp);
         else
             console.log("nothing to test':'diff avoided");
     }).catch((ex) => {
