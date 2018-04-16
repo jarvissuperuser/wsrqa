@@ -5,7 +5,7 @@ var fs = require('fs-extra');
 var dbl = require('../sqlite_con_man');
 var amqp = require('amqp-connection-manager');
 var async = require("async");
-var UJC = require('./userjourney');
+var UJC = require('../userjourney');
 
 var uj = new UJC();
 const desktopAgent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36';
@@ -14,14 +14,7 @@ var dbi = new dbl("../app.db");
 let project = '';
 let isMobile = '';
 let runTests = '';
-let testImg = '';
-let pivotImg = '';
-let fileName = '';
 let QueueName = '';
-var filesExist;
-var project_id;
-var channelWrapper;
-var timestamp;
 var connection = amqp.connect(['amqp://admin:root1234@localhost:5672']); //guest only when client is local on server host
 
 var options = {
@@ -59,26 +52,43 @@ module.exports = async(p, m, t) => {
     isMobile = m;
     runTests = t;
     uj.timestamp = moment().format("MM-D-YY-h-mm-s");
-    uj.setup("./project/images/",projects,project);
-    console.log("Loading Tests app at " + uj.timestamp);
+    uj.log = true;
+    uj.project = '';
+    uj.filesExist = {pivot:false,test:false};
+    uj.testImg = '';
+    uj.pivotImg = '';
+    var b_path = "./public/images/";
+    uj.setup(b_path,projects,project);
+    console.log("Loading Tests app at " , uj.timestamp);
     uj.name = (projects[p] === undefined) ? project : projects[p];
-    uj.dbi.multiquery(["insert into test(t_name) values('" + name + "')"]);
-    uj.dbi.e.on('done', () => {
-        //console.log(db.datamulti[0, 0].length);
-        var d = uj.dbi.datamulti[0];
-        stopper = false;
-        uj.dbi.db.all("select id from test order by id desc limit 1", (err, rows) => {
-            rows.forEach((row) => {
-                uj.project_id = row.id;
+    try{
+        uj.dbi = new dbl("../app.db");
+        uj.dbSetup();
+    }
+    catch(ex){
+        uj.dbi.multiquery(["insert into test(t_name) values('" + name + "')"]);
+        uj.dbi.e.on('done', () => {
+            //console.log(db.datamulti[0, 0].length);
+            var d = uj.dbi.datamulti[0];
+            stopper = false;
+            uj.dbi.db.all("select id from test order by id desc limit 1", (err, rows) => {
+                rows.forEach((row) => {
+                    uj.project_id = row.id;
+                });
             });
         });
+    }
+
+    var pr = new Promise(function(w,f){
+        uj.testLocations = testurls[project];
+        uj.setup(b_path,projects,p);
+        uj.checkFilesP(w,f);
     });
-    //preconfig = paths
-    //checkFiles();
-    uj.testLocations = testurls[project];
-    var pr = new Promise(uj.checkFilesP);
     pr.then(() => {
-        return new Promise(uj.getScreensP);
+        return new Promise(function(w,f){
+            uj.filesInit(b_path);
+            uj.getScreensP(w,f);
+        });
     }).then((gsp) => {
         return new Promise(uj.checkFilesP);
     }).then((f) => {
