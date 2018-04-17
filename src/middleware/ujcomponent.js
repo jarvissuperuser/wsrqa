@@ -15,7 +15,6 @@ let project = '';
 let isMobile = '';
 let runTests = '';
 let QueueName = '';
-var connection = amqp.connect(['amqp://admin:root1234@localhost:5672']); //guest only when client is local on server host
 
 var options = {
 	screenSize: {
@@ -29,19 +28,19 @@ var options = {
 	userAgent: desktopAgent
 };
 
-var appenditure = {
-	"login":"/u/sign-in/",
-	"register":"u/sign-up/",
-	"reset":"/u/reset/"
-}
+let appenditure = {
+	login:"/u/sign-in/",
+	register:"u/sign-up/",
+	reset:"/u/reset/"
+};
 
-var testurls = {
+let testurls = {
 	"tl_home": "www.timeslive.co.za",
 	"bl_home": "www.businesslive.co.za",
 	"sl_home": "www.sowetanlive.co.za",
 	"w_home": "wantedonline.co.za"
 };
-var projects = {
+let projects = {
 	"tl_home": "timeslive",
 	"tl_article": "timeslive",
 	"bl_home": "businesslive",
@@ -49,65 +48,47 @@ var projects = {
 	"w_home": "wanted"
 };
 
-var testLocations;
+let testLocations = "";
 
+let p_input = async (page,selector,info)=>{
+    await page.click(selector);
+    await page.keyboard.type(info);
+}
+
+let auth = (data)=>{
+
+    var info = Buffer.from(data,'base64').toString();
+    return info.split('<:>');
+}
+let browser = undefined;
 module.exports = async(p, m, t) => {
 
+    let b_path = "./public/images/";
 	project = p;
-	testLocations = testurls[p] + appenditure[m];
+	testLocations = "http://".concat(testurls[p],appenditure[m]);
 	runTests = t;
-	const browser =  await puppet.launch();
-	const page = await browser.newPage();
+	console.log(testLocations,p,m,t);
+	try {
+	    browser = await puppet.launch();
+        const page = await browser.newPage();
+        console.log('launch');
+        await page.goto(testLocations);
+        var creds = auth(runTests);
+        await p_input(page,"input[type=email]",creds[0]);
+        await p_input(page,"input[type=password]",creds[1]);
+        await page.click("button[type=button]");
+        await new Promise(function (resolve,reject) {
+            setTimeout(function () {
+                console.log("timeout:3s");
+                resolve();
+            },5000);
+        });
+        console.log('input');
+        await page.screenshot({path:b_path.concat("puppettest1.png")});
 
-	await page.goto(testLocations);
-	if (runTests === "yes") {
-		uj.timestamp = moment().format("MM-D-YY-h-mm-s");
-		uj.log = true;
-		uj.project = '';
-		uj.filesExist = {pivot: false, test: false};
-		uj.testImg = '';
-		uj.pivotImg = '';
-		var b_path = "./public/images/";
-		uj.setup(b_path, projects, project);
-		console.log("Loading Tests app at ", uj.timestamp);
-		uj.name = (projects[p] === undefined) ? project : projects[p];
-		try {
-			uj.dbi = new dbl("../app.db");
-			uj.dbSetup();
-		}
-		catch (ex) {
-			uj.dbi.multiquery(["insert into test(t_name) values('" + name + "')"]);
-			uj.dbi.e.on('done', () => {
-				//console.log(db.datamulti[0, 0].length);
-				var d = uj.dbi.datamulti[0];
-				stopper = false;
-				uj.dbi.db.all("select id from test order by id desc limit 1", (err, rows) => {
-					rows.forEach((row) => {
-						uj.project_id = row.id;
-					});
-				});
-			});
-		}
-
-		var pr = new Promise(function (w, f) {
-			uj.testLocations = testurls[project];
-			uj.setup(b_path, projects, p);
-			uj.checkFilesP(w, f);
-		});
-		pr.then(() => {
-			return new Promise(function (w, f) {
-				uj.filesInit(b_path);
-				uj.getScreensP(w, f);
-			});
-		}).then((gsp) => {
-			return new Promise(uj.checkFilesP);
-		}).then((f) => {
-			if (uj.filesExist.test)
-				uj.runDiff(uj.name, uj.timestamp);
-			else
-				console.log("nothing to test':'diff avoided");
-		}).catch((ex) => {
-			console.error(ex, "app error");
-		});
-	}
+        browser.close();
+    }catch (exc) {
+	    browser.close();
+		console.log(exc);
+    }
 };

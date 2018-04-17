@@ -9,6 +9,8 @@ var index = require('./routes/index');
 var users = require('./routes/users');
 var regressiontest = require('./routes/regressiontest');
 var record = require('./routes/record');
+let userjourney = require('./routes/userjourney');
+let userjourneytest = require('./routes/userjourneytest');
 
 var app = express();
 
@@ -24,13 +26,15 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// catch 404 and forward to error handler
+app.use('/record',record);
+app.use('/userjourney',userjourney);
+app.use('/ujtest',userjourneytest);
 app.use('/', index);
 app.use('/users', users);
 app.use('/regressiontest', regressiontest);
-app.use('/record',record);
-// catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  var err = new Error('Not Found');
+    var err = new Error('Not Found');
   err.status = 404;
   next(err);
 });

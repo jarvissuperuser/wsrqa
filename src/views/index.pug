@@ -2,17 +2,20 @@ extends layout
 
 block content
   h1= title
-  p Welcome to #{title}
+  p Quick Home page Tests
   
   div(class=`i-block`)
-    a(class=`btn` href=`/regressiontest/?t=yes&p=bl_home&m=no` target=`_blank`)= `Test BusinessLive site`
-    a(class=`btn` href=`/regressiontest/?t=yes&p=tl_home&m=no` target=`_blank`)= `Test TimesLive site`
-    a(class=`btn` href=`/regressiontest/?t=yes&p=w_home&m=no` target=`_blank`)= `Test WantedOnline site`
+    a.w3-btn.w3-blue.w3-margin-right( href=`/regressiontest/?t=yes&p=bl_home&m=no` target=`_blank`)= `Test BusinessLive site`
+    a.w3-btn.w3-red.w3-margin-right( href=`/regressiontest/?t=yes&p=tl_home&m=no` target=`_blank`)= `Test TimesLive site`
+    a.w3-btn.w3-black.w3-margin-right( href=`/regressiontest/?t=yes&p=w_home&m=no` target=`_blank`)= `Test WantedOnline site`
+
+  p Extended User Journey tests
+  a.w3-btn.w3-blue.w3-margin-right( href=`/userjourney/?`)= `User Journey Tests`
   p= `Test Results list`
   
   if asts[0]
     each btn in asts
-      button(id=`t_${btn.id}`)= btn.name 
+      button.w3-btn.w3-teal.w3-margin-bottom(id=`t_${btn.id}`)= btn.name
       br/
   
     a(class=`btn` href=`./?offset=${asts[0].next}`)= `NEXT Set`

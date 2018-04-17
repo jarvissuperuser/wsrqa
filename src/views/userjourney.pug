@@ -1,0 +1,49 @@
+extends layout.pug
+
+block content
+    h1.w3-center= title
+    div.w3-content.w3-container
+        div.w3-card.w3-black.w3-col.l4.s5.w3-margin-right
+            h3.w3-container.w3-center Settings
+            div.w3-content.w3-container.w3-white
+                input.w3-input(placeholder='Custom Test Name')
+                input.w3-input(placeholder=`Email`)
+                input.w3-input(placeholder=`Password`, type=`password`)
+                label.w3-input.w3-blue.w3-text -SITE TO TEST-
+                select.w3-input.w3-cyan
+                    option(value='tl_home') TimesLive
+                    option(value='sl_home') SowetanLive
+                    option(value='bl_home') BusinessLive
+                    option(value='ts_home') TimesSelect ~to be implemented
+                label.w3-input.w3-blue.w3-text -ASPECT TO TEST-
+                select.w3-input.w3-cyan
+                    option(value='login') Sign-In
+                    option.w3-yellow(value='register') Sign-Up ~to be implemented
+                    option.w3-yellow(value='reset') Reset Password ~to be implemented
+            button.w3-button.ujtest.w3-col.l12.s12.w3-green Begin Test
+            div.w3-container
+                p
+                    span
+
+        div.w3-card.w3-black.w3-col.l3.s5.w3-margin-right
+            h3.w3-container.w3-center Previous Tests
+            div.w3-content
+                div.w3-container.w3-btn.w3-teal.w3-col.l12 BaseTest
+                div.w3-container.w3-btn.w3-green.w3-col.l12 Test_1
+                div.w3-container.w3-btn.w3-teal.w3-col.l12 Test_2
+                div.w3-container.w3-btn.w3-green.w3-col.l12 Test_3
+                div.w3-container.w3-btn.w3-teal.w3-col.l12 Test_4
+            div.w3-container
+                button.w3-button.w3-col.l6.s6 <<
+                button.w3-button.w3-col.l6.s6 >>
+
+        div.w3-card.w3-black.w3-col.l3.s5
+            h3.w3-container.w3-center Compare Test
+            div.w3-content.w3-white
+                div.w3-container.w3-col.l12 Test 1
+                    input.w3-input(placeholder=`SearchForTests1`)
+
+                div.w3-container.w3-col.l12 Test_2
+                    input.w3-input(placeholder=`SearchForTests`)
+            div.w3-container
+                button.w3-button.w3-col.l6.s6 COMPARE
