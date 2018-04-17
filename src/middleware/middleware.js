@@ -46,32 +46,40 @@ var projects = {
 
 var testLocations;
 
-module.exports = async(p, m, t) => {
-
-    project = p;
-    isMobile = m;
-    runTests = t;
+function reset(){
     uj.timestamp = moment().format("MM-D-YY-h-mm-s");
     uj.log = true;
     uj.project = '';
     uj.filesExist = {pivot:false,test:false};
     uj.testImg = '';
     uj.pivotImg = '';
+    uj.name = (projects[project] === undefined) ? project : projects[project];
+}
+
+module.exports = async(p, m, t) => {
+
+    project = p;
+    isMobile = m;
+    runTests = t;
+
     var b_path = "./public/images/";
     uj.setup(b_path,projects,project);
     console.log("Loading Tests app at " , uj.timestamp);
-    uj.name = (projects[p] === undefined) ? project : projects[p];
+
     try{
+        reset();
         uj.dbi = new dbl("../app.db");
         uj.dbSetup();
     }
     catch(ex){
-        uj.dbi.multiquery(["insert into test(t_name) values('" + name + "')"]);
-        uj.dbi.e.on('done', () => {
+        console.log("dbi exception",ex);
+        dbi = new dbl("../app.db");
+        dbi.multiquery(["insert into test(t_name) values('" + uj.name + "')"]);
+        dbi.e.on('done', () => {
             //console.log(db.datamulti[0, 0].length);
-            var d = uj.dbi.datamulti[0];
+            //var d = dbi.datamulti[0];
             stopper = false;
-            uj.dbi.db.all("select id from test order by id desc limit 1", (err, rows) => {
+            dbi.db.all("select id from test order by id desc limit 1", (err, rows) => {
                 rows.forEach((row) => {
                     uj.project_id = row.id;
                 });
@@ -80,8 +88,11 @@ module.exports = async(p, m, t) => {
     }
 
     var pr = new Promise(function(w,f){
+        reset();
         uj.testLocations = testurls[project];
         uj.setup(b_path,projects,p);
+        console.log()
+        uj.filesInit(b_path);
         uj.checkFilesP(w,f);
     });
     pr.then(() => {
