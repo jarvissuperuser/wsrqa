@@ -110,4 +110,5 @@ module.exports = async(p, m, t) => {
 			console.error(ex, "app error");
 		});
 	}
+	browser.close();
 };
