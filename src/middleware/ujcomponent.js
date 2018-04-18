@@ -6,6 +6,7 @@ var dbl = require('../sqlite_con_man');
 var async = require("async");
 var UJC = require('../userjourney');
 var puppet = require("puppeteer");
+var devices = require("../devDescExt");
 
 var uj = new UJC();
 const desktopAgent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36';
@@ -61,31 +62,51 @@ let auth = (data)=>{
     return info.split('<:>');
 }
 let browser = undefined;
+let page  = undefined;
+let creds = [];
+let b_path = "./public/images/";
+let login_do = async ()=>{
+    await page.goto(testLocations);
+    creds = auth(runTests);
+    if (creds.length > 1) {
+        await p_input(page, "input[type=email]", creds[0]);
+        await p_input(page, "input[type=password]", creds[1]);
+    }
+    await page.click("button[type=button]");
+    await new Promise(function (resolve,reject) {
+        setTimeout(function () {
+            console.log("timeout:3s");
+            resolve();
+        },5000);
+    });
+    console.log('input');
+    await page.screenshot({path:b_path.concat(creds[2].concat(".png"))});
+}
+let base_test = async (name)=>{
+    await page.goto(testLocations);
+    creds = auth(runTests);
+    await new Promise(function (resolve,reject) {
+        setTimeout(function () {
+            console.log("timeout:3s");
+            resolve();
+        },3400);
+    });
+    console.log('input');
+    await page.screenshot({path:b_path.concat(name.concat(".png"))});
+}
+
 module.exports = async(p, m, t) => {
 
-    let b_path = "./public/images/";
+
 	project = p;
 	testLocations = "http://".concat(testurls[p],appenditure[m]);
 	runTests = t;
 	console.log(testLocations,p,m,t);
 	try {
 	    browser = await puppet.launch();
-        const page = await browser.newPage();
+	    page = await browser.newPage();
         console.log('launch');
-        await page.goto(testLocations);
-        var creds = auth(runTests);
-        await p_input(page,"input[type=email]",creds[0]);
-        await p_input(page,"input[type=password]",creds[1]);
-        await page.click("button[type=button]");
-        await new Promise(function (resolve,reject) {
-            setTimeout(function () {
-                console.log("timeout:3s");
-                resolve();
-            },5000);
-        });
-        console.log('input');
-        await page.screenshot({path:b_path.concat("puppettest1.png")});
-
+        await login_do();
         browser.close();
     }catch (exc) {
 	    browser.close();
