@@ -48,9 +48,9 @@ class UserJourney{
     }
     dbSetup(){
         var self = selfer;
-        this.dbi = new dbl("../app.db");
-        selfer.dbi.multiquery(["insert into test(t_name) values('" + self.name + "')"]);
-        selfer.dbi.e.on('done', () => {
+        self.dbi = new dbl("../app.db");
+        self.dbi.multiquery(["insert into test(t_name) values('" + self.name + "')"]);
+        self.dbi.e.on('done', () => {
             var d = self.dbi.datamulti[0];
             self.dbi.db.all("select id from test order by id desc limit 1", (err, rows) => {
                 rows.forEach((row) => {
