@@ -95,7 +95,7 @@ db.multiquery([
     "CREATE TABLE IF NOT EXISTS test(" +
     "id INTEGER PRIMARY KEY," +
     "t_name VARCHAR(50)," +
-    "t_val VARCHAR(7) DEFAULT '0%'," +
+    "t_val VARCHAR(7) DEFAULT '0'," +
     "t_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP)",
     "CREATE TABLE IF NOT EXISTS log_info(" +
     "id INTEGER PRIMARY KEY," +

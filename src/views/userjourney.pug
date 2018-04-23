@@ -4,7 +4,7 @@ block content
     h1.w3-center= title
     div.w3-content.w3-container
         div.w3-card.w3-black.w3-col.l4.s5.w3-margin-right
-            h3.w3-container.w3-center Settings
+            h3.w3-container.w3-center New Test
             div.w3-content.w3-container.w3-white
                 input.w3-input(placeholder='Custom Test Name')
                 input.w3-input(placeholder=`Email`)
@@ -14,7 +14,8 @@ block content
                     option(value='tl_home') TimesLive
                     option(value='sl_home') SowetanLive
                     option(value='bl_home') BusinessLive
-                    option(value='ts_home') TimesSelect ~to be implemented
+                    option(value='ts_home') TimesSelect
+                    option(value='hl_home') HeraldLive
                 label.w3-input.w3-blue.w3-text -ASPECT TO TEST-
                 select.w3-input.w3-cyan
                     option(value='login') Sign-In
@@ -47,3 +48,8 @@ block content
                     input.w3-input(placeholder=`SearchForTests`)
             div.w3-container
                 button.w3-button.w3-col.l6.s6 COMPARE
+
+        div.w3-card.w3-black.w3-col.l3.s5
+            h3.w3-container.w3-center LogCard
+            div.w3-content.w3-white
+                div(id='log_card')

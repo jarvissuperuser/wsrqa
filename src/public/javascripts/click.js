@@ -1,11 +1,11 @@
 var b = {}
 var grabForm=()=>{
 	var inputs = document.querySelectorAll('input:valid');
-	var auth = btoa(inputs[1].value.concat("<:>".concat(inputs[2].value)));
+	var auth = btoa(inputs[1].value.concat("<:>".concat(inputs[2].value.concat("<:>".concat(inputs[0].value)))));
 	var s = document.querySelectorAll('select');
 	var selection = [s[0].options[s[0].selectedIndex].value,s[1].options[s[1].selectedIndex].value]
 	return {
-		data:auth,
+		data:encodeURI(auth),
 		options:selection
 	};
 }
@@ -24,7 +24,6 @@ var hasClass = (el,className)=> {
 }
 var onload = function(){
 	b.btns = document.querySelectorAll("button");
-
 	b.btns.forEach((btn)=>{
 		btn.addEventListener('click',(e)=>{
 			var id;
@@ -42,7 +41,19 @@ var onload = function(){
 							"&m=".concat(
 								object.options[1].concat(
 									"&t=".concat(object.data)))));
-					 window.location= url;
+					 var ajax = new XMLHttpRequest();
+					 ajax.onreadystatechange = () =>
+					 {
+					 	if (ajax.readyState == 4 && ajax.status == 200)
+					 		document.querySelector('#log_card').innerHTML
+								+= "<p>".concat(ajax.responseText.concat('</p>'));
+					 	else if (ajax.status == 500){
+                            document.querySelector('#log_card').innerHTML
+                                += "<p>".concat("something Broke 500".concat('</p>'));
+						}
+					 }
+					 ajax.open("GET",url);
+					 ajax.send();
 				};
 			}
 		});

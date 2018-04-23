@@ -15,7 +15,7 @@ let project = '';
 let isMobile = '';
 let runTests = '';
 let QueueName = '';
-var connection = amqp.connect(['amqp://admin:root1234@localhost:5672']); //guest only when client is local on server host
+
 
 var options = {
     screenSize: {
