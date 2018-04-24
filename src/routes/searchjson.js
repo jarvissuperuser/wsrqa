@@ -7,7 +7,8 @@ router.get('/', async(req, rest, next) =>{
     result = [];
 
     if (req.query.test)
-        db.db.all("select id as k, t_name as n from test "+
+        db.db.all("select id as k, t_name as n, "+
+            "t_timestamp as t from test "+
             "where t_name like \"%"+req.query.test+"%\"",
             (err,rows)=>{
                 return new Promise((resolve)=> {

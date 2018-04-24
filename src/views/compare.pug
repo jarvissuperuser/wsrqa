@@ -7,14 +7,20 @@ block content
         div.w3-col.s12.l6.w3-black.w3-center.w3-border.w3-border-black
             h3.w3-container Regression Test 1
             div.w3-container.w3-white.w3-padding-64
-                label Search For Test Result
-                input.w3-input(placeholder='Search Here')
-            div
+                label.w3-col.l12.s12 Search For Test Result
+                div.w3-dropdown-click.w3-bar-block.w3-col.l12.s12
+                    input.w3-input.search(placeholder='Search Here')
+                    div.test-1.w3-dropdown-content.w3-col.l12.s12.w3-black
+
+            div.results
                  p Results
         div.w3-col.s12.l6.w3-black.w3-center.w3-border.w3-border-black
             h3.w3-container Regression Test 2
             div.w3-container.w3-white.w3-padding-64
                 label Search For Other Test Result
-                input.w3-input(placeholder='Search Here')
+                div.w3-dropdown-click.w3-bar-block.w3-col.l12.s12
+                    input.w3-input.search(placeholder='Search Here')
+                    div.test-1.w3-dropdown-content.w3-col.l12.s12.w3-black
+
             div.results
                 p Results

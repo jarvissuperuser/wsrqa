@@ -31,6 +31,16 @@ var imageOnClick = (e)=>{
 var hideModal = (e)=>{
 	b.modal.style.display = "none";
 }
+var btnCreate= (str)=>{
+	var btnString = "";
+	var jsonObj = JSON.parse(str);
+	jsonObj.forEach(k=>{
+		btnString+="<button class='w3-btn w3-bar-item' id=k_'"+
+			k.k+"'>".concat(
+			k.n.concat('</button>'));
+	});
+	return btnString;
+}
 
 var hasClass = (el,className)=> {
 	var spliced = el.className.split(" ");
@@ -48,6 +58,8 @@ var onload = function(){
     b.images = document.querySelectorAll("img");
     b.modalBtn = document.querySelectorAll("span.w3-btn");
     b.modal = document.querySelector(".w3-modal");
+    b.searchInput = document.querySelectorAll("input.search");
+    b.ajax  = new XMLHttpRequest();
 
 	b.btns.forEach((btn)=>{
 		btn.addEventListener('click',(e)=>{
@@ -81,6 +93,27 @@ var onload = function(){
 					ajax.send();
 				};
 			}
+		});
+	});
+	b.searchInput.forEach(input=>{
+		input.addEventListener("keyup",e=>{
+			if (e.target.value.length >=3) {
+				e.target.nextElementSibling.classList.add("w3-show");
+				var ajax= b.ajax;
+                ajax.onload = () => {
+                    if (ajax.readyState == 4 && ajax.status == 200)
+                        input.nextElementSibling.innerHTML
+                            = btnCreate(ajax.responseText);
+                    else if (ajax.status == 500) {
+                        document.querySelector('#log_card').innerHTML
+                            += "<p>".concat("something Broke 500".concat('</p>'));
+                    }
+                }
+                ajax.open("GET","/search?test="+e.target.value);
+                ajax.send();
+            }else
+                input.nextSibling.classList.remove("w3-show");
+            console.log(e.target.value);
 		});
 	});
 
