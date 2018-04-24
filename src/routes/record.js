@@ -7,15 +7,16 @@ var dbl = require("../sqlite_con_man");
  var dbo = new dbl("../app.db");
 var arr = {};
 var rsa = [];
-var testCases = [/timeslive+/g,/businesslive+/g,/wanted+/g,/sowetanlive+/g,/tl_home+/g,/bl_home/g,/w_home+/g,/sl_home+/g];
-var resset = ["tl_home","bl_home","w_home","sl_home","tl_article"];
+var testCases = [/timeslive+/g,/businesslive+/g,/wanted+/g,/sowetanlive+/g,/heraldlive+/g,
+	/tl_home+/g,/bl_home/g,/w_home+/g,/sl_home+/g,/hl_home+/g];
+var resset = ["tl_home","bl_home","w_home","sl_home","hl_home","tl_article"];
 var dirPath = "";
 /** helper functions */
 var get_project = (image) =>{
 	var x = 0;
 	testCases.forEach((rgx)=>{
 		if (rgx.test(image)){
-			dirPath = resset[x%4];
+			dirPath = resset[x%5];
 			console.log('testCase',x,rgx.test(image),dirPath);
 		}
 		x=x+1;

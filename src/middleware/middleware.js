@@ -7,7 +7,7 @@ var amqp = require('amqp-connection-manager');
 var async = require("async");
 var UJC = require('../userjourney');
 
-var uj = new UJC();
+let uj = undefined;
 const desktopAgent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36';
 const modbileAgent = '';
 var dbi = new dbl("../app.db");
@@ -29,14 +29,14 @@ var options = {
     userAgent: desktopAgent
 };
 
-var testurls = {
+const testurls = {
     "tl_home": "www.timeslive.co.za",
     "tl_article": "www.timeslive.co.za/politics/2018-01-18-ramaphosa-piles-pressure-on-zuma-with-anti-corruption-call",
     "bl_home": "www.businesslive.co.za",
     "sl_home": "www.sowetanlive.co.za",
     "w_home": "wantedonline.co.za"
 };
-var projects = {
+const projects = {
     "tl_home": "timeslive",
     "tl_article": "timeslive",
     "bl_home": "businesslive",
@@ -44,17 +44,9 @@ var projects = {
     "w_home": "wanted"
 };
 
-var testLocations;
+let testLocations;
 
-function reset(){
-    uj.timestamp = moment().format("MM-D-YY-h-mm-s");
-    uj.log = true;
-    uj.project = '';
-    uj.filesExist = {pivot:false,test:false};
-    uj.testImg = '';
-    uj.pivotImg = '';
-    uj.name = (projects[project] === undefined) ? project : projects[project];
-}
+
 
 module.exports = async(p, m, t) => {
 
@@ -62,12 +54,18 @@ module.exports = async(p, m, t) => {
     isMobile = m;
     runTests = t;
 
-    var b_path = "./public/images/";
-    uj.setup(b_path,projects,project);
+    var b_path = "./public/images/"
+    uj = new UJC();
+    uj.log = true;
+    uj.project = '';
+    uj.filesExist = {pivot:false,test:false};
+    uj.testImg = '';
+    uj.pivotImg = '';
+    uj.name = (projects[project] === undefined) ? project : projects[project];
     console.log("Loading Tests app at " , uj.timestamp);
 
     try{
-        reset();
+
         uj.dbi = new dbl("../app.db");
         uj.dbSetup();
     }
@@ -86,28 +84,28 @@ module.exports = async(p, m, t) => {
             });
         });
     }
-
-    var pr = new Promise(function(w,f){
-        reset();
-        uj.testLocations = testurls[project];
-        uj.setup(b_path,projects,p);
-        console.log()
-        uj.filesInit(b_path);
-        uj.checkFilesP(w,f);
-    });
-    pr.then(() => {
-        return new Promise(function(w,f){
+    if (uj.timestamp) {
+        console.log(uj.timestamp);
+        var pr = new Promise(function (w, f) {
+            uj.testLocations = testurls[project];
+            uj.setup(b_path, projects, p);
             uj.filesInit(b_path);
-            uj.getScreensP(w,f);
+            uj.checkFilesP(w, f);
         });
-    }).then((gsp) => {
-        return new Promise(uj.checkFilesP);
-    }).then((f) => {
-        if (uj.filesExist.test)
-            uj.runDiff(uj.name, uj.timestamp);
-        else
-            console.log("nothing to test':'diff avoided");
-    }).catch((ex) => {
-        console.error(ex, "app error");
-    });
+        pr.then(() => {
+            return new Promise(function (w, f) {
+                uj.filesInit(b_path);
+                uj.getScreensP(w, f);
+            });
+        }).then((gsp) => {
+            return new Promise(uj.checkFilesP);
+        }).then((f) => {
+            if (uj.filesExist.test)
+                uj.runDiff(uj.name, uj.timestamp);
+            else
+                console.log("nothing to test':'diff avoided");
+        }).catch((ex) => {
+            console.error(ex, "app error");
+        });
+    }
 };

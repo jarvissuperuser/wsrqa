@@ -2,12 +2,19 @@ extends layout
 
 block content
   h1= title
-  p Welcome to #{title}
 
-  p= JSON.stringify(asts)
+  if asts[0]
+    p Project = #{asts[0].project}
+
   div(style=`display:block;margin-top:25px`)
-    each result in asts
-      div(style=`display:inline-block;margin-right:7px;`)
-        h4= result.info 
-        img(src=`/images/${result.project}/${result.image}` alt=result.image)/
-    
+    if asts[0]
+      each result in asts
+        div(style=`display:inline-block;margin-right:7px;`)
+          h4= result.info
+          img(src=`/images/${result.project}/${result.image}` onerror='onError(event)' alt=result.image)/
+    else
+      p Empty Result set
+  div.w3-modal
+    div.w3-modal-content
+      span.w3-btn.w3-display-topright.w3-black &times
+      img.w3-image(style='width:100%')

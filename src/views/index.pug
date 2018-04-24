@@ -4,13 +4,15 @@ block content
   h1= title
   p Quick Home page Tests
   
-  div(class=`i-block`)
+  div.i-block
     a.w3-btn.w3-blue.w3-margin-right( href=`/regressiontest/?t=yes&p=bl_home&m=no` target=`_blank`)= `Test BusinessLive site`
     a.w3-btn.w3-red.w3-margin-right( href=`/regressiontest/?t=yes&p=tl_home&m=no` target=`_blank`)= `Test TimesLive site`
     a.w3-btn.w3-black.w3-margin-right( href=`/regressiontest/?t=yes&p=w_home&m=no` target=`_blank`)= `Test WantedOnline site`
 
   p Extended User Journey tests
-  a.w3-btn.w3-blue.w3-margin-right( href=`/userjourney/?`)= `User Journey Tests`
+  div.i-block
+    a.w3-btn.w3-blue.w3-margin-right( href=`/userjourney/?`)= `User Journey Tests`
+    a.w3-btn.w3-cyan.w3-margin-right( href=`/compare`)= `Side by Side Comparisons`
   p= `Test Results list`
   
   if asts[0]
@@ -23,4 +25,5 @@ block content
 
   else
     p= `No Tests Found`
-    a(class=`btn` href=`./?offset=0`)= `Refresh Page`
+
+  a.btn(href=`./?offset=0`)= `Refresh Page`

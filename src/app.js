@@ -11,6 +11,8 @@ var regressiontest = require('./routes/regressiontest');
 var record = require('./routes/record');
 let userjourney = require('./routes/userjourney');
 let userjourneytest = require('./routes/userjourneytest');
+let compare = require('./routes/compare');
+let search = require('./routes/searchjson');
 
 var app = express();
 
@@ -31,8 +33,11 @@ app.use('/record',record);
 app.use('/userjourney',userjourney);
 app.use('/ujtest',userjourneytest);
 app.use('/', index);
+app.use('/home', index);
 app.use('/users', users);
 app.use('/regressiontest', regressiontest);
+app.use('/compare', compare);
+app.use('/search', search);
 app.use(function(req, res, next) {
     var err = new Error('Not Found');
   err.status = 404;
