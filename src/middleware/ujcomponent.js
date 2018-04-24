@@ -4,7 +4,7 @@ const UJC = require('../userjourney');
 const puppet = require("puppeteer");
 const devices = require("../devDescExt");
 
-let uj = new UJC();
+let ujt = undefined;
 let project = '';
 let method = '';
 let runTests = '';
@@ -58,10 +58,10 @@ let b_path = "./public/images/";
 
 let image_log = () =>{
     let qry = "insert into log_info(t_id,log_info,log_image) values ("
-        + uj.project_id + ",\"Site:" +projects[project]
+        + ujt.project_id + ",\"Site:" +projects[project]
         +" Unit:"+method
         +"\",\""+ creds[2].concat(".png")+"\")";
-    uj.logToDataBase(qry);
+    ujt.logToDataBase(qry);
 }
 
 let iFrameClick = async (target) => {
@@ -69,7 +69,7 @@ let iFrameClick = async (target) => {
          if (f._url.search("google.com/recaptcha/api2/bframe?")>0)
             return f
     });
-    console.log(frame);
+    console.log(frame.$(target));
     //const elem = await frame.document.querySelector(target);
     //await elem.click();
 }
@@ -88,8 +88,8 @@ let waitInSec = async(sec)=>{
 let login_do = async ()=>{
     await page.goto(testLocations);
     creds = auth(runTests);
-    uj.name = creds[2];
-    uj.dbSetup();
+    ujt.name = creds[2];
+    ujt.dbSetup();
 
     if (creds.length > 1) {
         await p_input(page, "input[type=email]", creds[0]);
@@ -109,8 +109,8 @@ let login_do = async ()=>{
 let reset_do = async ()=>{
     await page.goto(testLocations);
     creds = auth(runTests);
-    uj.name = creds[2];
-    uj.dbSetup();
+    ujt.name = creds[2];
+    ujt.dbSetup();
 
     if (creds.length >= 1) {
         await p_input(page, "input[type=email]", creds[0]);
@@ -129,8 +129,8 @@ let reset_do = async ()=>{
 let register_do = async ()=>{
     await page.goto(testLocations);
     creds = auth(runTests);
-    uj.name = creds[2];
-    uj.dbSetup();
+    ujt.name = creds[2];
+    ujt.dbSetup();
 
     await iFrameClick("span.recapture-box");
     if (creds.length >= 1) {
@@ -161,9 +161,11 @@ module.exports = async(p, m, t) => {
 	runTests = t;
 	method = m;
 	let url_suffix = appenditure[m?m:"login"];
-	let timestamp =  moment().format("MM-D-YY-h-mm-s");
+	ujt = new UJC();
+	ujt.project ="";
 	testLocations = "http://".concat(testurls[p],url_suffix);
 	console.log(testLocations,p,m,t);
+
 	try {
 	    browser = await puppet.launch();
 	    page = await browser.newPage();
@@ -181,8 +183,6 @@ module.exports = async(p, m, t) => {
                 break;
             default:
                 base_test(method.concat("_",timestamp));
-
-
         }
         browser.close();
     }catch (exc) {
