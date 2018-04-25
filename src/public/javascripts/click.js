@@ -21,6 +21,10 @@ var onError = (e)=>{
 	img.src = (path.join('/'));
 }
 
+var getTargetOnCLick= () =>{
+	
+}
+
 var imageOnClick = (e)=>{
 	var img = e.target;
 	var modal = document.querySelector(".w3-modal");
