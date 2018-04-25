@@ -37,7 +37,7 @@ var btnCreate= (str)=>{
 	jsonObj.forEach(k=>{
 		btnString+="<button class='w3-btn w3-bar-item' id=k_'"+
 			k.k+"'>".concat(
-			k.n.concat('</button>'));
+			k.n+"  ON Date:  "+ k.t +" ".concat('</button>'));
 	});
 	return btnString;
 }
