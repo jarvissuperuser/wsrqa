@@ -1,4 +1,9 @@
-var b = {}
+var b = {
+    testCases:[/timeslive+/g,/businesslive+/g,/wanted+/g,/sowetanlive+/g,/heraldlive+/g,
+    /tl_home+/g,/bl_home/g,/w_home+/g,/sl_home+/g,/hl_home+/g],
+    projectSet:["tl_home/","bl_home/","w_home/","sl_home/","hl_home/","tl_article/"],
+
+}
 var grabForm=()=>
 {
 	var inputs = document.querySelectorAll('input:valid');
@@ -11,6 +16,7 @@ var grabForm=()=>
 	};
 }
 var onError = (e)=>{
+	console.log(e);
 	var img = e.target;
 	var path = img.src.split('/');
 	path.reverse();
@@ -19,12 +25,51 @@ var onError = (e)=>{
 	path.pop();
     path.pop();
     path.push(imgname);
-	img.src = (path.join('/'));
+    if (!getProject(imgname))
+		img.src = (path.join('/'));
 }
 
 var TargetOnCLick= (target,val) =>{
 	//TODO: ajax results and display them
-	console.log(target,val);
+	var ajax = new XMLHttpRequest();
+	ajax.addEventListener("load",()=>{
+		if (ajax.readyState === 4 && ajax.status === 200){
+			renderCompareImages(target,ajax.responseText);
+			ajax.removeEventListener("load",this);
+		}
+	});
+	ajax.open("GET","/search?target="+val);
+	ajax.send();
+}
+
+var renderCompareImages = (target,data) =>{
+	var targetElement = b.targetElement;
+	var dataRender = JSON.parse(data);
+	console.log(targetElement);
+	targetElement.innerHTML = "";
+	dataRender.forEach(el=>{
+		var src = `/images/${getProject(el.log_image)}${el.log_image}`;
+		var oc = `onclick="imageOnClick(event)"`;
+		var alt = `alt="${el.log_image}"`;
+		let cl = "class='w3-col s12 l6'";
+		let img = `<img src="${src}" ${alt} ${oc} ${cl}/>`;
+		targetElement.innerHTML += img;
+	});
+    hideBtnList();
+
+}
+
+var getProject = (image) =>{
+    var x = 0;
+    var dirPath = "";
+    b.testCases.forEach((rgx)=>{
+    	rgx.lastIndex = 0;
+        if (rgx.test(image)){
+            dirPath = b.projectSet[x%5];
+        }
+        x=x+1;
+    });
+    return dirPath;
 }
 
 var imageOnClick = (e)=>{
@@ -37,17 +82,26 @@ var imageOnClick = (e)=>{
 var hideModal = (e)=>{
 	b.modal.style.display = "none";
 }
+
+var hideBtnList = () => {
+	var buttonContainer = document.querySelector(".w3-show");
+	buttonContainer.classList.remove("w3-show");
+}
+
 var btnCreate= (str,target)=>{
 	var btnString = "";
 	var jsonObj = JSON.parse(str);
+	b.targetElement = document.querySelector(target);
 	jsonObj.forEach(k=>{
-		btnString+="<button class='w3-btn w3-bar-item' onclick='TargetOnCLick("+
-			k.k+",\""+target+"\")'>".concat(
-			k.n+"  ON Date:  "+ k.t +" ".concat('</button>'));
+		btnString+="<button class='w3-btn w3-bar-item' onclick='TargetOnCLick(\""+
+			+ target + "\"," +k.k+")'>"+
+			k.n+"  ON Date:  "+ k.t +" ".concat('</button>');
 	});
 	return btnString;
 }
-
+/**
+ * @deprecated
+ * */
 var hasClass = (el,className)=> {
 	var spliced = el.className.split(" ");
 	var state = false;
@@ -57,6 +111,7 @@ var hasClass = (el,className)=> {
     });
 	return state;
 }
+
 var onload = function(){
 	b.btns = document.querySelectorAll("button");
     b.images = document.querySelectorAll("img");
@@ -64,6 +119,7 @@ var onload = function(){
     b.modal = document.querySelector(".w3-modal");
     b.searchInput = document.querySelectorAll("input.search");
     b.ajax  = new XMLHttpRequest();
+    b.targetElement = document.querySelector('.r1');
 
 	b.btns.forEach((btn)=>{
 		btn.addEventListener('click',(e)=>{
@@ -92,6 +148,7 @@ var onload = function(){
 							document.querySelector('#log_card').innerHTML
 								+= "<p>".concat("something Broke 500".concat('</p>'));
 						}
+                        ajax.onreadystatechange = () => {};
 					}
 					ajax.open("GET",url);
 					ajax.send();
@@ -112,6 +169,7 @@ var onload = function(){
 		            document.querySelector('#log_card').innerHTML
 		                += "<p>".concat("something Broke 500".concat('</p>'));
 		        }
+                ajax.onload = () => {};
 		    }
 		    ajax.open("GET","/search?test="+e.target.value);
 		    ajax.send();

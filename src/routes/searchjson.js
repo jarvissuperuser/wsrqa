@@ -5,20 +5,28 @@ let db = new dbi("../app.db");
 let result = [];
 router.get('/', async(req, rest, next) =>{
     result = [];
-
+    var limit = "LIMIT "+ (req.query.limit?req.query.limit:10);
     if (req.query.test)
-        db.db.all("select id as k, t_name as n, "+
-            "t_timestamp as t from test "+
-            "where t_name like \"%"+req.query.test+"%\"",
+        db.db.all("SELECT id AS k, t_name AS n, "+
+                "t_timestamp AS t FROM test "+
+            "WHERE t_name LIKE \"%"+req.query.test+"%\" " +
+            " ORDER BY id DESC " +
+            limit+
+            " ",
             (err,rows)=>{
-                return new Promise((resolve)=> {
-                    rows.forEach(r => {
-                        result.push(r);
+                if (!err)
+                    return new Promise((resolve)=> {
+                        rows.forEach(r => {
+                            result.push(r);
+                        });
+                        rest.write(JSON.stringify(result));
+                        rest.end();
+                        resolve();
                     });
-                    rest.write(JSON.stringify(result));
+                else {
+                    rest.write(JSON.stringify([err,"limit",result]));
                     rest.end();
-                    resolve();
-                });
+                }
             });
     else
         db.db.all("select * from log_info "+

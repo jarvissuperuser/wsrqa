@@ -2,11 +2,17 @@ extends layout
 
 block content
     h1.w3-center= title
-
+    div.w3-modal
+        div.w3-modal-content
+            span.w3-btn.w3-display-topright.w3-black &times
+            img.w3-image(style='width:100%')
     div.w3-col.l12.s12.w3-padding-16
+        div.w3-col.s12.l12
+            h4 Quick links
+            a.w3-btn.w3-cyan(href='/home') Home Page &gt;&gt;
+            a.w3-btn.w3-teal(href='/userjourney') New User Journey Test &gt;&gt;
         div.w3-col.s12.l6.w3-black.w3-center.w3-border.w3-border-black
             h3.w3-container Regression Test 1
-            a.w3-btn.w3-cyan(href='/home') Home Page &gt;&gt;
             div.w3-container.w3-white.w3-padding-64
                 label.w3-col.l12.s12 Search For Test Result
                 div.w3-dropdown-click.w3-bar-block.w3-col.l12.s12
@@ -18,7 +24,6 @@ block content
                  div.w3-col.l12.s12.r1
         div.w3-col.s12.l6.w3-black.w3-center.w3-border.w3-border-black
             h3.w3-container Regression Test 2
-            a.w3-btn.w3-cyan(href='/userjourney') New User Journey Test &gt;&gt;
             div.w3-container.w3-white.w3-padding-64
                 label Search For Other Test Result
                 div.w3-dropdown-click.w3-bar-block.w3-col.l12.s12

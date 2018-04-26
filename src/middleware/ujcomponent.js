@@ -96,11 +96,11 @@ let login_do = async ()=>{
         await p_input(page, "input[type=password]", creds[1]);
     }
     await page.click("button[type=button]");
-    await waitInSec(2.5);
+    await waitInSec(4.5);
     console.log('input');
     if(creds[2]) {
         image_log();
-        await page.screenshot({path: b_path.concat(creds[2].concat(".png"))});
+        page.screenshot({path: b_path.concat(creds[2].concat(".png"))});
     }else {
         console.log('images not created',creds);
     }
