@@ -1,9 +1,10 @@
 var b = {}
-var grabForm=()=>{
+var grabForm=()=>
+{
 	var inputs = document.querySelectorAll('input:valid');
 	var auth = btoa(inputs[1].value.concat("<:>".concat(inputs[2].value.concat("<:>".concat(inputs[0].value)))));
 	var s = document.querySelectorAll('select');
-	var selection = [s[0].options[s[0].selectedIndex].value,s[1].options[s[1].selectedIndex].value]
+	var selection = [s[0].options[s[0].selectedIndex].value,s[1].options[s[1].selectedIndex].value];
 	return {
 		data:encodeURI(auth),
 		options:selection
@@ -21,8 +22,9 @@ var onError = (e)=>{
 	img.src = (path.join('/'));
 }
 
-var getTargetOnCLick= () =>{
-	
+var TargetOnCLick= (target,val) =>{
+	//TODO: ajax results and display them
+	console.log(target,val);
 }
 
 var imageOnClick = (e)=>{
@@ -35,12 +37,12 @@ var imageOnClick = (e)=>{
 var hideModal = (e)=>{
 	b.modal.style.display = "none";
 }
-var btnCreate= (str)=>{
+var btnCreate= (str,target)=>{
 	var btnString = "";
 	var jsonObj = JSON.parse(str);
 	jsonObj.forEach(k=>{
-		btnString+="<button class='w3-btn w3-bar-item' id=k_'"+
-			k.k+"'>".concat(
+		btnString+="<button class='w3-btn w3-bar-item' onclick='TargetOnCLick("+
+			k.k+",\""+target+"\")'>".concat(
 			k.n+"  ON Date:  "+ k.t +" ".concat('</button>'));
 	});
 	return btnString;
@@ -50,10 +52,8 @@ var hasClass = (el,className)=> {
 	var spliced = el.className.split(" ");
 	var state = false;
 	spliced.some((e)=> {
-
             state = e===className;
             return state;
-
     });
 	return state;
 }
@@ -104,20 +104,20 @@ var onload = function(){
 			if (e.target.value.length >=3) {
 				e.target.nextElementSibling.classList.add("w3-show");
 				var ajax= b.ajax;
-                ajax.onload = () => {
-                    if (ajax.readyState == 4 && ajax.status == 200)
-                        input.nextElementSibling.innerHTML
-                            = btnCreate(ajax.responseText);
-                    else if (ajax.status == 500) {
-                        document.querySelector('#log_card').innerHTML
-                            += "<p>".concat("something Broke 500".concat('</p>'));
-                    }
-                }
-                ajax.open("GET","/search?test="+e.target.value);
-                ajax.send();
-            }else
-                input.nextSibling.classList.remove("w3-show");
-            console.log(e.target.value);
+		    ajax.onload = () => {
+		        if (ajax.readyState == 4 && ajax.status == 200)
+		            input.nextElementSibling.innerHTML
+		                = btnCreate(ajax.responseText,e.target.getAttribute("target"));
+		        else if (ajax.status == 500) {
+		            document.querySelector('#log_card').innerHTML
+		                += "<p>".concat("something Broke 500".concat('</p>'));
+		        }
+		    }
+		    ajax.open("GET","/search?test="+e.target.value);
+		    ajax.send();
+			}else
+			    input.nextSibling.classList.remove("w3-show");
+			console.log(e.target.value);
 		});
 	});
 
