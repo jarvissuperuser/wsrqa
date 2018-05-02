@@ -7,7 +7,11 @@ block content
     p Project = #{asts[0].project}
 
   div(style=`display:block;margin-top:25px`)
+
     if asts[0]
+      div(style=`display:inline-block;margin-right:7px;`)
+        h4 Base Image
+        img(src=`/images/${base.path}/${base.img}` onerror='onError(event)' alt=`${base.img}`)/
       each result in asts
         div(style=`display:inline-block;margin-right:7px;`)
           h4= result.info

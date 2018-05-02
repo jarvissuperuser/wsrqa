@@ -1,8 +1,8 @@
-var b = {
+let b = {
     testCases:[/timeslive+/g,/businesslive+/g,/wanted+/g,/sowetanlive+/g,/heraldlive+/g,
     /tl_home+/g,/bl_home/g,/w_home+/g,/sl_home+/g,/hl_home+/g],
     projectSet:["tl_home/","bl_home/","w_home/","sl_home/","hl_home/","tl_article/"],
-
+	projectNames:["timeslive","businesslive","wanted","sowetanlive","heraldlive","test"]
 }
 var grabForm=()=>
 {
@@ -48,12 +48,13 @@ var renderCompareImages = (target,data) =>{
 	console.log(targetElement);
 	targetElement.innerHTML = "";
 	dataRender.forEach(el=>{
-		var src = `/images/${getProject(el.log_image)}${el.log_image}`;
-		var oc = `onclick="imageOnClick(event)"`;
-		var alt = `alt="${el.log_image}"`;
+		let src = `/images/${getProject(el.log_image)}${el.log_image}`;
+		let oc = `onclick="imageOnClick(event)"`;
+		let alt = `alt="${el.log_image}"`;
 		let cl = "class='w3-col s12 l6'";
-		let img = `<img src="${src}" ${alt} ${oc} ${cl}/>`;
-		targetElement.innerHTML += img;
+		let divO = `<div ${cl}><p>${el.log_info}</p>`;
+		let img = `<img src="${src}" ${alt} ${oc} />`;
+		targetElement.innerHTML += `${divO}${img}</div>`;
 	});
     hideBtnList();
 
