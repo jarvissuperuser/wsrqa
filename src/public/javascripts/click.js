@@ -51,8 +51,9 @@ var renderCompareImages = (target,data) =>{
 		let oc = `onclick="imageOnClick(event)"`;
 		let alt = `alt="${el.log_image}"`;
 		let cl = "class='w3-col s12 l6'";
+		let cli = `class='w3-col s12 l12'`;
 		let divO = `<div ${cl}><p>${el.log_info}</p>`;
-		let img = `<img src="${src}" ${alt} ${oc} />`;
+		let img = `<img src="${src}" ${alt} ${oc} ${cli} />`;
 		targetElement.innerHTML += `${divO}${img}</div>`;
 	});
     hideBtnList();
@@ -113,7 +114,7 @@ var hasClass = (el,className)=> {
 }
 
 var onload = function(){
-	b.btns = document.querySelectorAll("button");
+    b.btns = document.querySelectorAll("button");
     b.images = document.querySelectorAll("img");
     b.modalBtn = document.querySelectorAll("span.w3-btn");
     b.modal = document.querySelector(".w3-modal");
