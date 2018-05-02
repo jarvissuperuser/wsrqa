@@ -30,7 +30,6 @@ var onError = (e)=>{
 }
 
 var TargetOnCLick= (target,val) =>{
-	//TODO: ajax results and display them
 	var ajax = new XMLHttpRequest();
 	ajax.addEventListener("load",()=>{
 		if (ajax.readyState === 4 && ajax.status === 200){
