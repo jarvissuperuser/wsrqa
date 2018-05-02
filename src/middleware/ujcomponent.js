@@ -100,7 +100,7 @@ let login_do = async ()=>{
     console.log('input');
     if(creds[2]) {
         image_log();
-        page.screenshot({path: b_path.concat(creds[2].concat(".png"))});
+        await page.screenshot({path: b_path.concat(creds[2].concat(".png"))});
     }else {
         console.log('images not created',creds);
     }
