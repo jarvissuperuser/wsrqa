@@ -43,6 +43,12 @@ const projects = {
     "sl_home": "sowetanlive",
     "w_home": "wanted"
 };
+const appenditures = {
+    articles:{},
+    pages:{},
+    categories:{},
+    sub_articles:{}
+}
 
 let testLocations;
 
