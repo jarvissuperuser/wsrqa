@@ -101,7 +101,25 @@ db.multiquery([
     "id INTEGER PRIMARY KEY," +
     "log_info VARCHAR(200)," +
 		"t_id INTEGER," +
-    "log_image VARCHAR(100))"
+    "log_image VARCHAR(100))",
+    "CREATE TABLE IF NOT EXISTS test_cases_reg(" +
+    "id INTEGER PRIMARY KEY,"+
+    "tcr_name VARCHAR(50),"+
+    "tcr_specs VARCHAR(200),"+
+    "tcr_username VARCHAR(100)"+
+    ")"
+    ,
+    "CREATE TABLE IF NOT EXISTS test_cases(" +
+    "id INTEGER PRIMARY KEY,"+
+    "tcr_id INTEGER,"+
+    "tc_name VARCHAR(50),"+
+    "tc_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,"+
+    "tc_description VARCHAR(300),"+
+    "tc_expected VARCHAR(200),"+
+    "tc_actual VARCHAR(200),"+
+    "tc_pass_fail CHAR,"+
+    "tc_comment VARCHAR(300)"+
+    ")"
 ]);
 db.e.on('done', listenCB);
 

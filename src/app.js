@@ -13,6 +13,7 @@ let userjourney = require('./routes/userjourney');
 let userjourneytest = require('./routes/userjourneytest');
 let compare = require('./routes/compare');
 let search = require('./routes/searchjson');
+let quality = require('./routes/quality');
 
 var app = express();
 
@@ -38,6 +39,7 @@ app.use('/users', users);
 app.use('/regressiontest', regressiontest);
 app.use('/compare', compare);
 app.use('/search', search);
+app.use('/quality', quality);
 app.use(function(req, res, next) {
     var err = new Error('Not Found');
   err.status = 404;

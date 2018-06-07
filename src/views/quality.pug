@@ -1,0 +1,27 @@
+extends layout
+
+block content
+  h1.w3-center= title
+
+  if view=='new'
+    div.w3-container.w3-content
+      form.w3-card.w3-center.w3-black.w3-col.l4.s8.w3-display-middle
+        input#name.w3-input(type="text", name="tcr_name", placeholder="Name of Report")
+        input#crtr.w3-input(type="text", name="tcr_username",placeholder="Creator of Report")
+        input#desc.w3-input(type="text", name="tcr_specs",placeholder="Description")
+        input.w3-btn(type="submit", value="CREATE")
+  if view=='adding'
+    div.w3-col.l12.s12.w3-container
+      h3.w3-center List of TestCases
+      table.w3-display-middle.w3-card.w3-col.l12.s12.w3-content
+        tr
+          td ID
+          td Test Case
+          td Description
+          td Expected
+          td Actual
+          td Pass/Fail
+    div.w3-modal
+      div.w3-modal-content
+          
+
