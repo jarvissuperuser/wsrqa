@@ -13,7 +13,9 @@ block content
   if view=='adding'
     div.w3-col.l12.s12.w3-container
       h3.w3-center List of TestCases
-      table.w3-display-middle.w3-card.w3-col.l12.s12.w3-content
+      table.w3-display-middle.w3-card.w3-col.l12.s12.w3-content.w3-black
+        caption
+          button.w3-circle.add-case &plus;
         tr
           td ID
           td Test Case
@@ -21,6 +23,20 @@ block content
           td Expected
           td Actual
           td Pass/Fail
+        tr
+          td cast_1
+          td Launch App
+          td with out network;
+          td gracefully warn user to switch on network
+          td Crashes The short toast message 'Network Error'
+          td &check;
+        tr
+          td cast_1
+          td Launch App
+          td with out network;
+          td gracefully warn user to switch on network
+          td Crashes The short toast message 'Network Error'
+          td &times;
     div.w3-modal
       div.w3-modal-content
           

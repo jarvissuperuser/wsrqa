@@ -153,7 +153,10 @@ var onload = function(){
 					}
 					ajax.open("GET",url);
 					ajax.send();
-				};
+				}else if (hasClass(e.target,'add-case')){
+					b.modal.style.display = 'block';
+
+				}
 			}
 		});
 	});
