@@ -13,9 +13,9 @@ block content
   if view=='adding'
     div.w3-col.l12.s12.w3-container
       h3.w3-center List of TestCases
-      table.w3-display-middle.w3-card.w3-col.l12.s12.w3-content.w3-black
+      table.w3-display-middle.w3-card.w3-col.l12.s12.w3-content.w3-black.w3-center
         caption
-          button.w3-circle.add-case &plus;
+          button.w3-display-topright.w3-circle.w3-green.add-case &plus;
         tr
           td ID
           td Test Case
@@ -38,6 +38,22 @@ block content
           td Crashes The short toast message 'Network Error'
           td &times;
     div.w3-modal
-      div.w3-modal-content
-          
-
+      div.w3-modal-content.w3-white.w3-container
+        span.w3-btn.w3-display-topright &times;
+        form.w3-card.w3-content(action="/quality/add",method="POST")
+          h2.w3-center Add Test Case
+          div.w3-col.l6.s12
+            input.w3-input(name="name",type="text", placeholder="Test Case")
+          div.w3-col.l6.s12
+            input.w3-input(name="desc",type="text", placeholder="Description")
+          div.w3-col.l6.s12  
+            textarea.w3-input.l6.s12(name="excepted", cols="30", rows="10",placeholder="Excepted Result")
+          div.w3-col.l6.s12
+            textarea.w3-input.l6.s12(name="actual", cols="30", rows="10",placeholder="Actual Result")
+          div.w3-col.l4.s6
+            div.w3-check
+            input.w3-check#pf(name="passfail",type="checkbox")
+          div.w3-col.l4.s6 
+            button.w3-display-bottommiddle.w3-button.w3-grey(type="reset") Reset
+          div.w3-col.l4.s6
+            button.w3-display-bottomright.w3-button.w3-black Accept
