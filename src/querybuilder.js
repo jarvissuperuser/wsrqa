@@ -64,7 +64,7 @@ class QueryBuilder {
     };
     ex_val(data, arrEmp) {
         for (var element in data){
-            arrEmp.push(element);
+            arrEmp.push(this.valuate(element,[]));
         }
         return arrEmp;
     };
