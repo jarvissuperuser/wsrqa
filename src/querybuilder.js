@@ -1,9 +1,11 @@
 const sql_con = require('./sqlite_con_man');
-let dbc = new sql_con();
+let dbc = new sql_con('../app.db');
 
 class QueryBuilder {
-    db = dbc;
-    static get slct(selection, table, lim) {
+    constructor(){
+        this.db = dbc;
+    }
+    slct(selection, table, lim) {
         //TODO: Implement Me
         var qs = "SELECT ";
         qs += this.arrayJustify(selection);
@@ -16,14 +18,14 @@ class QueryBuilder {
         return qs;
 
     };
-    static get update(table, colepar, id, val) {
+    update(table, colepar, id, val) {
         //TODO: Implement Me
         var qs = "UPDATE " + table + ' SET ';
         qs += this.arrayJustify(colepar);
         qs += " WHERE " + id + " = " + val;
         return qs;
     };
-    static get arrayJustify (obj) {
+    arrayJustify (obj) {
         //TODO: Implement Me
         var qs = '';
         if (obj!==undefined) {
@@ -40,7 +42,7 @@ class QueryBuilder {
         return qs;
       };
 
-      static get insert (tble, cols, vals) {
+      insert (tble, cols, vals) {
         //TODO: Implement Me --dangerous
         //console.log('datas',cols,vals);
         var qs = "INSERT or REPLACE INTO ";
@@ -52,3 +54,5 @@ class QueryBuilder {
       }
     
 }
+
+module.exports =QueryBuilder;
