@@ -54,22 +54,24 @@ class QueryBuilder {
     };
     valuate(data, arrEmp) {
         data.forEach((element, idx) => {
-            if (isNaN(element))
-                arrEmp.push('"' + element + '"');
-            else
-                arrEmp.push(element);
-
+            arrEmp.push()
         });
         return arrEmp;
     };
     ex_val(data, arrEmp) {
-        for (var element in data){
-            arrEmp.push(this.valuate(element,[]));
+        for (var element in data) {
+            arrEmp.push(this.str(element, []));
         }
         return arrEmp;
     };
-    val_to_str(data){
+    val_to_str(data) {
         return "";
+    }
+    str(element) {
+        if (isNaN(element))
+            return '"' + element + '"';
+        else
+            return (element);
     }
 
 }
