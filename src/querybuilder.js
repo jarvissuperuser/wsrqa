@@ -2,7 +2,7 @@ const sql_con = require('./sqlite_con_man');
 let dbc = new sql_con('../app.db');
 
 class QueryBuilder {
-    constructor(){
+    constructor() {
         this.db = dbc;
     }
     slct(selection, table, lim) {
@@ -25,24 +25,24 @@ class QueryBuilder {
         qs += " WHERE " + id + " = " + val;
         return qs;
     };
-    arrayJustify (obj) {
+    arrayJustify(obj) {
         //TODO: Implement Me
         var qs = '';
-        if (obj!==undefined) {
-          if(!obj.hasOwnProperty("substr"))
-            qs += obj;
+        if (obj !== undefined) {
+            if (!obj.hasOwnProperty("substr"))
+                qs += obj;
         } else /*if (obj.hasOwnProperty("length")) */ {
-          if ((obj[0]) !== undefined && obj.hasOwnProperty("length")){
-            qs += obj[0];
-            for (var a = 1; a < obj.length; a++) {
-              qs += ", " + (obj[a]===undefined?null:obj[a]);
+            if ((obj[0]) !== undefined && obj.hasOwnProperty("length")) {
+                qs += obj[0];
+                for (var a = 1; a < obj.length; a++) {
+                    qs += ", " + (obj[a] === undefined ? null : obj[a]);
+                }
             }
-          }
         }
         return qs;
-      };
+    };
 
-      insert (tble, cols, vals) {
+    insert(tble, cols, vals) {
         //TODO: Implement Me --dangerous
         //console.log('datas',cols,vals);
         var qs = "INSERT or REPLACE INTO ";
@@ -51,8 +51,18 @@ class QueryBuilder {
         qs += ") VALUES (";
         qs += this.arrayJustify(vals) + ")";
         return qs;
-      }
-    
+    };
+    valuate(data, arrEmp) {
+        data.forEach((element, idx) => {
+            if (isNaN(element))
+                arrEmp.push('"' + element + '"');
+            else
+                arrEmp.push(element);
+
+        });
+        return arrEmp;
+    };
+
 }
 
-module.exports =QueryBuilder;
+module.exports = QueryBuilder;
