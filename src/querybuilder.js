@@ -59,8 +59,8 @@ class QueryBuilder {
         return arrEmp;
     };
     ex_key(data, arrEmp) {
-        for (var element of data) {
-            arrEmp.push(this.str(data[element], []));
+        for (var element in data) {
+            arrEmp.push(element);
         }
         return arrEmp;
     };
