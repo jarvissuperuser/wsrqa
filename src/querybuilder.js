@@ -62,6 +62,15 @@ class QueryBuilder {
         });
         return arrEmp;
     };
+    ex_val(data, arrEmp) {
+        for (var element in data){
+            arrEmp.push(element);
+        }
+        return arrEmp;
+    };
+    val_to_str(data){
+        return "";
+    }
 
 }
 
