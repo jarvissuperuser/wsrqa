@@ -58,9 +58,15 @@ class QueryBuilder {
         });
         return arrEmp;
     };
+    ex_key(data, arrEmp) {
+        for (var element of data) {
+            arrEmp.push(this.str(data[element], []));
+        }
+        return arrEmp;
+    };
     ex_val(data, arrEmp) {
         for (var element in data) {
-            arrEmp.push(this.str(element, []));
+            arrEmp.push(this.str(data[element], []));
         }
         return arrEmp;
     };
