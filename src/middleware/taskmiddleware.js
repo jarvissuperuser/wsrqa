@@ -5,12 +5,6 @@ let result = [];
 
 let qb = new QB;
 let new_obj = {};
-let correc = (old,new_,pre) => {
-    for (let a in old){
-        new_[pre + a] = old[a];
-    }
-    return new_;
-}
 
 module.exports = async(req,rest)=>{
     result = [];
