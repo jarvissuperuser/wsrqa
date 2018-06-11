@@ -75,7 +75,7 @@ class QueryBuilder {
         for(var e in data){
             str += e + "=" + this.str(data[e]) + ",";
         }     
-        return str.substr(0,str.length-2);
+        return str.substr(0,str.length-1);
     }
     str(element) {
         if (isNaN(element))
