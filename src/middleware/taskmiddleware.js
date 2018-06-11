@@ -4,11 +4,19 @@ let db = new dbi("../app.db");
 let result = [];
 
 let qb = new QB;
+let new_obj = {};
+let correc = (old,new_,pre) => {
+    for (let a in old){
+        new_[pre + a] = old[a];
+    }
+    return new_;
+}
+
 module.exports = async(req,rest)=>{
     result = [];
     var limit = "LIMIT "+ (req.limit?req.limit:10);
-    if (req.submit === "")
-        db.db.all(qb.slct("*","test_case_reg","1","1 "+limit),
+    if (req.submit === "get_cases")
+        db.db.all(qb.slct("*","test_case_reg","1=1 "+limit),
             (err,rows)=>{
                 if (!err)
                     return new Promise((resolve)=> {

@@ -71,13 +71,23 @@ class QueryBuilder {
         return arrEmp;
     };
     val_to_str(data) {
-        return "";
+        let str = "";
+        for(var e in data){
+            str += e + "=" + this.str(data[e]) + ",";
+        }     
+        return str.substr(0,str.length-2);
     }
     str(element) {
         if (isNaN(element))
             return '"' + element + '"';
         else
             return (element);
+    }
+    correc (old,new_,pre) {
+        for (let a in old){
+            new_[pre + a] = old[a];
+        }
+        return new_;
     }
 
 }
