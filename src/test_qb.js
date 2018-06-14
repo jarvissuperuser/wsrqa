@@ -9,5 +9,3 @@ console.log(qb.val_to_str(obj));
 console.log(qb.correc(obj,new_obj,"tc_"));
 console.log(qb.slct('*','table'));
 console.log(qb.slct('*','table','1=1'));
-
-
