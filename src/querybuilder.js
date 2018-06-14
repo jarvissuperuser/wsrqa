@@ -99,7 +99,7 @@ class QueryBuilder {
             return tf;
         }
         for (let a in old){
-            if(ismuted(old[a])){
+            if(!ismuted(a)){
                 new_[a] = old[a];
             }
         }

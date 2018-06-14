@@ -49,6 +49,21 @@ module.exports = async(req,rest)=>{
         case "update_case_reg":
             break;
         case "add_case":
+            new_obj = qb.mute(req,{},['submit']);
+            new_obj = qb.correc(new_obj,{},'tcr_');
+            let qry = qb.insert("test_case_reg",qb.ex_key(new_obj),qb.ex_val(new_obj));  
+            db.db.all(qry, (err,rows) => {
+                if (!err)
+                    return new Promise((resolve)=> {
+                        rest.write(JSON.stringify({figure}));
+                        rest.end();
+                        resolve();
+                    });
+                else {
+                    rest.write(JSON.stringify([err,"limit",result]));
+                    rest.end();
+                }
+            });
             break;
         case "update_case":
             break;
