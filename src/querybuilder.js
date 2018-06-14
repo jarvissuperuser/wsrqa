@@ -89,6 +89,18 @@ class QueryBuilder {
         }
         return new_;
     }
+    mute(old,new_,muted){
+        let ismuted = (current)=>{
+            muted.forEach((el)=>{
+                el
+            });
+        }
+
+        for (let a in old){
+            new_[pre + a] = old[a];
+        }
+        return new_;
+    }
 
 }
 
