@@ -91,13 +91,17 @@ class QueryBuilder {
     }
     mute(old,new_,muted){
         let ismuted = (current)=>{
-            muted.forEach((el)=>{
-                el
+            let tf = false;
+            muted.some((el)=>{
+                tf = el === current;
+                return tf;
             });
+            return tf;
         }
-
         for (let a in old){
-            new_[pre + a] = old[a];
+            if(ismuted(old[a])){
+                new_[a] = old[a];
+            }
         }
         return new_;
     }

@@ -30,15 +30,13 @@ module.exports = async(req,rest)=>{
             });
             break;
         case "add_case_reg":
-            
-            db.db.all(qb.insert("test_case_reg",,),
-            (err,rows)=>{
+            new_obj = qb.mute(req,{},['submit']);
+            new_obj = qb.correc(new_obj,{},'tcr_');
+            let qry = qb.insert("test_case_reg",qb.ex_key(new_obj),qb.ex_val(new_obj));  
+            db.db.all(qry, (err,rows) => {
                 if (!err)
                     return new Promise((resolve)=> {
-                        rows.forEach(r => {
-                            result.push(r);
-                        });
-                        rest.write(JSON.stringify(result));
+                        rest.write(JSON.stringify({figure}));
                         rest.end();
                         resolve();
                     });
@@ -56,7 +54,7 @@ module.exports = async(req,rest)=>{
             break;
         case "get_cases": 
             let tc_id = req.id ;
-            db.db.all(qb.slct("*","test_case","tcr_id="+id+" "+limit),
+            db.db.all(qb.slct("*","test_case","tcr_id="+tc_id+" "+limit),
             (err,rows)=>{
                 if (!err)
                     return new Promise((resolve)=> {
@@ -77,43 +75,4 @@ module.exports = async(req,rest)=>{
             rest.write(JSON.stringify([]));
             rest.end(); 
     };
-
-
-
-
-    if (req.submit === "get_cases")
-        db.db.all(qb.slct("*","test_case_reg","1=1 "+limit),
-            (err,rows)=>{
-                if (!err)
-                    return new Promise((resolve)=> {
-                        rows.forEach(r => {
-                            result.push(r);
-                        });
-                        rest.write(JSON.stringify(result));
-                        rest.end();
-                        resolve();
-                    });
-                else {
-                    rest.write(JSON.stringify([err,"limit",result]));
-                    rest.end();
-                }
-            });
-    else
-        db.db.all("select * from log_info "+
-            "where t_id = "+req.query.target +";",
-            (err,rows)=>{
-                return new Promise((resolve,reject)=> {
-                    if (err) {
-                        rest.write(JSON.stringify(result));
-                        rest.end();
-                        reject(err);
-                    }
-                    rows.forEach(r => {
-                        result.push(r);
-                    });
-                    rest.write(JSON.stringify(result));
-                    rest.end();
-                    resolve();
-                });
-            });
 }
