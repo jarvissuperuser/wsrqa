@@ -1,6 +1,6 @@
 let express = require('express');
 let router = express.Router();
-let middleware = require("../middleware/jsondbmiddleware");
+let middleware = require("../middleware/taskmiddleware");
 
 router.get('/new', async(req, rest, next) =>{
     rest.render('quality',{title:'New QA Reporting',view:'new'});
@@ -9,7 +9,7 @@ router.get('/new', async(req, rest, next) =>{
 }).post('/add',async(req, rest, next) =>{
     //rest.render('quality',{title:'QA by WhoX',view:'adding'});
     let q=req.body;
-    rest.send(JSON.stringify([q]));
+    middleware(q,rest);
 });
 
 module.exports = router ;
