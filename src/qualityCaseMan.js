@@ -6,7 +6,7 @@ let db = new sqlcon("../app.db");
 
 class TCase {
     constructor() {
-        this.t = ["test_cases_reg",'test_cases'];
+        this.t = ["test_cases_reg",'test_cases'];//db tables
      }
     add_test_reg(req, rest) {
         let render_rows = this.render_rows;
