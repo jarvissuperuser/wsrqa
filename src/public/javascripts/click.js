@@ -120,7 +120,7 @@ var onload = function(){
     b.modal = document.querySelector(".w3-modal");
     b.searchInput = document.querySelectorAll("input.search");
     b.ajax  = new XMLHttpRequest();
-    b.targetElement = document.querySelector('.r1');
+	b.targetElement = document.querySelector('.r1');
 
 	b.btns.forEach((btn)=>{
 		btn.addEventListener('click',(e)=>{
@@ -153,7 +153,10 @@ var onload = function(){
 					}
 					ajax.open("GET",url);
 					ajax.send();
-				};
+				}else if(hasClass(e.target,"add-case")){
+					//alert("Tim You are the greatest there is");
+					b.modal.style.display = 'block';
+				}
 			}
 		});
 	});
