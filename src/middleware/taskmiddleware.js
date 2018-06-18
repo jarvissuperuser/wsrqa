@@ -13,25 +13,7 @@ module.exports = async(req,rest)=>{
 
     switch (req.submit){
         case "get_case_reports":
-            db.db.all(qb.slct("*","test_case_reg","1=1 "+limit),
-            (err,rows)=>{
-                if (!err)
-                    return new Promise((resolve)=> {
-                        rows.forEach(r => {
-                            result.push(r);
-                        });
-                        rest.write(JSON.stringify(result));
-                        rest.end();
-                        resolve();
-                    }).catch((err)=>{
-                        rest.write(JSON.stringify(err));
-                        rest.end();
-                    });
-                else {
-                    rest.write(JSON.stringify([err,"limit",result]));
-                    rest.end();
-                }
-            });
+            
             break;
         case "add_case_reg":
             new_obj = qb.mute(req,{},['submit']);
