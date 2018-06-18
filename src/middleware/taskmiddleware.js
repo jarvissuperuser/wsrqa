@@ -11,17 +11,17 @@ let qry = "";
 
 module.exports = async(req,rest)=>{
     result = [];
-    var limit = "LIMIT "+ (req.limit?req.limit:10);
-
+    console.log(req.submit);
     switch (req.submit){
         case "get_case_reports":
-            tcase.get_tests(req,rest);
+            await tcase.get_tests(req,rest);
             break;
         case "add_case_reg":
-            tcase.add_test_reg(req,rest);
+            console.log("cases");
+            await tcase.add_test_reg(req,rest);
             break;
         case "update_case_reg":
-            tcase.update_test_reg(req,rest);
+            await tcase.update_test_reg(req,rest);
             break;
         case "add_case":
             tcase.add_test(req,rest);

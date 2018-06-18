@@ -113,6 +113,44 @@ var hasClass = (el,className)=> {
 	return state;
 }
 
+var x_encode=(srlzd)=>{
+	let urlEncodedDataPairs = [];
+	let urlEncodedData = "";
+	for(name in srlzd) {
+		urlEncodedDataPairs.push(encodeURIComponent(name) + '=' + encodeURIComponent(srlzd[name]));
+	  }
+	  urlEncodedData = urlEncodedDataPairs.join('&').replace(/%20/g, '+');
+	  return urlEncodedData;
+}
+
+var serialize = (form,obj) =>{
+	let els = form.childNodes
+	els.forEach((el) =>{
+		if (el.name)
+			obj[el.name] = [el.value];
+	});
+	return obj;
+}
+
+var mysubmit = function(e) {
+	e.preventDefault();
+	// console.log(e.target);
+	let el = e.target;
+	let obj = serialize(el,{});
+	obj['submit'] = 'add_case_report'
+	var data = x_encode(obj);
+	// console.log(data);
+	var xhr = new XMLHttpRequest();
+	xhr.addEventListener("readystatechange", function () {
+		if (this.readyState === 4) {
+			console.log(this.responseText);
+		}
+	});
+	xhr.open("POST", "http://localhost:3000/quality/add");
+	xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+	xhr.send(data);
+}
+
 var onload = function(){
     b.btns = document.querySelectorAll("button");
     b.images = document.querySelectorAll("img");
