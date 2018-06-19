@@ -105,7 +105,12 @@ class QueryBuilder {
         }
         return new_;
     }
+    replace(old,new_,obj){
+        for (let a in old){
+                new_[obj[a]] = old[a];
 
+        }
+        return new_;
+    }
 }
-
 module.exports = QueryBuilder;

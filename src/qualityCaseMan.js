@@ -60,12 +60,14 @@ class TCase {
     add_test(req, rest) {
         let render_rows = this.render_rows;
         return new Promise((r) => {
-            new_obj = qb.mute(req, {}, ['submit', 'id']);
+            let new_obj = qb.mute(req, {}, ['submit', 'id']);
             new_obj = qb.correc(new_obj, {}, 'tc_');
             new_obj['tcr_id'] = req.id;
-            qry = qb.insert("test_cases", qb.ex_key(new_obj, []), qb.ex_val(new_obj, []));
+            new_obj['tc_pass_fail'] = req.pass_fail==='on'?'t':'f';
+            console.log(new_obj);
+            let qry = qb.insert("test_cases", qb.ex_key(new_obj, []), qb.ex_val(new_obj, []));
             db.db.run(qry, function (err) {
-                render_rows(req, rest, { msg: "added",data:this.lastID}, err);
+                render_rows(req, rest, { msg: "added",data:this.lastID}, [err,qry]);
                 r();
             });
         }).catch((err) => {
@@ -73,9 +75,41 @@ class TCase {
             rest.end();
         });;
     }
-    get_test(req, rest) {
+    get_test_reg(req, rest) {
+        let render_rows = this.render_rows;
+        let mute = qb.mute;
+        let result = [];
+        let t = this.t[1];
+        let limit  = "tcr_id="+ (req.case_reg_id?req.case_reg_id:0);
         return new Promise((r) => {
-            r();
+            db.db.all(qb.slct("*",t, limit),
+                (err, rows) => {
+                    if (rows)
+                        rows.forEach(rc => {
+                            result.push(rc);
+                        });
+
+                    render_rows(req, rest, result, err);
+                    r();
+                });
+        });
+    }
+
+    get_test(req, rest) {
+        let render_rows = this.render_rows;
+        let result = [];
+        let t = this.t[0];
+        let limit  = "tcr_id="+ (req.case_reg_id?req.case_reg_id:0);
+        return new Promise((r) => {
+            db.db.all(qb.slct("*",t, limit),
+                (err, rows) => {
+                    if (rows)
+                        rows.forEach(rc => {
+                            result.push(rc);
+                        });
+                    render_rows(req, rest, rows, err);
+                    r();
+                });
         });
     }
     render_rows(req, rest, obj, err) {
@@ -84,8 +118,8 @@ class TCase {
             console.log(obj);
         }
         else {
-            rest.write(JSON.stringify([err.errno,"Something Failed"]));
-            console.log(err.code);
+            rest.write(JSON.stringify([err,"Something Failed"]));
+            console.log(err[0].message);
         }
         rest.end();
     }

@@ -31,7 +31,7 @@ block content
           td Crashes The short toast message 'Network Error'
           td &check;
         tr
-          td cast_1
+          td cast_2
           td Launch App
           td with out network;
           td gracefully warn user to switch on network
@@ -40,19 +40,19 @@ block content
     div.w3-modal
       div.w3-modal-content.w3-white.w3-container
         span.w3-btn.w3-display-topright &times;
-        form.w3-card.w3-content(action="/quality/add",method="POST")
+        form.w3-card.w3-content.case-add(action="/quality/add",method="POST",onsubmit="mysubmit(event)")
           h2.w3-center Add Test Case
           div.w3-col.l6.s12
-            input.w3-input(name="name",type="text", placeholder="Test Case")
+            input.w3-input(name="name", type="text", placeholder="Test Case")
           div.w3-col.l6.s12
-            input.w3-input(name="desc",type="text", placeholder="Description")
+            input.w3-input(name="description", type="text", placeholder="Description")
           div.w3-col.l6.s12  
-            textarea.w3-input.l6.s12(name="excepted", cols="30", rows="10",placeholder="Excepted Result")
+            textarea.w3-input.l6.s12(name="expected", cols="30", rows="10",placeholder="Excepted Result")
           div.w3-col.l6.s12
             textarea.w3-input.l6.s12(name="actual", cols="30", rows="10",placeholder="Actual Result")
           div.w3-col.l4.s6
             div.w3-check
-            input.w3-check#pf(name="passfail",type="checkbox")
+            input.w3-check#pf(name="pass_fail", type="checkbox")
           div.w3-col.l4.s6 
             button.w3-display-bottommiddle.w3-button.w3-grey(type="reset") Reset
           div.w3-col.l4.s6
