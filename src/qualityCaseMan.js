@@ -17,8 +17,8 @@ class TCase {
             new_obj = qb.correc(new_obj, {}, 'tcr_');
             let qry = qb.insert(t, qb.ex_key(new_obj, []), qb.ex_val(new_obj, []));
             console.log(qry);
-            db.db.all(qry, (err, rows) => {
-                render_rows(req, rest, { msg: 'added' ,data:rows.lastInsertId }, err);
+            db.db.run(qry,function (err) {
+                render_rows(req, rest, { msg: 'added' , data:this.lastID}, err);
                 r();
             });
         }).catch((err) => {
@@ -33,7 +33,7 @@ class TCase {
             let new_obj = qb.mute(req, {}, ['submit']);
             new_obj = qb.correc(new_obj, {}, 'tcr_');
             let qry = qb.insert(t, qb.ex_key(new_obj), qb.ex_val(new_obj));
-            db.db.all(qry, (err, rows) => {
+            db.db.run(qry, (err) => {
                 render_rows(req, rest, { msg: 'updated' }, err);
                 console.log(err);
                 r();
@@ -64,8 +64,8 @@ class TCase {
             new_obj = qb.correc(new_obj, {}, 'tc_');
             new_obj['tcr_id'] = req.id;
             qry = qb.insert("test_cases", qb.ex_key(new_obj, []), qb.ex_val(new_obj, []));
-            db.db.all(qry, (err) => {
-                render_rows(req, rest, { msg: "added" }, err);
+            db.db.run(qry, function (err) {
+                render_rows(req, rest, { msg: "added",data:this.lastID}, err);
                 r();
             });
         }).catch((err) => {
@@ -81,6 +81,7 @@ class TCase {
     render_rows(req, rest, obj, err) {
         if (!err) {
             rest.write(JSON.stringify(obj));
+            console.log(obj);
         }
         else {
             rest.write(JSON.stringify([err.errno,"Something Failed"]));

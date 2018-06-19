@@ -3,7 +3,7 @@ let b = {
         /tl_home+/g, /bl_home/g, /w_home+/g, /sl_home+/g, /hl_home+/g],
     projectSet: ["tl_home/", "bl_home/", "w_home/", "sl_home/", "hl_home/", "tl_article/"],
     projectNames: ["timeslive", "businesslive", "wanted", "sowetanlive", "heraldlive", "test"]
-}
+};
 let grabForm = () => {
     let inputs = document.querySelectorAll('input:valid');
     let auth = btoa(inputs[1].value.concat("<:>".concat(inputs[2].value.concat("<:>".concat(inputs[0].value)))));
@@ -13,7 +13,7 @@ let grabForm = () => {
         data: encodeURI(auth),
         options: selection
     };
-}
+};
 let onError = (e) => {
     console.log(e);
     let img = e.target;
@@ -26,7 +26,7 @@ let onError = (e) => {
     path.push(imgname);
     if (!getProject(imgname))
         img.src = (path.join('/'));
-}
+};
 
 let TargetOnCLick = (target, val) => {
     let ajax = new XMLHttpRequest();
@@ -38,7 +38,7 @@ let TargetOnCLick = (target, val) => {
     });
     ajax.open("GET", "/search?target=" + val);
     ajax.send();
-}
+};
 
 let renderCompareImages = (target, data) => {
     let targetElement = b.targetElement;
@@ -57,7 +57,7 @@ let renderCompareImages = (target, data) => {
     });
     hideBtnList();
 
-}
+};
 
 let getProject = (image) => {
     let x = 0;
@@ -70,7 +70,7 @@ let getProject = (image) => {
         x = x + 1;
     });
     return dirPath;
-}
+};
 
 let imageOnClick = (e) => {
     let img = e.target;
@@ -78,15 +78,15 @@ let imageOnClick = (e) => {
     let modalImage = document.querySelector(".w3-modal img");
     modalImage.src = img.src;
     modal.style.display = "block";
-}
+};
 let hideModal = (e) => {
     b.modal.style.display = "none";
-}
+};
 
 let hideBtnList = () => {
     let buttonContainer = document.querySelector(".w3-show");
     buttonContainer.classList.remove("w3-show");
-}
+};
 
 let btnCreate = (str, target) => {
     let btnString = "";
@@ -98,7 +98,7 @@ let btnCreate = (str, target) => {
             k.n + "  ON Date:  " + k.t + " ".concat('</button>');
     });
     return btnString;
-}
+};
 /**
  * @deprecated
  * */
@@ -110,7 +110,7 @@ let hasClass = (el, className) => {
         return state;
     });
     return state;
-}
+};
 
 let x_encode = (srlzd) => {
     let urlEncodedDataPairs = [];
@@ -120,7 +120,7 @@ let x_encode = (srlzd) => {
     }
     urlEncodedData = urlEncodedDataPairs.join('&').replace(/%20/g, '+');
     return urlEncodedData;
-}
+};
 
 let serialize = (form, obj) => {
     let els = form.childNodes
@@ -129,7 +129,7 @@ let serialize = (form, obj) => {
             obj[el.name] = [el.value];
     });
     return obj;
-}
+};
 
 let mysubmit = function (e) {
     e.preventDefault();
@@ -150,8 +150,7 @@ let mysubmit = function (e) {
     ajax(config,function () {
         if (this.readyState == 4 && this.status == 200)
             if (JSON.parse(this.responseText)[0] !== 1){
-                location = "/quality/qa";
-                alert(this.responseText);
+                location = "/quality/qa#"+JSON.parse(this.responseText)['data'];
             }
     })
 
@@ -176,6 +175,7 @@ let onload = function () {
     b.searchInput = document.querySelectorAll("input.search");
     b.ajax = new XMLHttpRequest();
     b.targetElement = document.querySelector('.r1');
+    b.projectId = location.hash.substr(1);
 
     b.btns.forEach((btn) => {
         btn.addEventListener('click', (e) => {
@@ -247,5 +247,5 @@ let onload = function () {
         btn.addEventListener("click", hideModal);
     });
 }
-document.addEventListener('DOMContentReady', onload);
+document.addEventListener('DOMContentLoaded', onload);
 
