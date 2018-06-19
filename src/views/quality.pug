@@ -6,10 +6,10 @@ block content
   if view=='new'
     div.w3-container.w3-content
       form.w3-card.w3-center.w3-black.w3-col.l4.s8.w3-display-middle(onSubmit='event.preventDefault();return mysubmit(event);')
-        input#name.w3-input(type="text", name="name", placeholder="Name of Report")
-        input#crtr.w3-input(type="text", name="username",placeholder="Creator of Report")
-        input#desc.w3-input(type="text", name="specs",placeholder="Description")
-        input.w3-btn(type="submit", value="CREATE")
+        input#name.w3-input(type="text", required, name="name", placeholder="Name of Report")
+        input#crtr.w3-input(type="text", required, name="username",placeholder="Creator of Report")
+        input#desc.w3-input(type="text", required, name="specs",placeholder="Description")
+        input.w3-btn(type="submit",  value="CREATE")
   if view=='adding'
     div.w3-col.l12.s12.w3-container
       h3.w3-center List of TestCases

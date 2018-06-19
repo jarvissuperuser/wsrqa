@@ -1,21 +1,19 @@
-//import { O_WRONLY } from 'constants';
-
-var express = require('express');
-var router = express.Router();
-var dbl = require("../sqlite_con_man");
+let express = require('express');
+let router = express.Router();
+let dbl = require("../sqlite_con_man");
 /* Render The Data for pictures in table for*/
- var dbo = new dbl("../app.db");
-var arr = {};
-var rsa = [];
-var testCases = [/timeslive+/g,/businesslive+/g,/wanted+/g,/sowetanlive+/g,/heraldlive+/g,
+ let dbo = new dbl("../app.db");
+let arr = {};
+let rsa = [];
+let testCases = [/timeslive+/g,/businesslive+/g,/wanted+/g,/sowetanlive+/g,/heraldlive+/g,
 	/tl_home+/g,/bl_home/g,/w_home+/g,/sl_home+/g,/hl_home+/g];
-var resset = ["tl_home","bl_home","w_home","sl_home","hl_home","tl_article"];
+let resset = ["tl_home","bl_home","w_home","sl_home","hl_home","tl_article"];
 let projectNames = ["timeslive","businesslive","wanted","sowetanlive","heraldlive","test"];
-var dirPath = "";
+let dirPath = "";
 let prName = "";
 /** helper functions */
-var get_project = (image) =>{
-	var x = 0;
+let get_project = (image) =>{
+	let x = 0;
 	testCases.forEach((rgx)=>{
 		if (rgx.test(image)){
 			dirPath = resset[x%5];
@@ -27,8 +25,8 @@ var get_project = (image) =>{
 }
 /** deprecated 
 
-var get_project = (image)=>{
-	var sp = image.split('_');
+let get_project = (image)=>{
+	let sp = image.split('_');
 	if (sp.length>1)
 		return sp[0]+"_"+sp[1];
 	else 

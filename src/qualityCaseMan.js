@@ -18,7 +18,7 @@ class TCase {
             let qry = qb.insert(t, qb.ex_key(new_obj, []), qb.ex_val(new_obj, []));
             console.log(qry);
             db.db.all(qry, (err, rows) => {
-                render_rows(req, rest, { msg: 'added' }, err);
+                render_rows(req, rest, { msg: 'added' ,data:rows.lastInsertId }, err);
                 r();
             });
         }).catch((err) => {
