@@ -154,7 +154,7 @@ let mysubmit = function (e) {
         if (this.readyState == 4 && this.status == 200)
             if (!JSON.parse(this.responseText)[0]){
                 location = "/quality/qa#" + (b.projectId?b.projectId:JSON.parse(this.responseText)['data']);
-                console.log(location.toString());
+                if (obj['submit']  ==="add_case"){table_fetch();hideModal()}
             } else {
                 console.log(JSON.parse(this.responseText)[0]);
             }
