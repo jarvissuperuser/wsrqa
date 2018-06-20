@@ -137,7 +137,8 @@ let mysubmit = function (e) {
     let el = e.target;
     let obj = serialize(el, {});
     obj['submit'] = hasClass(el,"case-add")?'add_case':'add_case_reg';
-    obj['id'] = b.projectId?b.projectId:"";
+    if (b.projectId)
+        obj['id'] = b.projectId;
     let data = x_encode(obj);
     let config = {
         method:"POST",
@@ -151,10 +152,13 @@ let mysubmit = function (e) {
     }; console.log(config);
     ajax(config,function () {
         if (this.readyState == 4 && this.status == 200)
-            if (JSON.parse(this.responseText)[0] !== 1){
+            if (!JSON.parse(this.responseText)[0]){
                 location = "/quality/qa#" + (b.projectId?b.projectId:JSON.parse(this.responseText)['data']);
-                alert(this.responseText);
+                console.log(location.toString());
+            } else {
+                console.log(JSON.parse(this.responseText)[0]);
             }
+
     })
 
 };
@@ -173,6 +177,8 @@ function valueProcessor(str,key){
     switch(key){
         case "uid":
             return str?str:"students number";
+        case "pass_fail":
+            return str?(str ==='t'?'&check;':'&times;'):"pass_fail";
         case "profile":
             return str?str.name + " " + str.surname :"name";
         default:
@@ -188,7 +194,13 @@ function hideCell(num){
     });
     return a;
 }
-
+function show_modal() {
+    b.modal.style.display = 'block';
+}
+function td_click(e) {
+   let val = e.target.parentNode.querySelector(":nth-child(1)").innerText;
+   console.log(val);
+}
 
 let table_fetch = function () {
     let data = {
@@ -217,12 +229,19 @@ let table_load = function () {
 };
 
 function tableCreate(data,depth){
+    let table = document.createElement("table");
+    table.className = "w3-display-middle w3-card w3-col "+
+        "l12 s12 w3-content w3-black w3-center";
+    let header = table.createTHead();
+    let caption = table.createCaption();
+    let button = document.createElement("button");
+    button.className = "w3-display-topright w3-circle w3-green add-case";
+    button.innerHTML = "&plus;";
+    button.setAttribute("onclick","show_modal()");
+    caption.innerHTML= button.outerHTML;
     if (data){
-        let table = document.createElement("table");
-        table.className = "w3-display-middle w3-card w3-col "+
-            "l12 s12 w3-content w3-black w3-center";
-        let header = table.createTHead();
-        table.style = "text-align:center";
+
+        // table.style = "text-align:center";
         let rowCount = 0;
         let row = header.insertRow(0);
         for(let key in data[0]){
@@ -240,6 +259,7 @@ function tableCreate(data,depth){
             for(let p in rowExtract){
                 let cell = row.insertCell(count++);
                 cell.innerHTML = valueProcessor(rowExtract[p],p);
+                cell.setAttribute("onclick","td_click(event)");
                 if (hideCell(count)){
                     cell.classList.add("w3-hide-small");
                 }
@@ -249,10 +269,7 @@ function tableCreate(data,depth){
         table.style.whiteSpace = "normal";
         document.querySelector("table.w3-display-middle").outerHTML = "";
         document.querySelector("div.w3-container").innerHTML += table.outerHTML;
-        // document.querySelector("td").addEventListener("click",function(e){
-        //     let val = e.parentNode.querySelector(":nth-child("+ depth +")").innerText;
-        //     console.log(val);
-        // });
+        // table.querySelectorAll("td").forEach((td)=>{td.setAttribute("onclick","td_click(event)");});
     }
 }
 
@@ -306,7 +323,6 @@ let onload = function () {
                     ajax(config,onreadystatechange);
                 } else if (hasClass(e.target, 'add-case')) {
                     b.modal.style.display = 'block';
-
                 }
             }
         });
@@ -346,6 +362,7 @@ let onload = function () {
     b.modalBtn.forEach(btn => {
         btn.addEventListener("click", hideModal);
     });
-}
+    table_fetch();
+};
 document.addEventListener('DOMContentLoaded', onload);
 

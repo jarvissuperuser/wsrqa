@@ -54,7 +54,7 @@ class QueryBuilder {
     };
     valuate(data, arrEmp) {
         data.forEach((element, idx) => {
-            arrEmp.push()
+            arrEmp.push(element);
         });
         return arrEmp;
     };

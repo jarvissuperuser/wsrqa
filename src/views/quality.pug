@@ -45,14 +45,18 @@ block content
           div.w3-col.l6.s12
             input.w3-input(name="name", type="text", placeholder="Test Case")
           div.w3-col.l6.s12
+            input.w3-input(name="comment", type="text", placeholder="Notes/Comments")
+          div.w3-col.l12.s12
             input.w3-input(name="description", type="text", placeholder="Description")
           div.w3-col.l6.s12  
             textarea.w3-input.l6.s12(name="expected", cols="30", rows="10",placeholder="Excepted Result")
           div.w3-col.l6.s12
             textarea.w3-input.l6.s12(name="actual", cols="30", rows="10",placeholder="Actual Result")
           div.w3-col.l4.s6
-            div.w3-check
-            input.w3-check#pf(name="pass_fail", type="checkbox")
+            label.w3-text-dark-gray(for='pf') Passed?
+            select#pf(name="pass_fail")
+              option(value="on") &check;
+              option(value="off") &times;
           div.w3-col.l4.s6 
             button.w3-display-bottommiddle.w3-button.w3-grey(type="reset") Reset
           div.w3-col.l4.s6
