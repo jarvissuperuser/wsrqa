@@ -230,12 +230,12 @@ let table_load = function () {
 
 function tableCreate(data,depth){
     let table = document.createElement("table");
-    table.className = "w3-display-middle w3-card w3-col "+
-        "l12 s12 w3-content w3-black w3-center";
+    table.className = "w3-display-middle w3-col "+
+        "l12 s12 w3-center w3-content w3-animate-opacity w3-black";
     let header = table.createTHead();
     let caption = table.createCaption();
     let button = document.createElement("button");
-    button.className = "w3-display-topright w3-circle w3-green add-case";
+    button.className = "w3-display-topright w3-circle w3-green add-case w3-button w3-ripple w3-small";
     button.innerHTML = "&plus;";
     button.setAttribute("onclick","show_modal()");
     caption.innerHTML= button.outerHTML;

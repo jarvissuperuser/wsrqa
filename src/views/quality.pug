@@ -38,7 +38,7 @@ block content
           td Crashes The short toast message 'Network Error'
           td &times;
     div.w3-modal
-      div.w3-modal-content.w3-white.w3-container
+      div.w3-modal-content.w3-white.w3-container.w3-animate-top
         span.w3-btn.w3-display-topright &times;
         form.w3-card.w3-content.case-add(action="/quality/add",method="POST",onsubmit="mysubmit(event)")
           h2.w3-center Add Test Case
@@ -61,3 +61,57 @@ block content
             button.w3-display-bottommiddle.w3-button.w3-grey(type="reset") Reset
           div.w3-col.l4.s6
             button.w3-display-bottomright.w3-button.w3-black Accept
+  if view == 'reports'
+    div.w3-col.l12.s12.w3-container
+      h3.w3-center List of TestCases
+      table.w3-display-middle.w3-card.w3-col.l12.s12.w3-content.w3-black.w3-center
+        caption
+          button.w3-display-topright.w3-circle.w3-green.add-case &plus;
+        tr
+          td ID
+          td Test Case
+          td Description
+          td Expected
+          td Actual
+          td Pass/Fail
+        tr
+          td cast_1
+          td Launch App
+          td with out network;
+          td gracefully warn user to switch on network
+          td Crashes The short toast message 'Network Error'
+          td &check;
+        tr
+          td cast_2
+          td Launch App
+          td with out network;
+          td gracefully warn user to switch on network
+          td Crashes The short toast message 'Network Error'
+          td &times;
+  if view == 'report_view'
+    div.w3-col.l12.s12.w3-container
+      h3.w3-center List of TestCases
+      table.w3-display-middle.w3-card.w3-col.l12.s12.w3-content.w3-black.w3-center
+        caption
+          button.w3-display-topright.w3-circle.w3-green.add-case &plus;
+        tr
+          td ID
+          td Test Case
+          td Description
+          td Expected
+          td Actual
+          td Pass/Fail
+        tr
+          td cast_1
+          td Launch App
+          td with out network;
+          td gracefully warn user to switch on network
+          td Crashes The short toast message 'Network Error'
+          td &check;
+        tr
+          td cast_2
+          td Launch App
+          td with out network;
+          td gracefully warn user to switch on network
+          td Crashes The short toast message 'Network Error'
+          td &times;
