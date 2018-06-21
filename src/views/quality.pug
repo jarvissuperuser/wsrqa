@@ -2,20 +2,21 @@ extends layout
 
 block content
   h1.w3-center= title
+  view-port(hidden='true', vp=`${view}`)
 
   if view=='new'
     div.w3-container.w3-content
-      form.w3-card.w3-center.w3-black.w3-col.l4.s8.w3-display-middle
-        input#name.w3-input(type="text", name="tcr_name", placeholder="Name of Report")
-        input#crtr.w3-input(type="text", name="tcr_username",placeholder="Creator of Report")
-        input#desc.w3-input(type="text", name="tcr_specs",placeholder="Description")
-        input.w3-btn(type="submit", value="CREATE")
+      form.w3-card.w3-center.w3-black.w3-col.l4.s8.w3-display-middle(onSubmit='event.preventDefault();return mysubmit(event);')
+        input#name.w3-input(type="text", required, name="name", placeholder="Name of Report")
+        input#crtr.w3-input(type="text", required, name="username",placeholder="Creator of Report")
+        input#desc.w3-input(type="text", required, name="specs",placeholder="Description")
+        input.w3-btn(type="submit",  value="CREATE")
   if view=='adding'
     div.w3-col.l12.s12.w3-container
       h3.w3-center List of TestCases
-      table.w3-black.w3-display-middle.w3-card.w3-col.l12.s12.w3-content.w3-center
+      table.w3-display-middle.w3-card.w3-col.l12.s12.w3-content.w3-black.w3-center
         caption
-          button.add-case.w3-display-topright.w3-btn.w3-circle.w3-green &plus; 
+          button.w3-display-topright.w3-circle.w3-green.add-case &plus;
         tr
           td ID
           td Test Case
@@ -24,22 +25,94 @@ block content
           td Actual
           td Pass/Fail
         tr
-          td ts_1
+          td cast_1
           td Launch App
-          td App Drawer Launch
-          td Opens
-          td Crashes
+          td with out network;
+          td gracefully warn user to switch on network
+          td Crashes The short toast message 'Network Error'
           td &check;
         tr
-          td ts_1
+          td cast_2
           td Launch App
-          td App Drawer Launch
-          td Opens
-          td Crashes
-          td &cross;
+          td with out network;
+          td gracefully warn user to switch on network
+          td Crashes The short toast message 'Network Error'
+          td &times;
     div.w3-modal
-      div.w3-modal-content.w3-card
-        form(action="", method="get")
-          input(type="text",placeholder="Name Test Case")
-          
-
+      div.w3-modal-content.w3-white.w3-container.w3-animate-top
+        span.w3-btn.w3-display-topright &times;
+        form.w3-card.w3-content.case-add(action="/quality/add",method="POST",onsubmit="mysubmit(event)")
+          h2.w3-center Add Test Case
+          div.w3-col.l6.s12
+            input.w3-input(name="name", type="text", placeholder="Test Case")
+          div.w3-col.l6.s12
+            input.w3-input(name="comment", type="text", placeholder="Notes/Comments")
+          div.w3-col.l12.s12
+            input.w3-input(name="description", type="text", placeholder="Description")
+          div.w3-col.l6.s12  
+            textarea.w3-input.l6.s12(name="expected", cols="30", rows="10",placeholder="Excepted Result")
+          div.w3-col.l6.s12
+            textarea.w3-input.l6.s12(name="actual", cols="30", rows="10",placeholder="Actual Result")
+          div.w3-col.l4.s6
+            label.w3-text-dark-gray(for='pf') Passed?
+            select#pf(name="pass_fail")
+              option(value="on") &check;
+              option(value="off") &times;
+          div.w3-col.l4.s6 
+            button.w3-display-bottommiddle.w3-button.w3-grey(type="reset") Reset
+          div.w3-col.l4.s6
+            button.w3-display-bottomright.w3-button.w3-black Accept
+  if view == 'reports_list'
+    div.w3-col.l12.s12.w3-container
+      h3.w3-center List of TestCases
+      table.w3-display-middle.w3-card.w3-col.l12.s12.w3-content.w3-black.w3-center
+        caption
+          button.w3-display-topright.w3-circle.w3-green.add-case &plus;
+        tr
+          td ID
+          td Test Case
+          td Description
+          td Expected
+          td Actual
+          td Pass/Fail
+        tr
+          td cast_1
+          td Launch App
+          td with out network;
+          td gracefully warn user to switch on network
+          td Crashes The short toast message 'Network Error'
+          td &check;
+        tr
+          td cast_2
+          td Launch App
+          td with out network;
+          td gracefully warn user to switch on network
+          td Crashes The short toast message 'Network Error'
+          td &times;
+  if view == 'report_view'
+    div.w3-col.l12.s12.w3-container
+      h3.w3-center List of TestCases
+      table.w3-display-middle.w3-card.w3-col.l12.s12.w3-content.w3-black.w3-center
+        caption
+          button.w3-display-topright.w3-circle.w3-green.add-case &plus;
+        tr
+          td ID
+          td Test Case
+          td Description
+          td Expected
+          td Actual
+          td Pass/Fail
+        tr
+          td cast_1
+          td Launch App
+          td with out network;
+          td gracefully warn user to switch on network
+          td Crashes The short toast message 'Network Error'
+          td &check;
+        tr
+          td cast_2
+          td Launch App
+          td with out network;
+          td gracefully warn user to switch on network
+          td Crashes The short toast message 'Network Error'
+          td &times;
