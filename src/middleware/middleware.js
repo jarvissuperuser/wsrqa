@@ -1,4 +1,4 @@
-var webshot = require("webshot");
+var Setup = require("../setup");
 var moment = require("moment");
 var resemble = require("node-resemble-js");
 var fs = require('fs-extra');
@@ -10,11 +10,13 @@ var UJC = require('../userjourney');
 let uj = undefined;
 const desktopAgent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36';
 const modbileAgent = '';
-var dbi = new dbl("../app.db");
+let dbi = new dbl("../app.db");
 let project = '';
 let isMobile = '';
 let runTests = '';
 let QueueName = '';
+
+let stp = new Setup();
 
 
 var options = {
@@ -36,7 +38,7 @@ const testurls = {
     "sl_home": "www.sowetanlive.co.za",
     "w_home": "wantedonline.co.za"
 };
-const projects = {
+let projects = {
     "tl_home": "timeslive",
     "tl_article": "timeslive",
     "bl_home": "businesslive",
@@ -60,7 +62,7 @@ module.exports = async(p, m, t) => {
     isMobile = m;
     runTests = t;
 
-    var b_path = "./public/images/"
+    var b_path = "./public/images/";
     uj = new UJC();
     uj.log = true;
     uj.project = '';
@@ -68,8 +70,16 @@ module.exports = async(p, m, t) => {
     uj.testImg = '';
     uj.pivotImg = '';
     uj.name = (projects[project] === undefined) ? project : projects[project];
+    stp.init("../../app.ini");
     console.log("Loading Tests app at " , uj.timestamp);
+    try {
+        console.log(stp.get_url(p.substring(0, 2), m));
+    }catch (e) {
+        console.error(e.message);
+    }
+    //console.log(uj);
 
+    if (false){//haha
     try{
 
         uj.dbi = new dbl("../app.db");
@@ -113,5 +123,6 @@ module.exports = async(p, m, t) => {
         }).catch((ex) => {
             console.error(ex, "app error");
         });
+    }
     }
 };
