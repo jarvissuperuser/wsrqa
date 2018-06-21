@@ -9,6 +9,8 @@ router.get('/new', async(req, rest, next) =>{
     rest.render('quality',{title:'QA',view:'adding'});
 }).get('/reports', async(req, rest, next) =>{
     rest.render('quality',{title:'Reports View',view:'reports_list'});
+}).get('/report', async(req, rest, next) =>{
+    rest.render('quality',{title:'Report',view:'report_view'});
 }).post('/add',async(req, rest, next) =>{
     let q=req.body;
     middleware(q,rest);

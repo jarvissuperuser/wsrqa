@@ -201,7 +201,9 @@ function td_click(e) {
    let val = e.target.parentNode.querySelector(":nth-child(1)").innerText;
    console.log(val);
 }
-
+let table_data_render= function(){
+    let vp = b.view_port.getAttribute('vp');
+}
 let table_fetch = function () {
     let data = {
         submit:"get_case_reg",
@@ -362,7 +364,8 @@ let onload = function () {
     b.modalBtn.forEach(btn => {
         btn.addEventListener("click", hideModal);
     });
-    table_fetch();
+    b.view_port =(document.querySelector('view-port'));
+    if (b.view_port)table_fetch();
 };
 document.addEventListener('DOMContentLoaded', onload);
 
