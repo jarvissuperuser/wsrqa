@@ -1,0 +1,51 @@
+extends layout
+
+block content
+    h1.w3-center= title
+
+    div.w3-card.w3-col.l10.s10.w3-center.w3-black
+        p= JSON.stringify(data)
+        div.w3-content
+            div.w3-btn.w3-right.w3-hover-green(onclick="show_modal()") &plus;
+            h3   Products to Test
+            div.w3-row
+                div.w3-col.l4
+                    h4 Pub
+                div.w3-col.l3
+                    h4 Test Scope
+                div.w3-col.l3
+                    h4 Regression Test
+            each d in data
+                div.w3-row
+                    div.w3-col.l4
+                        h5=d.name
+                    div.w3-col.l3
+                        select.w3-select
+                            each el,k in d
+                                option= k
+                    div.w3-col.l3
+                        div.w3-col.l5
+                            p
+                        select.w3-col.l3.w3-select
+                            option(value='on') &check;
+                            option(value='off') &times;
+            button.w3-button.w3-right.w3-green.w3-hover-deep-orange Begin
+
+    div.w3-modal
+        div.w3-modal-content.w3-white
+            div.w3-card
+                span.w3-btn.w3-display-topright.w3-hover-red &times;
+                form.w3-container
+                    h3.w3-center Add Product
+                    input.w3-input.w3-half(placeholder="Pub Name")
+                    input.w3-input.w3-half(placeholder="Base Url")
+                    div.w3-container.w3-content
+                        h5 Add Url Appenditures
+                        div.w3-btn.w3-right.w3-hover-green &plus;
+                        input.w3-input.w3-col.l6(placeholder='Tag')
+                        input.w3-input.w3-col.l5(placeholder='Url Appenditure')
+                    label.w3-right
+                        div
+                            h2
+                        button.w3-btn.w3-teal ADD
+

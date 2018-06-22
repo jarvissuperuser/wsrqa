@@ -70,7 +70,7 @@ module.exports = async(p, m, t) => {
     uj.testImg = '';
     uj.pivotImg = '';
     uj.name = (projects[project] === undefined) ? project : projects[project];
-    stp.init("../../app.ini");
+    stp.init("../app.ini");
     console.log("Loading Tests app at " , uj.timestamp);
     try {
         console.log(stp.get_url(p.substring(0, 2), m));
