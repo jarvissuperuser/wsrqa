@@ -21,6 +21,7 @@ try {
     conf.add_to_file("st","name","timesselect");
     conf.add_to_file("sl","name","sowetanlive");
     conf.add_to_file("bl","name","businesslive");
+    conf.add_to_file("bl","name-test","businesslive");
 
     console.log(conf.get_url("tl",'login'));
     

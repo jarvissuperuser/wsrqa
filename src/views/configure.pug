@@ -22,7 +22,8 @@ block content
                     div.w3-col.l3
                         select.w3-select
                             each el,k in d
-                                option= k
+                                if el
+                                    option= k
                     div.w3-col.l3
                         div.w3-col.l5
                             p
@@ -37,13 +38,13 @@ block content
                 span.w3-btn.w3-display-topright.w3-hover-red &times;
                 form.w3-container
                     h3.w3-center Add Product
-                    input.w3-input.w3-half(placeholder="Pub Name")
-                    input.w3-input.w3-half(placeholder="Base Url")
+                    input.w3-input.w3-half(placeholder="Pub Name", name="name")
+                    input.w3-input.w3-half(placeholder="Base Url", name="base")
                     div.w3-container.w3-content
                         h5 Add Url Appenditures
                         div.w3-btn.w3-right.w3-hover-green &plus;
-                        input.w3-input.w3-col.l6(placeholder='Tag')
-                        input.w3-input.w3-col.l5(placeholder='Url Appenditure')
+                        input.w3-input.w3-col.l6(placeholder='Tag', name="tag-1")
+                        input.w3-input.w3-col.l5(placeholder='Url Appenditure', name="app-1")
                     label.w3-right
                         div
                             h2

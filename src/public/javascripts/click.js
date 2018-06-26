@@ -281,7 +281,8 @@ let onload = function () {
     b.modalBtn = document.querySelectorAll("span.w3-btn");
     b.modal = document.querySelector(".w3-modal");
     b.searchInput = document.querySelectorAll("input.search");
-
+    b.subFormInputs = document.querySelectorAll("form div.w3-container input.l6");
+    b.subFormInputs = document.querySelectorAll("form div.w3-container input.l5");
     b.ajax = new XMLHttpRequest();
     b.targetElement = document.querySelector('.r1');
     b.projectId = location.hash.substr(1);
