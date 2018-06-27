@@ -14,8 +14,8 @@ let dbi = new dbl("../app.db");
 let project = '';
 let isMobile = '';
 let runTests = '';
-let QueueName = '';
-
+let new_path = '';
+let special_tag = '';
 let stp = new Setup();
 
 
@@ -73,7 +73,8 @@ module.exports = async(p, m, t) => {
     stp.init("../app.ini");
     console.log("Loading Tests app at " , uj.timestamp);
     try {
-        console.log(stp.get_url(p.substring(0, 2), m));
+        special_tag = p.substring(0, 2);
+        new_path = (stp.get_url(special_tag, m));
     }catch (e) {
         console.error(e.message);
     }
@@ -124,5 +125,17 @@ module.exports = async(p, m, t) => {
             console.error(ex, "app error");
         });
     }
+    } else {
+        if (m && m === 'base')
+        {
+            let new_promise = new Promise((win)=>{
+                uj.fileName = stp.get_values(special_tag,m);
+                uj.testLocations  = new_path;
+                win();
+            });
+            new_promise.then(()=>{
+                return new Promise(uj.getScreensP);
+            }).catch(err=>console.log(err));
+        }
     }
 };
