@@ -74,7 +74,8 @@ module.exports = async(p, m, t) => {
     console.log("Loading Tests app at " , uj.timestamp);
     try {
         special_tag = p.substring(0, 2);
-        new_path = (stp.get_url(special_tag, m));
+        new_path = stp.get_url(special_tag, m);
+        console.log('Path',new_path);
     }catch (e) {
         console.error(e.message);
     }
@@ -126,10 +127,11 @@ module.exports = async(p, m, t) => {
         });
     }
     } else {
-        if (m && m === 'base')
+        if (m)
         {
             let new_promise = new Promise((win)=>{
-                uj.fileName = stp.get_values(special_tag,m);
+                uj.fileName = b_path + uj.name + ".png";
+                console.log(uj.fileName);
                 uj.testLocations  = new_path;
                 win();
             });

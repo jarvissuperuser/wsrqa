@@ -68,7 +68,7 @@ class UserJourney{
     filesInit(imgBsPath){
         console.log("files init");
         let self = selfer;
-        console.log("timestamp",self.timestamp)
+        console.log("timestamp",self.timestamp);
         self.testImg = self.testImg?self.testImg:imgBsPath + self.project + '/' + self.name + '_' + self.timestamp + '.png';
         self.pivotImg = self.pivotImg?self.pivotImg:imgBsPath + self.project + '/' + self.name + '.png';
         self.fileName = (self.filesExist.pivot) ? self.testImg : self.pivotImg;
@@ -154,11 +154,12 @@ class UserJourney{
     }
     getScreensP (resolve, reject) {
         let self = selfer;
+        console.log(self);
 
         try {
             console.log(self.fileName, "attempt for image");
             webshot(self.testLocations, self.fileName, self.options, function(err) {
-                console.log("img error or rundiff");
+                console.log(self);
                 if (err) {
                     console.log(err.trace);
                     reject(err);
