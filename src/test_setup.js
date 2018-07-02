@@ -17,6 +17,7 @@ try {
     conf.add_to_file("dl","base","http://www.dispatchlive.co.za");
     pub_arr.forEach(el=>conf.add_to_file(el,"login","/u/sign-in/"));
     pub_arr.forEach(el=>conf.add_to_file(el,"empty",""));
+    pub_arr.forEach(el=>conf.add_to_file(el,"reset","/u/reset/"));
     conf.add_to_file("tl","name","timeslive");
     conf.add_to_file("st","name","timesselect");
     conf.add_to_file("sl","name","sowetanlive");
