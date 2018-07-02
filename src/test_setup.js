@@ -5,6 +5,8 @@ try {
     conf.init("../app.ini");
     //console.log(conf);
 
+    let pub_arr = ["tl","st","wo","sl","dl","hl","bl"];
+
     // case add to file and update
     conf.add_to_file("tl","base","http://www.timeslive.co.za");
     conf.add_to_file("st","base","http://select.timeslive.co.za");
@@ -13,28 +15,15 @@ try {
     conf.add_to_file("wo","base","http://www.wantedonline.co.za");
     conf.add_to_file("hl","base","http://www.heraldlive.co.za");
     conf.add_to_file("dl","base","http://www.dispatchlive.co.za");
-    conf.add_to_file("tl","login","/u/sign-in/");
-    conf.add_to_file("st","login","/u/sign-in/");
-    conf.add_to_file("sl","login","/u/sign-in/");
-    conf.add_to_file("tl","login","/u/sign-in/");
-    conf.add_to_file("bl","login","/u/sign-in/");
-    conf.add_to_file("wo","login","/u/sign-in/");
-    conf.add_to_file("hl","login","/u/sign-in/");
-    conf.add_to_file("dl","login","/u/sign-in/");
-    conf.add_to_file("tl","empty","");
-    conf.add_to_file("st","empty","");
-    conf.add_to_file("sl","empty","");
-    conf.add_to_file("bl","empty","");
-    conf.add_to_file("wo","empty","");
-    conf.add_to_file("hl","empty","");
-    conf.add_to_file("dl","empty","");
+    pub_arr.forEach(el=>conf.add_to_file(el,"login","/u/sign-in/"));
+    pub_arr.forEach(el=>conf.add_to_file(el,"empty",""));
     conf.add_to_file("tl","name","timeslive");
     conf.add_to_file("st","name","timesselect");
     conf.add_to_file("sl","name","sowetanlive");
     conf.add_to_file("bl","name","businesslive");
     conf.add_to_file("hl","name","heraldlive");
     conf.add_to_file("dl","name","dispatchlive");
-    conf.add_to_file("wanted","name","wanted");
+    conf.add_to_file("wo","name","wanted");
     conf.add_to_file("bl","name-test","businesslive");
 
     console.log(conf.get_url("tl",'login'));

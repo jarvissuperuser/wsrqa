@@ -33,7 +33,6 @@ class Setup{
     update_file(){
         if (this.config_file){
             let data = JSON.stringify(this.setup);
-            console.log(data);
             fs.writeFileSync(this.config_file,data,"utf8");
         }
         else
