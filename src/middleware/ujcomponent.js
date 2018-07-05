@@ -20,7 +20,7 @@ const testurls = {
 	"tl_home": "www.timeslive.co.za",
 	"bl_home": "www.businesslive.co.za",
 	"sl_home": "www.sowetanlive.co.za",
-	"w_home": "www.wantedonline.co.za",
+	"wo_home": "www.wantedonline.co.za",
     "hl_home": "www.heraldlive.co.za",
     "ts_home": "select.timeslive.co.za"
 };
@@ -29,8 +29,8 @@ const projects = {
 	"ts_home": "timesselect",
 	"bl_home": "businesslive",
 	"sl_home": "sowetanlive",
-	"w_home": "wanted",
-    "hl_home":"herald"
+	"wo_home": "wanted",
+    "hl_home": "herald"
 };
 
 let testLocations = "";
@@ -38,19 +38,19 @@ let testLocations = "";
 let p_input = async (page,selector,info)=>{
     await page.click(selector);
     await page.keyboard.type(info);
-}
+};
 
 let findSpace = (data) =>{
     while(data.search(" ")>0)
         data=data.replace(" ","+");
     return data;
-}
+};
 
 let auth = (data)=>{
     let cleaner= findSpace(data);//cleaner string
     let info = Buffer.from(cleaner,'base64').toString();
     return info.split('<:>');
-}
+};
 let browser = undefined;
 let page  = undefined;
 let creds = [];
@@ -62,7 +62,7 @@ let image_log = () =>{
         +" Unit:"+method
         +"\",\""+ creds[2].concat(".png")+"\")";
     ujt.logToDataBase(qry);
-}
+};
 
 let iFrameClick = async (target) => {
     let frame = await page.frames().find(f=>{
@@ -72,17 +72,17 @@ let iFrameClick = async (target) => {
     console.log(frame.$(target));
     //const elem = await frame.document.querySelector(target);
     //await elem.click();
-}
+};
 
-let waitInSec = async(sec)=>{
-    await new Promise(function (resolve,reject) {
+let waitInSec = (sec)=>{
+     new Promise(function (resolve,reject) {
         if (isNaN(sec)) reject("time value not number");
         setTimeout(function () {
             console.log("complete:",sec,'s');
-            resolve();
+            resolve(true);
         },parseFloat(sec)*1000);
     });
-}
+};
 
 
 let login_do = async ()=>{

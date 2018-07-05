@@ -29,7 +29,7 @@ class TCase {
         }).catch((err) => {
             rest.write(JSON.stringify(err));
             rest.end();
-        });;
+        });
     }
     update_test_reg(req, rest) {
         let render_rows = this.render_rows;
@@ -78,7 +78,7 @@ class TCase {
         }).catch((err) => {
             rest.write(JSON.stringify(err));
             rest.end();
-        });;
+        });
     }
     get_test_reg(req, rest) {
         let render_rows = this.render_rows;

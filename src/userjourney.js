@@ -2,16 +2,18 @@ const fs = require("fs-extra");
 const webshot = require("webshot");
 const resemble = require("node-resemble-js");
 const dbl = require('./sqlite_con_man');
-const async = require("async");
+//const async = require("async");
 const mmnt = require("moment");
-
-
+const puppet = require("puppeteer");
+const devices = require("./devDescExt");
+const QB = require("./querybuilder");
+let qb = new QB();
 const desktopAgent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36';
 
 const opts = {
     screenSize: {
-        width: 1920,
-        height: 1080
+        width: 1366,
+        height: 768
     },
     shotSize: {
         width: "all",
@@ -22,7 +24,7 @@ const opts = {
 let selfer = null;
 class UserJourney{
     
-    constructor(options,db){
+    constructor(options){
         this.options = options?options:opts;
         this.project = '';
         this.isMobile = '';
@@ -37,32 +39,32 @@ class UserJourney{
         this.timestamp = mmnt().format("MM-D-YY-h-mm-s");
         this.testLocations = "http://timeslive.co.za";
         this.name = '';
+        this.base_url ="./public/images/";
         selfer = this;
         this.log = false;
-        this.dbi = null;
+        this.dbi = qb.db;
     }
     setup(base_path,projects,p){
         console.log("ujsetup");
         let self = selfer;
-        let imgBsPath = base_path?base_path:'./public/images/';
+        self.base_url = base_path?base_path:'./public/images/';
         self.project = p;
         self.name = (projects === undefined) ? self.project : projects[p];
     }
-    async dbSetup(){
+    dbSetup(){
         console.log("uj DB setup");
         return new Promise((w,f)=> {
-            let self = selfer;
-            self.dbi = new dbl("../app.db");
-            self.dbi.multiquery(["insert into test(t_name) values('" + self.name + "')"]);
-            self.dbi.e.on('done', () => {
-                let d = self.dbi.datamulti[0];
-                self.dbi.db.all("select id from test order by id desc limit 1", (err, rows) => {
-                    rows.forEach((row) => {
-                        self.project_id = row.id;
-                    });
-                    w();
-                });
-            });
+            try {
+                let self = selfer;
+                self.dbi = qb.db;
+                let qry = qb.insert("test", ["tname"], ['?']);
+                self.dbi.db.run(qry, [self.name] ,function (err, rows) {
+                    self.project_id = this.lastID;
+                    win(self)
+                })
+            } catch (e) {
+                f([e,selfer]);
+            }
         });
     }
     filesInit(imgBsPath){

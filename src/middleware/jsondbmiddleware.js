@@ -4,7 +4,7 @@ let result = [];
 
 module.exports = async(req,rest)=>{
     result = [];
-    var limit = "LIMIT "+ (req.query.limit?req.query.limit:10);
+    let limit = "LIMIT "+ (req.query.limit?req.query.limit:10);
     if (req.query.test)
         db.db.all("SELECT id AS k, t_name AS n, "+
             "t_timestamp AS t FROM test "+
@@ -45,4 +45,4 @@ module.exports = async(req,rest)=>{
                     resolve();
                 });
             });
-}
+};

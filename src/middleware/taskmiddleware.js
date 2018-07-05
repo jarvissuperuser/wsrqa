@@ -30,7 +30,7 @@ module.exports = async(req,rest)=>{
             tcase.get_test(req,rest);
             break;
         default:
-            rest.write(JSON.stringify({"Error":"404 not found"}));
+            rest.sendStatus(404).write(JSON.stringify({"Error":"404 not found"}));
             rest.end(); 
     }
 };

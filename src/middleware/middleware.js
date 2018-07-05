@@ -21,8 +21,8 @@ let stp = new Setup();
 
 var options = {
     screenSize: {
-        width: 1920,
-        height: 1080
+        width: 1366,
+        height: 768
     },
     shotSize: {
         width: "all",
@@ -36,21 +36,21 @@ const testurls = {
     "tl_article": "www.timeslive.co.za/politics/2018-01-18-ramaphosa-piles-pressure-on-zuma-with-anti-corruption-call",
     "bl_home": "www.businesslive.co.za",
     "sl_home": "www.sowetanlive.co.za",
-    "w_home": "wantedonline.co.za"
+    "wo_home": "www.wantedonline.co.za"
 };
 let projects = {
     "tl_home": "timeslive",
     "tl_article": "timeslive",
     "bl_home": "businesslive",
     "sl_home": "sowetanlive",
-    "w_home": "wanted"
+    "wo_home": "wanted"
 };
 const appenditures = {
     articles:{},
     pages:{},
     categories:{},
     sub_articles:{}
-}
+};
 
 let testLocations;
 
@@ -79,65 +79,18 @@ module.exports = async(p, m, t) => {
     }catch (e) {
         console.error(e.message);
     }
-    //console.log(uj);
 
-    if (false){//haha
-    try{
+    if (m)
+    {
+        let new_promise = new Promise((win)=>{
+            uj.fileName = b_path + uj.name + ".png";
+            console.log(uj.fileName);
+            uj.testLocations  = new_path;
+            win();
+        });
+        new_promise.then(()=>{
+            return new Promise(uj.getScreensP);
+        }).catch(err=>console.log(err));
+    }
 
-        uj.dbi = new dbl("../app.db");
-        uj.dbSetup();
-    }
-    catch(ex){
-        console.log("dbi exception",ex);
-        dbi = new dbl("../app.db");
-        dbi.multiquery(["insert into test(t_name) values('" + uj.name + "')"]);
-        dbi.e.on('done', () => {
-            //console.log(db.datamulti[0, 0].length);
-            //var d = dbi.datamulti[0];
-            stopper = false;
-            dbi.db.all("select id from test order by id desc limit 1", (err, rows) => {
-                rows.forEach((row) => {
-                    uj.project_id = row.id;
-                });
-            });
-        });
-    }
-    if (uj.timestamp) {
-        console.log(uj.timestamp);
-        var pr = new Promise(function (w, f) {
-            uj.testLocations = testurls[project];
-            uj.setup(b_path, projects, p);
-            uj.filesInit(b_path);
-            uj.checkFilesP(w, f);
-        });
-        pr.then(() => {
-            return new Promise(function (w, f) {
-                uj.filesInit(b_path);
-                uj.getScreensP(w, f);
-            });
-        }).then((gsp) => {
-            return new Promise(uj.checkFilesP);
-        }).then((f) => {
-            if (uj.filesExist.test)
-                uj.runDiff(uj.name, uj.timestamp);
-            else
-                console.log("nothing to test':'diff avoided");
-        }).catch((ex) => {
-            console.error(ex, "app error");
-        });
-    }
-    } else {
-        if (m)
-        {
-            let new_promise = new Promise((win)=>{
-                uj.fileName = b_path + uj.name + ".png";
-                console.log(uj.fileName);
-                uj.testLocations  = new_path;
-                win();
-            });
-            new_promise.then(()=>{
-                return new Promise(uj.getScreensP);
-            }).catch(err=>console.log(err));
-        }
-    }
 };

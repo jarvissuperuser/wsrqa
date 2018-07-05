@@ -34,27 +34,10 @@ function curl(url) {
 
 async function spawn(){
     pop();
-    curl(urlList[0]).then(()=>{
-        return delay();
-    }).then(()=>{
-        return curl(urlList[1])
-    }).then(()=>{
-        return delay();
-    }).then(()=>{
-        return curl(urlList[2])
-    }).then(()=>{
-        return delay();
-    }).then(()=>{
-        return curl(urlList[3])
-    }).then(()=>{
-        return delay();
-    }).then(()=>{
-        return curl(urlList[4])
-    }).then(()=>{
-        return delay();
-    }).then(()=>{
-        return curl(urlList[5])
-    });
+    for (let a = 0; a<urlList.length;a++){
+        await curl(urlList[a]);
+        await delay();
+    }
 }
 
 spawn();
