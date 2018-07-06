@@ -22,6 +22,17 @@ const opts = {
     userAgent: desktopAgent
 }; 
 let selfer = null;
+
+let waitInSec = (sec)=>{
+    new Promise(function (resolve,reject) {
+        if (isNaN(sec)) reject("time value not number");
+        setTimeout(function () {
+            console.log("complete:",sec,'s');
+            resolve(true);
+        },parseFloat(sec)*1000);
+    });
+};
+
 class UserJourney{
     
     constructor(options){
@@ -43,6 +54,11 @@ class UserJourney{
         selfer = this;
         this.log = false;
         this.dbi = qb.db;
+        this.browser = null;
+        this.page = null;
+        this.cred = null;
+        this.email = "input[type='email']";
+        this.password = "input[type='password']";
     }
     setup(base_path,projects,p){
         console.log("ujsetup");
@@ -50,6 +66,15 @@ class UserJourney{
         self.base_url = base_path?base_path:'./public/images/';
         self.project = p;
         self.name = (projects === undefined) ? self.project : projects[p];
+    }
+    async initBrowser(dev){
+        this.browser = await puppet.launch();
+        this.page = await this.browser.newPage();
+        let device = dev?dev:devices['1366x768'];
+        await page.emulate(devices['1366x768']);
+    }
+    async closeBrowser(){
+        await this.browser.close();
     }
     dbSetup(){
         console.log("uj DB setup");
@@ -119,6 +144,18 @@ class UserJourney{
         }
         if (self.log)
             this.logToDataBase(q);
+    }
+    async login_(url){
+        if(this.cred && this.page){
+            await this.page.goto(url);
+            await this.input_(this.email,this.cred[1]);
+            await this.page.click("button[type]");
+            await this.page.screenshot({path:this.name + "_login_email.png"});
+        }
+    }
+    async input_(selector,data){
+        await this.page.click(selector);
+        await this.page.keyboard.type(data);
     }
     checkFilesP(resolve, reject) {
         console.log("files checker");

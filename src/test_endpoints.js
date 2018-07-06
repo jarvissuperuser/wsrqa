@@ -32,7 +32,7 @@ function curl(url) {
     });
 }
 
-async function spawn(){
+async function url_iterate(){
     pop();
     for (let a = 0; a<urlList.length;a++){
         await curl(urlList[a]);
@@ -40,4 +40,4 @@ async function spawn(){
     }
 }
 
-spawn();
+url_iterate();
