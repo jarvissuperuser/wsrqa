@@ -6,19 +6,24 @@ let setup = new Stp();
 setup.init("../app.ini");
 let urlList = [];
 let target = ["tl_home","wo_home","sl_home","bl_home","dl_home","bl_home"];
-function pop() {
+function pop_blank() {
     target.forEach((el)=>{
         urlList.push(`http://localhost:3000/regressiontest/?p=${el}&m=empty&t=yes`);
     });
 }
-
-function delay(){
-    return new Promise((w)=>{
-        setTimeout(()=>{w('done')},4000);
+function pop_login() {
+    target.forEach((el)=>{
+        urlList.push(`http://localhost:3000/regressiontest/?p=${el}&m=login&t=yes`);
     });
 }
 
-function curl(url) {
+function delay(sec){
+    return new Promise((w)=>{
+        setTimeout(()=>{w('done')},(sec?sec*1000:4000));
+    });
+}
+
+function t_curl(url) {
     return new Promise((w)=>{
         let uri = `curl "${url}"`;
         exec(uri,(a,b,c)=>{
@@ -33,10 +38,11 @@ function curl(url) {
 }
 
 async function url_iterate(){
-    pop();
+    pop_blank();
+    pop_login();
     for (let a = 0; a<urlList.length;a++){
-        await curl(urlList[a]);
-        await delay();
+        await t_curl(urlList[a]);
+        await delay(9);
     }
 }
 

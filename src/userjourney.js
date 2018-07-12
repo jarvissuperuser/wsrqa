@@ -71,7 +71,7 @@ class UserJourney{
         this.browser = await puppet.launch();
         this.page = await this.browser.newPage();
         let device = dev?dev:devices['1366x768'];
-        await page.emulate(devices['1366x768']);
+        await this.page.emulate(device);
     }
     async closeBrowser(){
         await this.browser.close();
@@ -151,6 +151,11 @@ class UserJourney{
             await this.input_(this.email,this.cred[1]);
             await this.page.click("button[type]");
             await this.page.screenshot({path:this.name + "_login_email.png"});
+            await this.input_(this.password,this.cred[2]);
+            await this.page.click("button[type]");
+            await this.page.screenshot({path:this.name + "_login_do.png"});
+            await this.page.waitForNavigation();
+            await this.page.screenshot({path:this.name + "_login_complete.png"});
         }
     }
     async input_(selector,data){

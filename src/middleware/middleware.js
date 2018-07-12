@@ -57,12 +57,11 @@ let testLocations;
 
 
 module.exports = async(p, m, t) => {
-
     project = p;
     isMobile = m;
     runTests = t;
 
-    var b_path = "./public/images/";
+    let b_path = "./public/images/";
     uj = new UJC();
     uj.log = true;
     uj.project = '';
@@ -78,19 +77,40 @@ module.exports = async(p, m, t) => {
         console.log('Path',new_path);
     }catch (e) {
         console.error(e.message);
-    }
+     }
 
-    if (m)
-    {
-        let new_promise = new Promise((win)=>{
-            uj.fileName = b_path + uj.name + ".png";
-            console.log(uj.fileName);
-            uj.testLocations  = new_path;
-            win();
-        });
-        new_promise.then(()=>{
-            return new Promise(uj.getScreensP);
-        }).catch(err=>console.log(err));
+    try {
+        switch (m) {
+            case "empty":
+                let new_promise = new Promise((win) => {
+                    uj.fileName = b_path + uj.name + ".png";
+                    console.log(uj.fileName);
+                    uj.testLocations = new_path;
+                    win();
+                });
+                new_promise.then(() => {
+                    return new Promise(uj.getScreensP);
+                }).catch(err => console.log(err));
+                break;
+            case "login":
+                uj.cred = ["blank", "mugadzatt01@gmail.com", "Ttm331371"];
+                uj.name = b_path + uj.name;
+                await uj.initBrowser();
+                await uj.login_(new_path);
+                await uj.closeBrowser();
+                break;
+            case "reset":
+                uj.cred = ["blank", "mugadzatt01@gmail.com", "Ttm331371"];
+                uj.name = b_path + uj.name;
+                await uj.initBrowser();
+                //await uj.(new_path);
+                await uj.closeBrowser();
+                break;
+            default:
+                console.log("No Thing");
+        }
+    }catch (e) {
+        console.log(e);
     }
 
 };
