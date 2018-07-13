@@ -18,6 +18,7 @@ try {
     pub_arr.forEach(el=>conf.add_to_file(el,"login","/u/sign-in/"));
     pub_arr.forEach(el=>conf.add_to_file(el,"empty",""));
     pub_arr.forEach(el=>conf.add_to_file(el,"reset","/u/reset/"));
+    pub_arr.forEach(el=>conf.add_to_file(el,"buy","/buy/"));
     conf.add_to_file("tl","name","timeslive");
     conf.add_to_file("st","name","timesselect");
     conf.add_to_file("sl","name","sowetanlive");
@@ -27,7 +28,7 @@ try {
     conf.add_to_file("wo","name","wanted");
     conf.add_to_file("bl","name-test","businesslive");
 
-    console.log(conf.get_url("tl",'login'));
+    console.log(conf.get_url("bl",'buy'));
     
 } catch (error) {
     console.log(error);

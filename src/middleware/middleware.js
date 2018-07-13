@@ -106,6 +106,16 @@ module.exports = async(p, m, t) => {
                 //await uj.(new_path);
                 await uj.closeBrowser();
                 break;
+            case "buy":
+                let buy_promise = new Promise((win) => {
+                    uj.fileName = b_path + uj.name + ".png";
+                    console.log(uj.fileName);
+                    uj.testLocations = new_path;
+                    win();
+                });
+                buy_promise.then(() => {
+                    return new Promise(uj.getScreensP);
+                }).catch(err => console.log(err));
             default:
                 console.log("No Thing");
         }

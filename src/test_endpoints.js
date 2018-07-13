@@ -17,6 +17,12 @@ function pop_login() {
     });
 }
 
+function pop_paywall() {
+    target.forEach((el)=>{
+        urlList.push(`http://localhost:3000/regressiontest/?p=${el}&m=buy&t=yes`);
+    });
+}
+
 function delay(sec){
     return new Promise((w)=>{
         setTimeout(()=>{w('done')},(sec?sec*1000:4000));
