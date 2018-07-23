@@ -15,6 +15,7 @@ try {
     conf.add_to_file("wo","base","http://www.wantedonline.co.za");
     conf.add_to_file("hl","base","http://www.heraldlive.co.za");
     conf.add_to_file("dl","base","http://www.dispatchlive.co.za");
+    pub_arr.forEach(el=>conf.add_to_file(el,"path",`./public/images/${el}/`));
     pub_arr.forEach(el=>conf.add_to_file(el,"login","/u/sign-in/"));
     pub_arr.forEach(el=>conf.add_to_file(el,"empty",""));
     pub_arr.forEach(el=>conf.add_to_file(el,"reset","/u/reset/"));
@@ -28,7 +29,8 @@ try {
     conf.add_to_file("wo","name","wanted");
     conf.add_to_file("bl","name-test","businesslive");
 
-    console.log(conf.get_url("bl",'buy'));
+    console.log(conf.get_url("tl",'buy'));
+    console.log(conf.get_values("bl",'path'));
     
 } catch (error) {
     console.log(error);

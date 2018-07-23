@@ -6,7 +6,7 @@ const asyncHandler = require('express-async-handler')
 // console.log(middleware());
 /* GET home page. */
 router.get('/', asyncHandler(async(req, res, next) => {
-	const result = await middleware(req.query.p ,req.query.m,req.query.t);
+	 middleware(req.query.p ,req.query.m,req.query.t);
 	 res.write("Running test on " + req.query.p);
 	 res.end();
   // res.render('index', { title: 'Express' });

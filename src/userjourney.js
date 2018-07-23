@@ -74,7 +74,8 @@ class UserJourney{
         await this.page.emulate(device);
     }
     async closeBrowser(){
-        await this.browser.close();
+        if (this.browser)
+            await this.browser.close();
     }
     dbSetup(){
         console.log("uj DB setup");
@@ -153,9 +154,7 @@ class UserJourney{
             await this.page.screenshot({path:this.name + "_login_email.png"});
             await this.input_(this.password,this.cred[2]);
             await this.page.click("button[type]");
-            await this.page.screenshot({path:this.name + "_login_do.png"});
-            await this.page.waitForNavigation();
-            await this.page.screenshot({path:this.name + "_login_complete.png"});
+
         }
     }
     async input_(selector,data){
@@ -198,7 +197,7 @@ class UserJourney{
     }
     getScreensP (resolve, reject) {
         let self = selfer;
-        console.log(self);
+        //console.log(self);
 
         try {
             console.log(self.fileName, "attempt for image");

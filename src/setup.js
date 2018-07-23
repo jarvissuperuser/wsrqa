@@ -28,7 +28,8 @@ class Setup{
         }
     }
     get_values(publication,type){
-        return this.setup[type?type:"empty"];
+        let raw = this.setup[type?type:"empty"][publication];
+        return raw?raw:"";
     }
     update_file(){
         if (this.config_file){
@@ -42,8 +43,8 @@ class Setup{
     }
     get_url(publication,type){
         let t = type?type:'empty';
-        let base = this.get_values(publication,'base')[publication];
-        return  base + this.get_values(publication,t)[publication];
+        let base = this.get_values(publication,'base');
+        return  (type==="base"||type==="empty")?base:base + this.get_values(publication,t);
     }
     init(filename){
         try{

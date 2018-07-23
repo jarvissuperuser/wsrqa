@@ -54,27 +54,39 @@ const appenditures = {
 
 let testLocations;
 
+let startUp = async ()=>{
 
+    if (!uj.page) {
+
+    }
+    return uj.page;
+};
+
+let finish = () => {
+
+};
 
 module.exports = async(p, m, t) => {
     project = p;
     isMobile = m;
     runTests = t;
-
+    stp.init("../app.ini");
     let b_path = "./public/images/";
     uj = new UJC();
+    //let page = await startUp();
     uj.log = true;
     uj.project = '';
     uj.filesExist = {pivot:false,test:false};
     uj.testImg = '';
     uj.pivotImg = '';
     uj.name = (projects[project] === undefined) ? project : projects[project];
-    stp.init("../app.ini");
+
     console.log("Loading Tests app at " , uj.timestamp);
     try {
         special_tag = p.substring(0, 2);
+        b_path = stp.get_values(special_tag,"path");
         new_path = stp.get_url(special_tag, m);
-        console.log('Path',new_path);
+        console.log('web_Path',new_path);
     }catch (e) {
         console.error(e.message);
      }
@@ -96,13 +108,18 @@ module.exports = async(p, m, t) => {
                 uj.cred = ["blank", "mugadzatt01@gmail.com", "Ttm331371"];
                 uj.name = b_path + uj.name;
                 await uj.initBrowser();
-                await uj.login_(new_path);
+                await uj.login_(new_path,true);
+                let re = await uj.page.waitForNavigation({waitUntil:'networkidle2'});
+                //console.log(re);
+                if (re) await uj.page.screenshot({path: uj.name + "_login_complete.png"});
+                else await uj.page.screenshot({path: uj.name + "_login_fail.png"});
+
                 await uj.closeBrowser();
                 break;
             case "reset":
                 uj.cred = ["blank", "mugadzatt01@gmail.com", "Ttm331371"];
                 uj.name = b_path + uj.name;
-                await uj.initBrowser();
+                //await uj.initBrowser();
                 //await uj.(new_path);
                 await uj.closeBrowser();
                 break;
