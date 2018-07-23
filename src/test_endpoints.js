@@ -5,7 +5,7 @@ let setup = new Stp();
 
 setup.init("../app.ini");
 let urlList = [];
-let target = ["tl_home","wo_home","sl_home","bl_home","dl_home","bl_home"];
+let target = ["tl_home","wo_home","sl_home","bl_home","dl_home","bl_home","st_home"];
 function pop_blank() {
     target.forEach((el)=>{
         urlList.push(`http://localhost:3000/regressiontest/?p=${el}&m=empty&t=yes`);
@@ -43,13 +43,25 @@ function t_curl(url) {
     });
 }
 
-async function url_iterate(){
-    pop_blank();
-    pop_login();
+async function url_iterate(time){
+    //pop_login();
     for (let a = 0; a<urlList.length;a++){
         await t_curl(urlList[a]);
-        await delay(9);
+        await delay(time);
     }
 }
 
-url_iterate();
+
+
+async function test_endpo() {
+    pop_blank();
+    await url_iterate(15);
+    urlList = [];
+    pop_login();
+    await url_iterate(30);
+    urlList =[];
+    pop_paywall();
+    await url_iterate(30);
+}
+
+test_endpo();

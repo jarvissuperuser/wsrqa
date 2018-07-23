@@ -66,6 +66,12 @@ let finish = () => {
 
 };
 
+function delay(sec){
+    return new Promise((w)=>{
+        setTimeout(()=>{w('done')},(sec?sec*1000:4000));
+    });
+}
+
 module.exports = async(p, m, t) => {
     project = p;
     isMobile = m;
@@ -73,7 +79,6 @@ module.exports = async(p, m, t) => {
     stp.init("../app.ini");
     let b_path = "./public/images/";
     uj = new UJC();
-    //let page = await startUp();
     uj.log = true;
     uj.project = '';
     uj.filesExist = {pivot:false,test:false};
@@ -92,50 +97,45 @@ module.exports = async(p, m, t) => {
      }
 
     try {
+        await uj.initBrowser();
         switch (m) {
             case "empty":
-                let new_promise = new Promise((win) => {
-                    uj.fileName = b_path + uj.name + ".png";
-                    console.log(uj.fileName);
-                    uj.testLocations = new_path;
-                    win();
-                });
-                new_promise.then(() => {
-                    return new Promise(uj.getScreensP);
-                }).catch(err => console.log(err));
+                await uj.md(b_path);
+                uj.testLocations = new_path;
+                uj.fileName = b_path + uj.name + ".png";
+                await uj.getScreens();
                 break;
             case "login":
                 uj.cred = ["blank", "mugadzatt01@gmail.com", "Ttm331371"];
                 uj.name = b_path + uj.name;
-                await uj.initBrowser();
-                await uj.login_(new_path,true);
-                let re = await uj.page.waitForNavigation({waitUntil:'networkidle2'});
+                await uj.login_(new_path);
+                let re = await delay(5);
                 //console.log(re);
                 if (re) await uj.page.screenshot({path: uj.name + "_login_complete.png"});
                 else await uj.page.screenshot({path: uj.name + "_login_fail.png"});
-
-                await uj.closeBrowser();
+                console.log("close ",new_path);
                 break;
             case "reset":
                 uj.cred = ["blank", "mugadzatt01@gmail.com", "Ttm331371"];
                 uj.name = b_path + uj.name;
-                //await uj.initBrowser();
                 //await uj.(new_path);
-                await uj.closeBrowser();
                 break;
             case "buy":
                 let buy_promise = new Promise((win) => {
-                    uj.fileName = b_path + uj.name + ".png";
+                    uj.fileName = b_path + uj.name + "_paywall.png";
                     console.log(uj.fileName);
                     uj.testLocations = new_path;
+
                     win();
                 });
                 buy_promise.then(() => {
                     return new Promise(uj.getScreensP);
                 }).catch(err => console.log(err));
+                break;
             default:
                 console.log("No Thing");
         }
+        uj.closeBrowser();
     }catch (e) {
         console.log(e);
     }

@@ -148,13 +148,12 @@ class UserJourney{
     }
     async login_(url){
         if(this.cred && this.page){
-            await this.page.goto(url);
+            await this.page.goto(url,{waitUntil:"domcontentloaded"});
             await this.input_(this.email,this.cred[1]);
             await this.page.click("button[type]");
             await this.page.screenshot({path:this.name + "_login_email.png"});
             await this.input_(this.password,this.cred[2]);
             await this.page.click("button[type]");
-
         }
     }
     async input_(selector,data){
@@ -195,23 +194,33 @@ class UserJourney{
             }
         });
     }
-    getScreensP (resolve, reject) {
+    async getScreens(){
+        try {
+            await selfer.page.goto(selfer.testLocations,{waitUntil:"domcontentloaded"});
+            await selfer.page.screenshot({path: selfer.fileName, fullPage: true});
+        } catch (e) {
+            console.error(e,"from",selfer.testLocations);
+        }
+    }
+    getScreensP (resolve,reject) {
         let self = selfer;
         //console.log(self);
 
         try {
             console.log(self.fileName, "attempt for image");
             webshot(self.testLocations, self.fileName, self.options, function(err) {
-                console.log(self);
+                //console.log(self);
                 if (err) {
                     console.log(err.trace);
                     reject(err);
                 }
-                console.log("Building test cases", self.fileName);
-                resolve();
+               console.log("Building test cases", self.fileName);
+                resolve(true);
             });
+            //if (self.page) resolve(self.page.screenshot({fullPage:true,path:self.fileName}));
         } catch (ex) {
             console.log("exception getscreen", ex);
+            reject(ex);
         }
     }
     arrayToPath (arr) {
@@ -273,5 +282,15 @@ class UserJourney{
             console.log("logToDataBase failed",ex,qry);
         }
     }
+
+    async md(filePath){
+        try {
+            await fs.ensureDir(filePath);
+        } catch (e) {
+            fs.mkdirSync(filePath);
+            fs.chmodSync(filePath, 777);
+        }
+    }
+
 }
 module.exports = UserJourney;

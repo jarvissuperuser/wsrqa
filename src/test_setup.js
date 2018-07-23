@@ -17,9 +17,15 @@ try {
     conf.add_to_file("dl","base","http://www.dispatchlive.co.za");
     pub_arr.forEach(el=>conf.add_to_file(el,"path",`./public/images/${el}/`));
     pub_arr.forEach(el=>conf.add_to_file(el,"login","/u/sign-in/"));
+    conf.add_to_file("wo","login","");//exclusion
     pub_arr.forEach(el=>conf.add_to_file(el,"empty",""));
     pub_arr.forEach(el=>conf.add_to_file(el,"reset","/u/reset/"));
+    conf.add_to_file("wo","reset","");
     pub_arr.forEach(el=>conf.add_to_file(el,"buy","/buy/"));
+    conf.add_to_file("wo","buy","");
+    conf.add_to_file("sl","buy","");
+    conf.add_to_file("dl","buy","");
+    conf.add_to_file("hl","buy","");
     conf.add_to_file("tl","name","timeslive");
     conf.add_to_file("st","name","timesselect");
     conf.add_to_file("sl","name","sowetanlive");
