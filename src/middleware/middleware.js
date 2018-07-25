@@ -91,6 +91,7 @@ module.exports = async(p, m, t) => {
         special_tag = p.substring(0, 2);
         b_path = stp.get_values(special_tag,"path");
         new_path = stp.get_url(special_tag, m);
+        uj.fileName = b_path + uj.name + ".png";
         console.log('web_Path',new_path);
     }catch (e) {
         console.error(e.message);
@@ -106,14 +107,18 @@ module.exports = async(p, m, t) => {
                 await uj.getScreens();
                 break;
             case "login":
-                uj.cred = ["blank", "mugadzatt01@gmail.com", "Ttm331371"];
-                uj.name = b_path + uj.name;
-                await uj.login_(new_path);
-                let re = await delay(5);
-                //console.log(re);
-                if (re) await uj.page.screenshot({path: uj.name + "_login_complete.png"});
-                else await uj.page.screenshot({path: uj.name + "_login_fail.png"});
-                console.log("close ",new_path);
+                if (stp.get_values(special_tag,m)) {
+                    uj.cred = ["blank", "mugadzatt01@gmail.com", "Ttm331371"];
+                    uj.name = b_path + uj.name;
+                    await uj.login_(new_path);
+                    //let re = await uj.page.waitForNavigation({waitUntil: "load"});
+                    //console.log(re);
+                    await delay(7);
+                    let re = "y";
+                    if (re) await uj.page.screenshot({path: uj.name + "_login_complete.png"});
+                    else await uj.page.screenshot({path: uj.name + "_login_fail.png"});
+                }
+                console.log("close ", new_path);
                 break;
             case "reset":
                 uj.cred = ["blank", "mugadzatt01@gmail.com", "Ttm331371"];
@@ -137,7 +142,7 @@ module.exports = async(p, m, t) => {
         }
         uj.closeBrowser();
     }catch (e) {
-        console.log(e);
+        console.log(e, "from" ,uj.name , uj.testLocations);
     }
 
 };

@@ -68,7 +68,7 @@ class UserJourney{
         self.name = (projects === undefined) ? self.project : projects[p];
     }
     async initBrowser(dev){
-        this.browser = await puppet.launch();
+        this.browser = await puppet.launch({headless: true});
         this.page = await this.browser.newPage();
         let device = dev?dev:devices['1366x768'];
         await this.page.emulate(device);
@@ -194,12 +194,26 @@ class UserJourney{
             }
         });
     }
+    gsFailOver(){
+        return new Promise((w,f)=>{
+            setTimeout(()=>{
+                //selfer.getScreensP(w,f);
+                w(true);
+            },9000);
+        });
+    }
     async getScreens(){
         try {
-            await selfer.page.goto(selfer.testLocations,{waitUntil:"domcontentloaded"});
+            await Promise.race([
+                this.gsFailOver(),
+                selfer.page.goto(selfer.testLocations,{waitUntil:"load",timeout:0})
+            ]).catch((e)=>{console.log(e,selfer.testLocations,selfer.fileName)});
+            //let data = await selfer.page.evaluate(()=>document.body.innerHTML);
+            //await waitInSec(6);
+            //console.log(data);
             await selfer.page.screenshot({path: selfer.fileName, fullPage: true});
         } catch (e) {
-            console.error(e,"from",selfer.testLocations);
+            console.error(e,"from",selfer.testLocations,selfer.fileName);
         }
     }
     getScreensP (resolve,reject) {

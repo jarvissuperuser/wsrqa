@@ -55,13 +55,13 @@ async function url_iterate(time){
 
 async function test_endpo() {
     pop_blank();
-    await url_iterate(15);
-    urlList = [];
-    pop_login();
-    await url_iterate(30);
-    urlList =[];
-    pop_paywall();
-    await url_iterate(30);
+    await url_iterate(13);
+    // urlList = [];
+    // pop_login();
+    // await url_iterate(16);
+    // urlList =[];
+    // pop_paywall();
+    // await url_iterate(16);
 }
 
 test_endpo();
