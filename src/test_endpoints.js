@@ -13,13 +13,13 @@ function pop_blank() {
 }
 function pop_login() {
     target.forEach((el)=>{
-        urlList.push(`http://localhost:3000/regressiontest/?p=${el}&m=login&t=yes`);
+        urlList.push(`http://localhost:3000/regressiontest/?p=${el}&m=login&t=no`);
     });
 }
 
 function pop_paywall() {
     target.forEach((el)=>{
-        urlList.push(`http://localhost:3000/regressiontest/?p=${el}&m=buy&t=yes`);
+        urlList.push(`http://localhost:3000/regressiontest/?p=${el}&m=buy&t=no`);
     });
 }
 

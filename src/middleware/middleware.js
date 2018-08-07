@@ -75,7 +75,7 @@ function delay(sec){
 async function runTestNative(m,b_path,new_path){
     switch (m) {
         case "empty":
-            uj.fileName = b_path + uj.name + ".png";
+            // uj.fileName = b_path + uj.name + ".png";
             await uj.getScreens();
             break;
         case "login":
@@ -152,8 +152,10 @@ module.exports = async(p, m, t) => {
             uj.fileName = b_path + uj.name + uj.timestamp + ".png";
             await runTestNative(m,b_path,new_path);
             uj.testImg = uj.fileName;
+            uj.filesExist["test"] = true;
             uj.runDiff(uj.fileName);
         }
+        console.log("done");
         uj.closeBrowser();
     }catch (e) {
         console.log(e, "from" ,uj.name , uj.testLocations);
