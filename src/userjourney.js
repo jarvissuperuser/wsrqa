@@ -268,8 +268,8 @@ class UserJourney{
                         console.log("name:" + name + ",datafailed:false");
                         self.genMessage("mismatchN",data.misMatchPercentage);
                     }
-                    self.logToDataBase("update test set t_val='"                    
-                        +data.misMatchPercentage + "' where id="+self.project_id+";");
+                    // self.logToDataBase("update test set t_val='"
+                    //     +data.misMatchPercentage + "' where id="+self.project_id+";");
                 });
             else
                 throw ("runDiff error ");

@@ -1,10 +1,10 @@
 var Setup = require("../setup");
-var moment = require("moment");
-var resemble = require("node-resemble-js");
-var fs = require('fs-extra');
+// var moment = require("moment");
+// var resemble = require("node-resemble-js");
+// var fs = require('fs-extra');
 var dbl = require('../sqlite_con_man');
-var amqp = require('amqp-connection-manager');
-var async = require("async");
+// var amqp = require('amqp-connection-manager');
+// var async = require("async");
 var UJC = require('../userjourney');
 
 let uj = undefined;
@@ -72,6 +72,47 @@ function delay(sec){
     });
 }
 
+async function runTestNative(m,b_path,new_path){
+    switch (m) {
+        case "empty":
+            uj.fileName = b_path + uj.name + ".png";
+            await uj.getScreens();
+            break;
+        case "login":
+            if (stp.get_values(special_tag,m)) {
+                uj.cred = ["blank", "mugadzatt01@gmail.com", "Ttm331371"];
+                uj.name = b_path + uj.name;
+                await uj.login_(new_path);
+                //let re = await uj.page.waitForNavigation({waitUntil: "load"});
+                //console.log(re);
+                await delay(7);
+                let re = "y";
+                if (re) await uj.page.screenshot({path: uj.name + "_login_complete.png"});
+                else await uj.page.screenshot({path: uj.name + "_login_fail.png"});
+            }
+            console.log("close ", new_path);
+            break;
+        case "reset":
+            uj.cred = ["blank", "mugadzatt01@gmail.com", "Ttm331371"];
+            uj.name = b_path + uj.name;
+            //await uj.(new_path);
+            break;
+        case "buy":
+            let buy_promise = new Promise((win) => {
+                uj.fileName = b_path + uj.name + "_paywall.png";
+                console.log(uj.fileName);
+                uj.testLocations = new_path;
+                win();
+            });
+            buy_promise.then(() => {
+                return new Promise(uj.getScreensP);
+            }).catch(err => console.log(err));
+            break;
+        default:
+            console.log("No Thing");
+    }
+}
+
 module.exports = async(p, m, t) => {
     project = p;
     isMobile = m;
@@ -98,47 +139,20 @@ module.exports = async(p, m, t) => {
      }
 
     try {
+        //setup
         await uj.initBrowser();
-        switch (m) {
-            case "empty":
-                await uj.md(b_path);
-                uj.testLocations = new_path;
-                uj.fileName = b_path + uj.name + ".png";
-                await uj.getScreens();
-                break;
-            case "login":
-                if (stp.get_values(special_tag,m)) {
-                    uj.cred = ["blank", "mugadzatt01@gmail.com", "Ttm331371"];
-                    uj.name = b_path + uj.name;
-                    await uj.login_(new_path);
-                    //let re = await uj.page.waitForNavigation({waitUntil: "load"});
-                    //console.log(re);
-                    await delay(7);
-                    let re = "y";
-                    if (re) await uj.page.screenshot({path: uj.name + "_login_complete.png"});
-                    else await uj.page.screenshot({path: uj.name + "_login_fail.png"});
-                }
-                console.log("close ", new_path);
-                break;
-            case "reset":
-                uj.cred = ["blank", "mugadzatt01@gmail.com", "Ttm331371"];
-                uj.name = b_path + uj.name;
-                //await uj.(new_path);
-                break;
-            case "buy":
-                let buy_promise = new Promise((win) => {
-                    uj.fileName = b_path + uj.name + "_paywall.png";
-                    console.log(uj.fileName);
-                    uj.testLocations = new_path;
-
-                    win();
-                });
-                buy_promise.then(() => {
-                    return new Promise(uj.getScreensP);
-                }).catch(err => console.log(err));
-                break;
-            default:
-                console.log("No Thing");
+        await uj.md(b_path);
+        uj.testLocations = new_path;
+        uj.pivotImg = b_path + uj.name + ".png";
+        await new Promise(uj.checkFilesP);
+        //process
+        if (t === 'no' && !uj.filesExist["pivot"])
+            await runTestNative(m,b_path,new_path);
+        else if (t === "yes"){
+            uj.fileName = b_path + uj.name + uj.timestamp + ".png";
+            await runTestNative(m,b_path,new_path);
+            uj.testImg = uj.fileName;
+            uj.runDiff(uj.fileName);
         }
         uj.closeBrowser();
     }catch (e) {

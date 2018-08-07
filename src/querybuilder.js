@@ -76,7 +76,7 @@ class QueryBuilder {
             str += e + "=" + this.str(data[e]) + ",";
         }     
         return str.substr(0,str.length-1);
-    }k
+    }
     str(element) {
         if (isNaN(element))
             return '"' + element + '"';
