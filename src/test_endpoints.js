@@ -13,7 +13,7 @@ function pop_blank() {
 }
 function pop_login() {
     target.forEach((el)=>{
-        urlList.push(`http://localhost:3000/regressiontest/?p=${el}&m=login&t=no`);
+        urlList.push(`http://localhost:3000/regressiontest/?p=${el}&m=login&t=yes`);
     });
 }
 
@@ -54,10 +54,10 @@ async function url_iterate(time){
 
 
 async function test_endpo() {
-    pop_blank();
-    await url_iterate(13);
+    pop_login();
+    await url_iterate(19);
     // urlList = [];
-    // pop_login();
+    // pop_blank();
     // await url_iterate(16);
     // urlList =[];
     // pop_paywall();

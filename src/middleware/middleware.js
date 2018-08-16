@@ -73,9 +73,11 @@ function delay(sec){
 }
 
 async function runTestNative(m,b_path,new_path){
+    let files = [];
     switch (m) {
         case "empty":
             // uj.fileName = b_path + uj.name + ".png";
+            files.push(uj.fileName);
             await uj.getScreens();
             break;
         case "login":
@@ -86,8 +88,12 @@ async function runTestNative(m,b_path,new_path){
                 //let re = await uj.page.waitForNavigation({waitUntil: "load"});
                 //console.log(re);
                 await delay(7);
+                let l_pic =  uj.name + "_login_complete.png";
+                let e_pic = uj.name + "_login_email.png";
+                files.push(e.pic);
+                files.push(l_pic);
                 let re = "y";
-                if (re) await uj.page.screenshot({path: uj.name + "_login_complete.png"});
+                if (re) await uj.page.screenshot({path:l_pic});
                 else await uj.page.screenshot({path: uj.name + "_login_fail.png"});
             }
             console.log("close ", new_path);
@@ -98,10 +104,11 @@ async function runTestNative(m,b_path,new_path){
             //await uj.(new_path);
             break;
         case "buy":
-            let buy_promise = new Promise((win) => {
+             let buy_promise = new Promise((win) => {
                 uj.fileName = b_path + uj.name + "_paywall.png";
                 console.log(uj.fileName);
                 uj.testLocations = new_path;
+                files.push(uj.fileName);
                 win();
             });
             buy_promise.then(() => {
@@ -111,6 +118,7 @@ async function runTestNative(m,b_path,new_path){
         default:
             console.log("No Thing");
     }
+    return files;
 }
 
 module.exports = async(p, m, t) => {
@@ -144,15 +152,18 @@ module.exports = async(p, m, t) => {
         await uj.md(b_path);
         uj.testLocations = new_path;
         uj.pivotImg = b_path + uj.name + ".png";
+        uj.diff_img = b_path + uj.name + uj.timestamp + "diff.png";
+        uj.fileName = b_path + uj.name + uj.timestamp + ".png";
+
+        uj.testImg = uj.fileName;
         await new Promise(uj.checkFilesP);
         //process
-        if (t === 'no' && !uj.filesExist["pivot"])
+        if (t === 'no')
             await runTestNative(m,b_path,new_path);
-        else if (t === "yes"){
-            uj.fileName = b_path + uj.name + uj.timestamp + ".png";
-            await runTestNative(m,b_path,new_path);
-            uj.testImg = uj.fileName;
+        else if (t === "yes" && uj.filesExist.pivot){
+            let files = await runTestNative(m,b_path,new_path);
             uj.filesExist["test"] = true;
+            uj.testImg = files[0];
             uj.runDiff(uj.fileName);
         }
         console.log("done");
