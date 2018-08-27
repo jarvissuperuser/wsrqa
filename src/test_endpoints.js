@@ -6,20 +6,23 @@ let setup = new Stp();
 setup.init("../app.ini");
 let urlList = [];
 let target = ["tl_home","wo_home","sl_home","bl_home","dl_home","bl_home","st_home"];
-function pop_blank() {
+function pop_blank(test) {
+    test=test?test:'no';
     target.forEach((el)=>{
-        urlList.push(`http://localhost:3000/regressiontest/?p=${el}&m=empty&t=yes`);
+        urlList.push(`http://localhost:3000/regressiontest/?p=${el}&m=empty&t=${test}`);
     });
 }
-function pop_login() {
+function pop_login(test) {
+    test=test?test:'no';
     target.forEach((el)=>{
-        urlList.push(`http://localhost:3000/regressiontest/?p=${el}&m=login&t=yes`);
+        urlList.push(`http://localhost:3000/regressiontest/?p=${el}&m=login&t=${test}`);
     });
 }
 
-function pop_paywall() {
+function pop_paywall(test) {
+    test=test?test:'no';
     target.forEach((el)=>{
-        urlList.push(`http://localhost:3000/regressiontest/?p=${el}&m=buy&t=no`);
+        urlList.push(`http://localhost:3000/regressiontest/?p=${el}&m=buy&t=${test}`);
     });
 }
 
@@ -56,9 +59,9 @@ async function url_iterate(time){
 async function test_endpo() {
     pop_login();
     await url_iterate(19);
-    // urlList = [];
-    // pop_blank();
-    // await url_iterate(16);
+    urlList = [];
+   	pop_blank("yes");
+    await url_iterate(26);
     // urlList =[];
     // pop_paywall();
     // await url_iterate(16);

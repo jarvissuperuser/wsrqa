@@ -254,28 +254,34 @@ class UserJourney{
         arr.reverse();
         return arr[0];
     }
-    runDiff (name, timestamp) {
-        let self = this;
-        try {
-            if (self.filesExist.pivot && self.filesExist.test)
-                resemble(self.pivotImg)
-                .compareTo(self.testImg).ignoreNothing().onComplete(function(data) {
+    runDiff (pivot, changed ) {
+        return new Promise(function(done,reject){
+            let self = this;
+            try {
+                resemble(pivot)
+                .compareTo(changed)
+                    .ignoreNothing()
+                    .onComplete(function(data) {
+                    // if (self.filesExist.pivot && self.filesExist.test)
+
                     if (data.misMatchPercentage > 5) {
                         console.log("name:" + name + ",datafailed:true", self.diff_img);
                         data.getDiffImage().pack().pipe(fs.createWriteStream(self.diff_img));
-                        self.genMessage("mismatchY",data.misMatchPercentage);
+                        done(self.diff_img);
+                        // self.genMessage("mismatchY",data.misMatchPercentage);
                     } else {
                         console.log("name:" + name + ",datafailed:false");
-                        self.genMessage("mismatchN",data.misMatchPercentage);
+                        done("neglegible difference");
+                        // self.genMessage("mismatchN",data.misMatchPercentage);
                     }
                     // self.logToDataBase("update test set t_val='"
                     //     +data.misMatchPercentage + "' where id="+self.project_id+";");
                 });
-            else
-                throw ("runDiff error ");
-        } catch (ex) {
-            console.log(ex, "testfiles not found");
-        }
+            } catch (ex) {
+                reject(ex);
+            }
+        });
+
     }
 
     logToDataBase (qry) {
