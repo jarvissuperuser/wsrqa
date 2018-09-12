@@ -19,7 +19,7 @@ let special_tag = '';
 let stp = new Setup();
 
 
-var options = {
+const options = {
     screenSize: {
         width: 1366,
         height: 768
