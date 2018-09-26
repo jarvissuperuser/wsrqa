@@ -19,10 +19,8 @@ class file_logic{
             default:
                 res=fv.join('-');
                 if (test===this.testOptions[0]){
-                    res+=fv.join('-')+'-'+t(test);
+                    res+='-'+t(test);
                 }
-
-
         }
         return res;
     }
