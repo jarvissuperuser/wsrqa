@@ -48,7 +48,7 @@ function Main(){
         this.url = " ";
        this.response_data =  {data:"",statusCode:"",headers:[]};
        this.data = "";
-       this.request = ht.get;
+       this.request =  null;
        this.options = {method:'GET'};
        this.response = null;
     }
@@ -56,7 +56,7 @@ function Main(){
 let data = "";
 Main.prototype.request = (url,cb)=>{
     return new Promise((w)=>{
-        ht.get(url,(res)=>{
+        ht.request(url,(res)=>{
             cb(res);
             res.on("end",w);
         });
