@@ -311,6 +311,9 @@ class UserJourney{
             fs.chmodSync(filePath, 777);
         }
     }
+    async visual_diff(img1,img2,img_diff){
+
+    }
 
 }
 module.exports = UserJourney;

@@ -14,7 +14,6 @@ class assert_to{
     async equal(multi){
         try {
             await assert.equal(this.compara, multi, this.message);
-                //.catch((e)=>{console.log("fail",e.message)});
             console.log(this.pass,this.message)
         } catch (e) {
            console.log(this.fail,e.message);
@@ -24,7 +23,6 @@ class assert_to{
 }
 class req_response {
     constructor(response){
-        //console.log(response);
         this.resp = response.data;
         this.statusCode = response.statusCode;
         this.headers= response.headers;
@@ -39,21 +37,9 @@ class req_response {
         return this.headers[name];
     }
 }
-// class Main{
-//     constructor(){
-//        this.url = "";
-//        this.response_data =  {data:"",statusCode:"",headers:[]};
-//        this.data = "";
-//        this.request = ht.get;
-//        this.options = {method:'GET'};
-//        this.response = null;
-//     }
-//
-// }
+
 function Main(){
     function constructor(){
-        this.url = " ";
-       this.data = "";
        this.request =  null;
        this.options = {method:'GET'};
        this.response = null;
@@ -75,13 +61,11 @@ Main.prototype.sendRequest = async function(url,callback){
     Main.prototype.url = url;
     data = await Main.prototype.request(url,async (rs)=> await Main.prototype.dataResponse(rs));
     Main.prototype.response = new req_response(data);
-    //console.log(data.headers);
-    //console.log(data.cookies);
     callback(Main.prototype.response);
 };
 
 Main.prototype.dataResponse = async function(resp){
-    //console.log(resp)
+
 };
 Main.prototype.err = function(error){
     console.log("Error: "+error.message);
