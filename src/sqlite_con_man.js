@@ -17,7 +17,6 @@ var manager = function(path_name) {
     this.fails = 0;
     this.e = e;
     e.on('res_done', this.listenercb);
-    process
 };
 
 manager.prototype.data = {};
@@ -52,4 +51,6 @@ manager.prototype.transaction = function(qry) {
         e.emit("res_done", { detail: err ? err : row });
     });
 };
+
+
 module.exports = manager;

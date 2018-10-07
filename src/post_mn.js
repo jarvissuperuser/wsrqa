@@ -1,5 +1,6 @@
 const assert =  require("assert");
 const request = require("request");
+const fetch = require("node-fetch");
 
 class assert_to{
     constructor(comparable,message){
@@ -26,6 +27,7 @@ class req_response {
         this.resp = response.data;
         this.statusCode = response.statusCode;
         this.headers= response.headers;
+        this.cookies = response.cookies;
     }
     json(){
         return JSON.parse(this.resp);
@@ -35,6 +37,18 @@ class req_response {
     }
     getHeader(name){
         return this.headers[name];
+    }
+    getCookie(name){
+    	let values = this.processCookies();
+    	return values[name];
+    }
+    processCookies(){
+    	let values = {};
+	    this.cookies.forEach((cookie)=>{
+		    let settings = cookie.split(';');
+		    values[settings[0].split('=')[0]]=settings[0].split('=')[1];
+	    });
+	    return values;
     }
 }
 
@@ -60,8 +74,8 @@ Main.prototype.request = (url,cb)=>{
 Main.prototype.sendRequest = async function(url,callback){
     Main.prototype.url = url;
     data = await Main.prototype.request(url,async (rs)=> await Main.prototype.dataResponse(rs));
-    Main.prototype.response = new req_response(data);
-    callback(Main.prototype.response);
+     Main.prototype.response = new req_response(data);
+    await callback(Main.prototype.response);
 };
 
 Main.prototype.dataResponse = async function(resp){
@@ -70,12 +84,39 @@ Main.prototype.dataResponse = async function(resp){
 Main.prototype.err = function(error){
     console.log("Error: "+error.message);
 };
-Main.prototype.test = function(msg,callback){
+Main.prototype.test = async function(msg,callback){
     Main.prototype.test_msg = msg;
-    callback();
+    await callback();
 };
 Main.prototype.expect = function(comparable){
     return {to:new assert_to(comparable,Main.prototype.test_msg)}
+};
+
+Main.prototype.login = async function(url,email,password,callback){
+	 return await new Promise((w,f)=>{
+	 	let body = "";
+		 fetch(url,
+				 {
+					 "body":`email=${encodeURIComponent(email)}&password=${password}`,
+			 "method":"POST"}).then(
+			   (res)=>{
+	 	 	      body = res.text();
+
+	 	 	      console.log(`email=${(email)}&password=${password}`);
+			   }).then(
+			   		(text)=> {
+					    callback(body);
+					    w({data:body,statusCode:res.status,headers:res.headers,cookies:res.headers.get('set-cookie')});
+			   }).catch(()=>{f()});
+	 });
+};
+
+Main.prototype.getCookieValue  =function (name){
+	try {
+		return Main.prototype.response.getCookie(name);
+	}catch (e) {
+		return "not set";
+	}
 };
 
 module.exports = Main;
