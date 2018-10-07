@@ -1,4 +1,5 @@
 const pmn = require("./post_mn");
+const fetch = require("node-fetch");
 let pm = new pmn();
 let authorisation = "3502fdd826663b85ce1721c780c84404e5326502";
 
@@ -7,7 +8,7 @@ async function tests() {
 			'mugadzat@tisoblackstar.co.za','Ttm331371',function (body) {
 					console.log(body);
 			});
-	//console.log(results);
+	console.log(results.statusCode);
 	// await pm.sendRequest("http://tl-st-staging.appspot.com/apiv1/user/profile?access_token="+authorisation,function (response) {
 	// 	let res = response.json();
 	// 	let status = response.status();
@@ -30,6 +31,8 @@ async function tests() {
 		console.log(pm.response.getCookie("_cosmos_auth"));
 		pm.expect(content).to.equal("~ No Access ~");
 	});
+	fetch("https://www.timeslive.co.za/u/sign-in/", {"credentials":"include","headers":{},"referrer":"http://tl-st-staging.appspot.com/u/sign-in/","referrerPolicy":"unsafe-url","body":"email=mugadzatt01%40gmail.com&password=Ttm331371","method":"POST","mode":"cors"})
+			.then((res)=>{return(res.text())}).then((res)=>{console.log(res)});
 
 	//fetch("http://tl-st-staging.appspot.com/u/sign-in/", {"credentials":"include","headers":{},"referrer":"http://tl-st-staging.appspot.com/u/sign-in/","referrerPolicy":"unsafe-url","body":"email=mugadzatt01%40gmail.com&password=Ttm33137","method":"POST","mode":"cors"});
 

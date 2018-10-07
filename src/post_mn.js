@@ -95,19 +95,7 @@ Main.prototype.expect = function(comparable){
 Main.prototype.login = async function(url,email,password,callback){
 	 return await new Promise((w,f)=>{
 	 	let body = "";
-		 fetch(url,
-				 {
-					 "body":`email=${encodeURIComponent(email)}&password=${password}`,
-			 "method":"POST"}).then(
-			   (res)=>{
-	 	 	      body = res.text();
-
-	 	 	      console.log(`email=${(email)}&password=${password}`);
-			   }).then(
-			   		(text)=> {
-					    callback(body);
-					    w({data:body,statusCode:res.status,headers:res.headers,cookies:res.headers.get('set-cookie')});
-			   }).catch(()=>{f()});
+	 	let d = {};
 	 });
 };
 
