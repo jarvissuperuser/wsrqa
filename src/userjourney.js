@@ -311,6 +311,10 @@ class UserJourney{
             fs.chmodSync(filePath, 777);
         }
     }
+    async visual_diff(img1,img2,img_diff){
+        selfer.diff_img = img_diff;
+        await selfer.runDiff(img1,img2);//?? deprecate
+    }
 
 }
 module.exports = UserJourney;

@@ -57,10 +57,10 @@ async function url_iterate(time){
 
 
 async function test_endpo() {
-    pop_login();
-    await url_iterate(19);
+    //pop_login();
+    //await url_iterate(19);
     urlList = [];
-   	pop_blank("yes");
+   	pop_blank("no");
     await url_iterate(26);
     // urlList =[];
     // pop_paywall();
