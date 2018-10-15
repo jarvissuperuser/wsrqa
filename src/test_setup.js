@@ -44,7 +44,6 @@ try {
 
     console.log(conf.get_url("tl",'test1'));
     console.log(conf.get_values("bl",'path'));
-    
 } catch (error) {
     console.log(error);
 }
