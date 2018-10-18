@@ -1,10 +1,7 @@
-const moment = require("moment");
-const async = require("async");
 const UJC = require('../userjourney');
 const puppet = require("puppeteer");
 const devices = require("../devDescExt");
 
-let ujt = undefined;
 let project = '';
 let method = '';
 let runTests = '';
@@ -62,16 +59,6 @@ let image_log = () =>{
         +" Unit:"+method
         +"\",\""+ creds[2].concat(".png")+"\")";
     ujt.logToDataBase(qry);
-};
-
-let iFrameClick = async (target) => {
-    let frame = await page.frames().find(f=>{
-         if (f._url.search("google.com/recaptcha/api2/bframe?")>0)
-            return f
-    });
-    console.log(frame.$(target));
-    //const elem = await frame.document.querySelector(target);
-    //await elem.click();
 };
 
 let waitInSec = (sec)=>{
