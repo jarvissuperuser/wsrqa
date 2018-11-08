@@ -17,7 +17,6 @@ class MultiLogger {
         const point = this.tables.indexOf(target);
         if (point<0)throw ("Target not found");
         let columns = this.column[point];
-
         if (!this.t_id)
             columns = db.silence(columns,['t_id']);
         const values = [db.str(msg),db.str(image)];
