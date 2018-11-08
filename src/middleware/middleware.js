@@ -78,6 +78,7 @@ async function runTestNative(m,b_path,new_path){
         case "empty":
             // uj.fileName = b_path + uj.name + ".png";
             files.push(uj.fileName);
+
             await uj.getScreens();
             break;
         case "login":
@@ -134,13 +135,13 @@ module.exports = async(p, m, t) => {
     uj.testImg = '';
     uj.pivotImg = '';
     uj.name = (projects[project] === undefined) ? project : projects[project];
-
     console.log("Loading Tests app at " , uj.timestamp);
     try {
         special_tag = p.substring(0, 2);
         b_path = stp.get_values(special_tag,"path");
-        new_path = stp.get_url(special_tag, m);
+        new_path = stp.get_url(special_tag, "base");
         uj.fileName = b_path + uj.name + ".png";
+        //uj.testLocations = b_path;
         console.log('web_Path',new_path);
     }catch (e) {
         console.error(e.message);
@@ -158,6 +159,7 @@ module.exports = async(p, m, t) => {
 
         uj.testImg = uj.fileName + ".png";
         //process
+        console.log(uj);
         if (t === 'no')
             await runTestNative(m,b_path,new_path);
         else if (t === "yes"){

@@ -11,3 +11,4 @@ console.log(qb.correc(obj,new_obj,"tc_"));
 console.log(qb.mute(obj,new_1,['col2']));
 console.log(qb.slct('*','table'));
 console.log(qb.slct('*','table','1=1'));
+console.log(qb.silence(qb.ex_key(obj,[]),['col1']));

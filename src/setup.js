@@ -44,17 +44,8 @@ class Setup{
     get_url(publication,type){
         let t = type?type:'empty';
         let base = "";
-        switch (type) {
-	        case "base":
-	        	base = this.get_values(publication,'base');
-		        return  (type==="base"||type==="empty")?base:base + this.get_values(publication,t);
-	        case "test1":
-		        base = this.get_values(publication,'test1');
-		        return  (type==="test1"||type==="empty")?base:base + this.get_values(publication,t);
-	        case "test2":
-		        base = this.get_values(publication,'test2');
-		        return  (type==="test2"||type==="empty")?base:base + this.get_values(publication,t);
-        }
+        base = this.get_values(publication,'base');
+        return  (type==="base"||type==="empty")?base:base + this.get_values(publication,t);
 
     }
     init(filename){

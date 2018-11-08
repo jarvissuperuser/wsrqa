@@ -35,12 +35,19 @@ manager.prototype.multiquery = async function(lst) {
 };
 
 manager.prototype.transaction = function(qry) {
-    return new Promise((w,f) => {db.all(qry, (err, row) => {
-            if (err){
-                f(err);
-            }
-            w(row);
-        });
+    return new Promise((w,f) => {
+        if(qry.indexOf('INSERT') < 0) {
+            db.all(qry, (err, row) => {
+                if (err) f(err);
+                w(row);
+            });
+        }else
+        {
+            db.run(qry,function (err) {
+                if(err)f(err);
+                w(this.lastID);
+            });
+        }
     });
 };
 

@@ -18,7 +18,6 @@ class QueryBuilder {
             qs += lim;
         }
         return qs;
-
     };
     update(table, colepar, id, val) {
         //TODO: Implement Me
@@ -130,6 +129,16 @@ class QueryBuilder {
                 }
             });
         });
+    }
+    silence(old,silenced=[],new_=[]){
+        let search = function(val){
+            return silenced.some((el)=>{return val===el });
+        };
+        old.forEach((value)=>{
+            if (!search(value))
+                new_.push(value);
+        });
+        return new_;
     }
 }
 module.exports = QueryBuilder;

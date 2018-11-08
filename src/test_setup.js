@@ -8,20 +8,20 @@ try {
     let pub_arr = ["tl","st","wo","sl","dl","hl","bl"];
 
     // case add to file and update
-    conf.add_to_file("tl","base","https://www.timeslive.co.za");
-    conf.add_to_file("st","base","https://select.timeslive.co.za");
-    conf.add_to_file("sl","base","https://www.sowetanlive.co.za");
-    conf.add_to_file("bl","base","https://www.businesslive.co.za");
-    conf.add_to_file("wo","base","https://www.wantedonline.co.za");
-    conf.add_to_file("hl","base","https://www.heraldlive.co.za");
-    conf.add_to_file("dl","base","https://www.dispatchlive.co.za");
-		conf.add_to_file("tl","test1","http://tl-st-staging.appspot.com");
-		conf.add_to_file("st","test1","http://timesselect-stage.appspot.com");
-		conf.add_to_file("sl","test1","http://sowetan-staging.appspot.com");
-		conf.add_to_file("bl","test1","http://cosmos-stage-qa.appspot.com");
-		conf.add_to_file("wo","test1","http://wantedsearch.appspot.com");
-		conf.add_to_file("hl","test1","http://heraldlive.appspot.com");
-		conf.add_to_file("dl","test1","http://dispatchlive-1357.appspot.com");
+    conf.add_to_file("tl","base","http://tl-st-staging.appspot.com/");
+    conf.add_to_file("st","base","http://timesselect-stage.appspot.com");
+    conf.add_to_file("sl","base","http://sowetan-staging.appspot.com");
+    conf.add_to_file("bl","base","http://cosmos-stage-qa.appspot.com");
+    conf.add_to_file("wo","base","http://wanted-staging.appspot.com");
+    conf.add_to_file("hl","base","https://heraldlive.appspot.com");
+    conf.add_to_file("dl","base","http://dispatchlive-1357.appspot.com");
+    conf.add_to_file("tl","test1","http://tl-st-staging.appspot.com");
+    conf.add_to_file("st","test1","http://timesselect-stage.appspot.com");
+	conf.add_to_file("sl","test1","http://sowetan-staging.appspot.com");
+	conf.add_to_file("bl","test1","http://cosmos-stage-qa.appspot.com");
+	conf.add_to_file("wo","test1","http://wantedsearch.appspot.com");
+	conf.add_to_file("hl","test1","http://heraldlive.appspot.com");
+	conf.add_to_file("dl","test1","http://dispatchlive-1357.appspot.com");
     pub_arr.forEach(el=>conf.add_to_file(el,"path",`./public/images/${el}/`));
     pub_arr.forEach(el=>conf.add_to_file(el,"login","/u/sign-in/"));
     conf.add_to_file("wo","login","");//exclusion
