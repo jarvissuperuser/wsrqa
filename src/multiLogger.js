@@ -29,7 +29,6 @@ class MultiLogger {
             case 0:
                 results = await db.db.transaction(query);
         }
-
         return results;
     }
 }
