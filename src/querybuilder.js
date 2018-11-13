@@ -114,7 +114,7 @@ class QueryBuilder {
         return new_;
     }
     async transaction(qry){
-        let results=  [];
+        let results = [];
         return new Promise((w,f)=>{
             self.dbi.run(qry,(err,rows)=>{
                 if (err){f(err)}

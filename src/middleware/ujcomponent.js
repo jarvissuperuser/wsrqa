@@ -1,12 +1,13 @@
 const UJC = require('../userjourney');
 const puppet = require("puppeteer");
 const devices = require("../devDescExt");
+const Log = require('../multiLogger');
 
 let project = '';
 let method = '';
 let runTests = '';
 let QueueName = '';
-
+let logger  = new Log();
 let appenditure = {
 	login:"/u/sign-in/",
 	register:"/u/sign-up/",
@@ -53,21 +54,24 @@ let page  = undefined;
 let creds = [];
 let b_path = "./public/images/";
 
-let image_log = () =>{
-    let qry = "insert into log_info(t_id,log_info,log_image) values ("
+let image_log = async () =>{
+    /*let qry = "insert into log_info(t_id,log_info,log_image) values ("
         + ujt.project_id + ",\"Site:" +projects[project]
         +" Unit:"+method
         +"\",\""+ creds[2].concat(".png")+"\")";
-    ujt.logToDataBase(qry);
+    ujt.logToDataBase(qry);*/
+    return await logger.log("Site:" +projects[project]
+        +" Unit:"+method,ujt.fileName,'log_info',1);
+
 };
 
 let waitInSec = (sec)=>{
      new Promise(function (resolve,reject) {
         if (isNaN(sec)) reject("time value not number");
         setTimeout(function () {
-            console.log("complete:",sec,'s');
+            console.log("complete:", sec, 's');
             resolve(true);
-        },parseFloat(sec)*1000);
+        }, parseFloat(sec)*1000);
     });
 };
 
@@ -77,7 +81,6 @@ let login_do = async ()=>{
     creds = auth(runTests);
     ujt.name = creds[2];
     ujt.dbSetup();
-
     if (creds.length > 1) {
         await p_input(page, "input[type=email]", creds[0]);
         await p_input(page, "input[type=password]", creds[1]);
