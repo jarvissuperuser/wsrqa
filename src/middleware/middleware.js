@@ -1,13 +1,10 @@
-var Setup = require("../setup");
-// var moment = require("moment");
-// var resemble = require("node-resemble-js");
-// var fs = require('fs-extra');
-var dbl = require('../sqlite_con_man');
-// var amqp = require('amqp-connection-manager');
-// var async = require("async");
-var UJC = require('../userjourney');
+const Setup = require("../setup");
+const dbl = require('../sqlite_con_man');
+const UJC = require('../userjourney');
+const Logger = require('../multiLogger');
 
 let uj = undefined;
+let log = new Logger();
 const desktopAgent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36';
 const modbileAgent = '';
 let dbi = new dbl("../app.db");
@@ -65,6 +62,16 @@ let startUp = async ()=>{
 let finish = () => {
 
 };
+let image_log = async () =>{
+    /*let qry = "insert into log_info(t_id,log_info,log_image) values ("
+        + ujt.project_id + ",\"Site:" +projects[project]
+        +" Unit:"+method
+        +"\",\""+ creds[2].concat(".png")+"\")";
+    ujt.logToDataBase(qry);*/
+    return await log.log("Site:" + uj.name
+        +" Unit:",uj.fileName,'log_info',1);
+
+};
 
 function delay(sec){
     return new Promise((w)=>{
@@ -78,7 +85,7 @@ async function runTestNative(m,b_path,new_path){
         case "empty":
             // uj.fileName = b_path + uj.name + ".png";
             files.push(uj.fileName);
-
+            image_log();
             await uj.getScreens();
             break;
         case "login":
@@ -159,7 +166,7 @@ module.exports = async(p, m, t) => {
 
         uj.testImg = uj.fileName + ".png";
         //process
-        console.log(uj);
+        //console.log(uj);
         if (t === 'no')
             await runTestNative(m,b_path,new_path);
         else if (t === "yes"){

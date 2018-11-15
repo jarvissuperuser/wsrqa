@@ -101,7 +101,6 @@ let reset_do = async ()=>{
     creds = auth(runTests);
     ujt.name = creds[2];
     ujt.dbSetup();
-
     if (creds.length >= 1) {
         await p_input(page, "input[type=email]", creds[0]);
     }
@@ -130,7 +129,7 @@ let register_do = async ()=>{
     await waitInSec(2.5);
     console.log('input');
     if(creds[2]) {
-        image_log();
+        await image_log();
         await page.screenshot({path: b_path.concat(creds[2].concat(".png"))});
     }else {
         console.log('images not created',creds);
@@ -143,6 +142,7 @@ let base_test = async (name)=>{
     creds = auth(runTests);
     await waitInSec(2.5);
     console.log('input');
+    ujt.fileName = name.concat(".png");
     await page.screenshot({path:b_path.concat(name.concat(".png"))});
 };
 
@@ -155,7 +155,6 @@ module.exports = async(p, m, t) => {
 	ujt.project ="";
 	testLocations = "http://".concat(testurls[p],url_suffix);
 	console.log(testLocations,p,m,t);
-
 	try {
 	    browser = await puppet.launch();
 	    page = await browser.newPage();
@@ -177,6 +176,6 @@ module.exports = async(p, m, t) => {
         browser.close();
     }catch (exc) {
 	    browser.close();
-		console.log(exc);
+		console.log(exc, "Error");
     }
 };

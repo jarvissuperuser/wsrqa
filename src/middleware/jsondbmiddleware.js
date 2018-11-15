@@ -2,6 +2,7 @@
  * compatible with new version
  * */
 const dbi = require("../sqlite_con_man");
+let QB = require("../querybuilder");
 let db = new dbi("../app.db");
 let result = [];
 
