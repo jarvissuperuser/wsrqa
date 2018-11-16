@@ -69,7 +69,7 @@ let image_log = async () =>{
         +"\",\""+ creds[2].concat(".png")+"\")";
     ujt.logToDataBase(qry);*/
     return await log.log("Site:" + uj.name
-        +" Unit:",uj.fileName,'log_info',1);
+        +" Unit:" + uj.timestamp ,uj.fileName,'log_info',1);
 
 };
 

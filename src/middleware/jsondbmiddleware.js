@@ -22,7 +22,7 @@ module.exports = async(req,rest)=>{
         rest.end();
     }
     else {
-        const lim = `t_id=${req.query.target} or id=${req.query.target}`;
+        const lim = `t_id=${req.query.target} OR id=${req.query.target}`;
         const qry = await d.slct(['id AS k','log_info AS t','log_image AS n'],'log_info',lim );
         let result  = await d.db.transaction(qry)
             .catch(err => console.log(err));
