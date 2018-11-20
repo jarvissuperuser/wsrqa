@@ -83,7 +83,7 @@ function onError(error) {
 // connect sqlite db;
 
 
-var db = new dlib('../app.db');
+var db = new dlib('./app.db');
 db.multiquery([
     "CREATE TABLE IF NOT EXISTS test(" +
     "id INTEGER PRIMARY KEY," +

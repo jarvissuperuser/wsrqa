@@ -1,13 +1,11 @@
 const Setup = require("../setup");
-const dbl = require('../sqlite_con_man');
 const UJC = require('../userjourney');
 const Logger = require('../multiLogger');
 
 let uj = undefined;
 let log = new Logger();
 const desktopAgent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36';
-const modbileAgent = '';
-let dbi = new dbl("../app.db");
+const mobileAgent = '';
 let project = '';
 let isMobile = '';
 let runTests = '';
@@ -165,8 +163,6 @@ module.exports = async(p, m, t) => {
         uj.fileName = b_path + uj.name + uj.timestamp + ".png";
 
         uj.testImg = uj.fileName + ".png";
-        //process
-        //console.log(uj);
         if (t === 'no')
             await runTestNative(m,b_path,new_path);
         else if (t === "yes"){

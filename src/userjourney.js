@@ -68,7 +68,7 @@ class UserJourney{
         self.name = (projects === undefined) ? self.project : projects[p];
     }
     async initBrowser(dev){
-        this.browser = await puppet.launch({headless: true});
+        this.browser = await puppet.launch({headless: true, args:['--no-sandbox']});
         this.page = await this.browser.newPage();
         let device = dev?dev:devices['1366x768'];
         await this.page.emulate(device);

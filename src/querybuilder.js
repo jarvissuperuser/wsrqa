@@ -1,5 +1,5 @@
 const sql_con = require('./sqlite_con_man');
-let dbc = new sql_con('../app.db');
+let dbc = new sql_con('./app.db');
 
 let self = null;
 class QueryBuilder {

@@ -1,7 +1,7 @@
 const QB = require("./querybuilder");
 const sqlcon = require("./sqlite_con_man");
 let qb = new QB();
-let db = new sqlcon("../app.db");
+let db = new sqlcon("./app.db");
 
 
 class TCase {
