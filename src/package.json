@@ -26,6 +26,6 @@
     "serve-favicon": "~2.5.0",
     "sqlite3": "^4.0.4",
     "webshot": "^0.18.0",
-    "webshot-factory": "^0.5.2"
+    "webshot-factory": "^0.5.3"
   }
 }
