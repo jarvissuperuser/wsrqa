@@ -8,7 +8,7 @@ try {
     let pub_arr = ["tl","st","wo","sl","dl","hl","bl"];
 
     // case add to file and update
-    conf.add_to_file("tl","base","http://tl-st-staging.appspot.com/");
+    conf.add_to_file("tl","base","http://tl-st-staging.appspot.com");
     conf.add_to_file("st","base","http://timesselect-stage.appspot.com");
     conf.add_to_file("sl","base","http://sowetan-staging.appspot.com");
     conf.add_to_file("bl","base","http://cosmos-stage-qa.appspot.com");

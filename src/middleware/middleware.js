@@ -101,6 +101,8 @@ async function runTestNative(m,b_path,new_path){
                 //let re = "y";
                 //if (re) await uj.page.screenshot({path:l_pic});
                 await uj.page.screenshot({path: l_pic});
+                uj.fileName = l_pic;
+                image_log();
             }
             console.log("close ", new_path);
             break;
@@ -144,7 +146,7 @@ module.exports = async(p, m, t) => {
     try {
         special_tag = p.substring(0, 2);
         b_path = stp.get_values(special_tag,"path");
-        new_path = stp.get_url(special_tag, "base");
+        new_path = stp.get_url(special_tag, m==="no"?'empty':m);
         uj.fileName = b_path + uj.name + ".png";
         //uj.testLocations = b_path;
         console.log('web_Path',new_path);
@@ -161,7 +163,6 @@ module.exports = async(p, m, t) => {
         uj.pivotImg = b_path + uj.name + ".png";
         uj.diff_img = b_path + uj.name + uj.timestamp + "diff.png";
         uj.fileName = b_path + uj.name + uj.timestamp + ".png";
-
         uj.testImg = uj.fileName + ".png";
         if (t === 'no')
             await runTestNative(m,b_path,new_path);
@@ -179,5 +180,4 @@ module.exports = async(p, m, t) => {
     }catch (e) {
         console.log(e, "from" ,uj.name , uj.testLocations);
     }
-
 };
