@@ -4,3 +4,6 @@ src/public/images/*
 .DS_Store
 .idea/*
 app.db
+app.ini
+src/app.ini
+src/app.db
