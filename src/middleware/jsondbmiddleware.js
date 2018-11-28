@@ -16,7 +16,7 @@ module.exports = async(req,rest)=>{
         const qry = await d.slct(['id AS k','log_info AS t','log_image AS n'],'log_info', lim);
         //const qry =  await d.slct(['id AS k', 't_name AS n','t_timestamp AS t'],'test',lim);
         let result  = await d.db.transaction(qry).catch(err => console.log(err));
-        console.log(result, 'results');
+        //console.log(result, 'results');
         rest.write(JSON.stringify(result));
         console.log("\x1b[32m Searching \x1b[0m");
         rest.end();

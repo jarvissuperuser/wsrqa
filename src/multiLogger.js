@@ -23,7 +23,7 @@ class MultiLogger {
         let results = 0;
         switch (mode) {
             case 1:
-                console.log(target, 'Msg:', msg, '>Image', image);
+                console.log(`\x1b[31m ${target} Msg: ${msg} > Image ${image} \x1b[0m`);
             case 0:
                 results = await db.db.transaction(query);
         }

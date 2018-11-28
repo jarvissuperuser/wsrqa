@@ -98,15 +98,18 @@ let hideBtnList = () => {
     let buttonContainer = document.querySelector(".w3-show");
     buttonContainer.classList.remove("w3-show");
 };
-
+/**
+ * URL/compare/
+ * */
 let btnCreate = (str, target) => {
     let btnString = "";
     let jsonObj = JSON.parse(str);
     b.targetElement = document.querySelector(target);
     jsonObj.forEach(k => {
+        const t_ = k.n.split('/').reverse()[0].split('.')[0];
         btnString += "<button class='w3-btn w3-bar-item' onclick='TargetOnCLick(\"" +
             +target + "\"," + k.k + ")'>" +
-            k.n + "  ON Date:  " + k.t + " ".concat('</button>');
+            t_ + "  Details:  " + k.t + " ".concat('</button>');
     });
     return btnString;
 };

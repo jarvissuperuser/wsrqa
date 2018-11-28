@@ -61,11 +61,6 @@ let finish = () => {
 
 };
 let image_log = async () =>{
-    /*let qry = "insert into log_info(t_id,log_info,log_image) values ("
-        + ujt.project_id + ",\"Site:" +projects[project]
-        +" Unit:"+method
-        +"\",\""+ creds[2].concat(".png")+"\")";
-    ujt.logToDataBase(qry);*/
     return await log.log("Site:" + uj.name
         +" Unit:" + uj.timestamp ,uj.fileName,'log_info',1);
 
@@ -79,6 +74,7 @@ function delay(sec){
 
 async function runTestNative(m,b_path,new_path){
     let files = [];
+    let msgs = [];
     switch (m) {
         case "empty":
             // uj.fileName = b_path + uj.name + ".png";
@@ -91,17 +87,20 @@ async function runTestNative(m,b_path,new_path){
                 uj.cred = ["blank", "mugadzatt01@gmail.com", "Ttm331371"];
                 uj.name = b_path + uj.name;
                 await uj.login_(new_path);
-                //let re = await uj.page.waitForNavigation({waitUntil: "load"});
-                //console.log(re);
                 await delay(7);
                 let l_pic =  uj.name + "_login_complete.png";
-                let e_pic = uj.name + "_login_email.png";
+                let e_pic = `${uj.name}_${uj.timestamp}` + "_login_email.png";
                 files.push(e_pic);
                 files.push(l_pic);
                 await uj.page.screenshot({path: l_pic});
+                const msgLog_ = m + " no password @ " + uj.timestamp;
+                msgs.push(msgLog_);
+                let insert_ = await log.log(msgLog_,e_pic,"log_info",1);
+                console.log("Logged @",insert_);
                 const msgLog = m + " @ " + uj.timestamp;
                 let insert = await log.log(msgLog,l_pic,"log_info",1);
                 console.log("Logged @",insert);
+                msgs.push(msgLog);
             }
             console.log("close ", new_path);
             break;
@@ -112,29 +111,32 @@ async function runTestNative(m,b_path,new_path){
             break;
         case "buy":
              let buy_promise = new Promise((win) => {
-                uj.fileName = b_path + uj.name + "_paywall.png";
+                uj.fileName = `${b_path}${uj.name}_${uj.timestamp}` + "_paywall.png";
                 console.log(uj.fileName);
                 uj.testLocations = new_path;
                 files.push(uj.fileName);
                 win();
             });
-            buy_promise.then(() => {
-                return new Promise(uj.getScreensP);
+            await buy_promise.then(async () => {
+                await uj.page.goto(new_path);
+                await uj.page.screenshot(uj.fileName);
+                files.push(uj.fileName);
+                msgs.push("Paywall")
             }).catch(err => console.log(err));
             break;
-        case "free_article":
-
+        case "sections":
+            break;
         default:
             console.log("No Thing");
     }
-    return files;
+    return {files:files,msg:msgs};
 }
 
-module.exports = async(p, m, t) => {
+module.exports = async(p, m, t,form = "1366x768") => {
     project = p;
     isMobile = m;
     runTests = t;
-    stp.init("../app.ini");
+    stp.init("./app.ini");
     let b_path = "./public/images/";
     uj = new UJC();
     uj.log = true;
@@ -157,7 +159,7 @@ module.exports = async(p, m, t) => {
 
     try {
         //setup
-        await uj.initBrowser();
+        await uj.initBrowser(form);
         await uj.md(b_path);
         uj.testLocations = new_path;
         let orName =  b_path + uj.name;

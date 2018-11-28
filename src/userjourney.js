@@ -1,8 +1,5 @@
 const fs = require("fs-extra");
-const webshot = require("webshot");
 const resemble = require("node-resemble-js");
-const dbl = require('./sqlite_con_man');
-//const async = require("async");
 const mmnt = require("moment");
 const puppet = require("puppeteer");
 const devices = require("./devDescExt");
@@ -70,7 +67,7 @@ class UserJourney{
     async initBrowser(dev){
         this.browser = await puppet.launch({headless: true, args:['--no-sandbox']});
         this.page = await this.browser.newPage();
-        let device = dev?dev:devices['1366x768'];
+        let device = dev?devices[dev]:devices['1366x768'];
         await this.page.emulate(device);
     }
     async closeBrowser(){
@@ -151,7 +148,7 @@ class UserJourney{
             await this.page.goto(url,{waitUntil:"domcontentloaded"});
             await this.input_(this.email,this.cred[1]);
             await this.page.click("button[type]");
-            await this.page.screenshot({path:this.name + "_login_email.png"});
+            await this.page.screenshot({path:`${this.name}_${this.timestamp}_login_email.png`});
             await this.input_(this.password,this.cred[2]);
             await this.page.click("button[type]");
         }
@@ -222,15 +219,15 @@ class UserJourney{
 
         try {
             console.log(self.fileName, "attempt for image");
-            webshot(self.testLocations, self.fileName, self.options, function(err) {
-                //console.log(self);
-                if (err) {
-                    console.log(err.trace);
-                    reject(err);
-                }
-               console.log("Building test cases", self.fileName);
-                resolve(true);
-            });
+            // webshot(self.testLocations, self.fileName, self.options, function(err) {
+            //     //console.log(self);
+            //     if (err) {
+            //         console.log(err.trace);
+            //         reject(err);
+            //     }
+            //    console.log("Building test cases", self.fileName);
+            //     resolve(true);
+            // });
             //if (self.page) resolve(self.page.screenshot({fullPage:true,path:self.fileName}));
         } catch (ex) {
             console.log("exception getscreen", ex);
