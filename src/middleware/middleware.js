@@ -98,11 +98,9 @@ async function runTestNative(m,b_path,new_path){
                 let e_pic = uj.name + "_login_email.png";
                 files.push(e_pic);
                 files.push(l_pic);
-                //let re = "y";
-                //if (re) await uj.page.screenshot({path:l_pic});
                 await uj.page.screenshot({path: l_pic});
-                uj.fileName = l_pic;
-                let insert = await log.log(m+uj.timestamp,l_pic,"log_info",1);
+                const msgLog = m + " @ " + uj.timestamp;
+                let insert = await log.log(msgLog,l_pic,"log_info",1);
                 console.log("Logged @",insert);
             }
             console.log("close ", new_path);
@@ -124,6 +122,8 @@ async function runTestNative(m,b_path,new_path){
                 return new Promise(uj.getScreensP);
             }).catch(err => console.log(err));
             break;
+        case "free_article":
+
         default:
             console.log("No Thing");
     }
