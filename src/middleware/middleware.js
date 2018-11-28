@@ -102,7 +102,8 @@ async function runTestNative(m,b_path,new_path){
                 //if (re) await uj.page.screenshot({path:l_pic});
                 await uj.page.screenshot({path: l_pic});
                 uj.fileName = l_pic;
-                image_log();
+                let insert = await log.log(m+uj.timestamp,l_pic,"log_info",1);
+                console.log("Logged @",insert);
             }
             console.log("close ", new_path);
             break;
