@@ -20,7 +20,7 @@ async function tests() {
 		let res = response.json();
 		let status = response.status();
 		let header = response.getHeader('server');
-		console.log(res.slug, ":", ":", header);
+		console.log(res.slug, ":", status ,":", header);
 	});
 
 	pm.test("is Premium", function () {
@@ -31,6 +31,7 @@ async function tests() {
 		console.log(pm.response.getCookie("_cosmos_auth"));
 		pm.expect(content).to.equal("~ No Access ~");
 	});
+
 	// fetch("https://www.timeslive.co.za/u/sign-in/", {"credentials":"include","headers":{},"referrer":"http://tl-st-staging.appspot.com/u/sign-in/","referrerPolicy":"unsafe-url","body":"email=mugadzatt01%40gmail.com&password=Ttm331371","method":"POST","mode":"cors"})
 	// 		.then((res)=>{return(res.text())}).then((res)=>{console.log(res)});
 

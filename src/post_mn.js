@@ -30,7 +30,8 @@ class req_response {
         this.cookies = response.cookies;
     }
     json(){
-        return JSON.parse(this.resp);
+
+        return (typeof this.resp === "object")? this.resp :JSON.parse(this.resp);
     }
     status(){
         return this.statusCode;
@@ -60,21 +61,38 @@ function Main(){
     }
 }
 let data = "";
-Main.prototype.request = (url,cb)=>{
+/**
+ * @param url string
+ * @param cb function
+ * @param pData { method:"method", <data>:[<{name:"",value:""}>]}
+ * */
+Main.prototype.request = (url,cb,pData = undefined)=>{
     return new Promise((w,f)=>{
-        request(url,(err,res,body)=>{
-            cb(body);
-            w({data:body,statusCode:res.statusCode,headers:res.headers,cookies:res.headers['set-cookie']});
-            if (err){f({error:err,headers:res})}
-        });
-
+        if(!pData) {
+            request(url, (err, res, body) => {
+                cb(body);
+                w({data: body, statusCode: res.statusCode, headers: res.headers, cookies: res.headers['set-cookie']});
+                if (err) {
+                    f({error: err, headers: res})
+                }
+            });
+        }else{
+            request(url, pData,
+                (err, res, body) => {
+                cb(body);
+                w({data: body, statusCode: res.statusCode, headers: res.headers, cookies: res.headers['set-cookie']});
+                if (err) {
+                    f({error: err, headers: res})
+                }
+            });
+        }
     });
 };
 
-Main.prototype.sendRequest = async function(url,callback){
+Main.prototype.sendRequest = async function(url,callback,rData = undefined){
     Main.prototype.url = url;
-    data = await Main.prototype.request(url,async (rs)=> await Main.prototype.dataResponse(rs));
-     Main.prototype.response = new req_response(data);
+    data = await Main.prototype.request(url,async (rs)=> await Main.prototype.dataResponse(rs),rData);
+    Main.prototype.response = new req_response(data);
     await callback(Main.prototype.response);
 };
 
