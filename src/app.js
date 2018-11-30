@@ -5,17 +5,18 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
-var index = require('./routes/index');
-var users = require('./routes/users');
-var regressiontest = require('./routes/regressiontest');
-var record = require('./routes/record');
+let index = require('./routes/index');
+let users = require('./routes/users');
+let regressiontest = require('./routes/regressiontest');
+let record = require('./routes/record');
 let userjourney = require('./routes/userjourney');
 let userjourneytest = require('./routes/userjourneytest');
 let compare = require('./routes/compare');
 let search = require('./routes/searchjson');
 let quality = require('./routes/quality');
+let multiInjection = require("./routes/multiInjection");
 
-var app = express();
+let app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -40,6 +41,7 @@ app.use('/regressiontest', regressiontest);
 app.use('/compare', compare);
 app.use('/search', search);
 app.use('/quality', quality);
+app.use('/multi/', quality);
 app.use(function(req, res, next) {
     var err = new Error('Not Found');
   err.status = 404;
