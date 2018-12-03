@@ -11,7 +11,7 @@ let isMobile = '';
 let runTests = '';
 let new_path = '';
 let special_tag = '';
-let stp = new Setup();
+let config = new Setup();
 
 
 const options = {
@@ -40,26 +40,43 @@ let projects = {
 	"sl_home": "sowetanlive",
 	"wo_home": "wanted"
 };
-const appenditures = {
-	articles:{},
-	pages:{},
-	categories:{},
-	sub_articles:{}
+
+
+
+let pubQuery = async (p)=>{
+	let data_accumulated = {};
+	switch (p) {
+		case '*':
+			break;
+		default:
+			await sectionQuery(p);
+	}
+	return data_accumulated;
 };
+
+let getPubList = ()=>{
+
+};
+
+let sectionQuery = async (p) =>{
+	let url_list = config.get_section_list(p);
+	let fileList = {};
+	fileList[p] = [];
+	for(let url in url_list){
+		let section = url.split('/').reverse()[0];
+		let path = config.get_values(p,'path');
+		uj.fileName = `${path}${p}_${section}_${uj.timestamp}.png`;
+		await uj.page.goto(url);
+		let id = await log.log("Logged Section",uj.fileName,'log_info',1);
+		fileList[p].push({section:section,file:uj.fileName,db:id});
+	}
+	return fileList;
+};
+
 
 let testLocations;
 
-let startUp = async ()=>{
 
-	if (!uj.page) {
-
-	}
-	return uj.page;
-};
-
-let finish = () => {
-
-};
 let image_log = async () =>{
 	return await log.log("Site:" + uj.name
 			+" Unit:" + uj.timestamp ,uj.fileName,'log_info',1);
@@ -83,7 +100,7 @@ async function runTestNative(m,b_path,new_path){
 			await uj.getScreens();
 			break;
 		case "login":
-			if (stp.get_values(special_tag,m)) {
+			if (config.get_values(special_tag,m)) {
 				uj.cred = ["blank", "mugadzatt01@gmail.com", "Ttm331371"];
 				uj.name = b_path + uj.name;
 				await uj.login_(new_path);
@@ -136,8 +153,9 @@ module.exports = async(p, m, t,form = "1366x768") => {
 	project = p;
 	isMobile = m;
 	runTests = t;
-	stp.init("./app.ini");
+	config.init("./app.ini");
 	let b_path = "./public/images/";
+	let result = {};
 	uj = new UJC();
 	uj.log = true;
 	uj.project = '';
@@ -148,8 +166,8 @@ module.exports = async(p, m, t,form = "1366x768") => {
 	console.log("Loading Tests app at " , uj.timestamp);
 	try {
 		special_tag = p.substring(0, 2);
-		b_path = stp.get_values(special_tag,"path");
-		new_path = stp.get_url(special_tag, m==="no"?'empty':m);
+		b_path = config.get_values(special_tag,"path");
+		new_path = config.get_url(special_tag, m==="no"?'empty':m);
 		uj.fileName = b_path + uj.name + ".png";
 		//uj.testLocations = b_path;
 		console.log('web_Path',new_path);
@@ -167,8 +185,10 @@ module.exports = async(p, m, t,form = "1366x768") => {
 		uj.diff_img = b_path + uj.name + uj.timestamp + "diff.png";
 		uj.fileName = b_path + uj.name + uj.timestamp + ".png";
 		uj.testImg = uj.fileName + ".png";
-		if (t === 'no')
-			await runTestNative(m,b_path,new_path);
+		if (t === 'no') {
+			await runTestNative(m, b_path, new_path);
+			result = await sectionQuery(p);
+		}
 		else if (t === "yes"){
 			await new Promise(uj.checkFilesP);
 			let files = await runTestNative(m,b_path,new_path);
@@ -183,4 +203,5 @@ module.exports = async(p, m, t,form = "1366x768") => {
 	}catch (e) {
 		console.log(e, "from" ,uj.name , uj.testLocations);
 	}
+	console.log(result);
 };
