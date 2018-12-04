@@ -3,7 +3,7 @@ const fetch = require("node-fetch");
 let pm = new pmn();
 let authorisation = "3502fdd826663b85ce1721c780c84404e5326502";
 
-async function tests() {
+(async function tests() {
 	// let results = await pm.login("http://tl-st-staging.appspot.com/u/sign-in/",
 	// 		'mugadzat@tisoblackstar.co.za','Ttm331371',function (body) {
 	// 				console.log(body);
@@ -37,6 +37,4 @@ async function tests() {
 
 	//fetch("http://tl-st-staging.appspot.com/u/sign-in/", {"credentials":"include","headers":{},"referrer":"http://tl-st-staging.appspot.com/u/sign-in/","referrerPolicy":"unsafe-url","body":"email=mugadzatt01%40gmail.com&password=Ttm33137","method":"POST","mode":"cors"});
 
-}
-
-tests();
+})();

@@ -125,7 +125,6 @@ async function runTestNative(m,b_path,new_path){
 		case "reset":
 			uj.cred = ["blank", "mugadzatt01@gmail.com", "Ttm331371"];
 			uj.name = b_path + uj.name;
-			//await uj.(new_path);
 			break;
 		case "buy":
 			let buy_promise = new Promise((win) => {
