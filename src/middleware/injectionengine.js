@@ -26,13 +26,6 @@ const options = {
 	userAgent: desktopAgent
 };
 
-const testurls = {
-	"tl_home": "www.timeslive.co.za",
-	"tl_article": "www.timeslive.co.za/politics/2018-01-18-ramaphosa-piles-pressure-on-zuma-with-anti-corruption-call",
-	"bl_home": "www.businesslive.co.za",
-	"sl_home": "www.sowetanlive.co.za",
-	"wo_home": "www.wantedonline.co.za"
-};
 let projects = {
 	"tl_home": "timeslive",
 	"tl_article": "timeslive",
@@ -43,13 +36,23 @@ let projects = {
 
 
 
-let pubQuery = async (p)=>{
+
+
+let pubQuery = async (p,m,b_path,new_path)=>{
 	let data_accumulated = {};
 	switch (p) {
 		case '*':
+			let obj = config.setup.empty;
+			data_accumulated["results"] = [];
+			for(let singleton in obj){
+				/*let result = await sectionQuery(singleton);
+				data_accumulated.results.push(result);
+				data_accumulated[singleton] = result;*/
+				console.log(singleton);
+			}
 			break;
 		default:
-			await sectionQuery(p);
+			await runTestNative(p,m,b_path,new_path);
 	}
 	return data_accumulated;
 };
@@ -186,8 +189,8 @@ module.exports = async(p, m, t,form = "1366x768") => {
 		uj.fileName = b_path + uj.name + uj.timestamp + ".png";
 		uj.testImg = uj.fileName + ".png";
 		if (t === 'no') {
-			await runTestNative(m, b_path, new_path);
-			result = await sectionQuery(p);
+			///await runTestNative(m, b_path, new_path);
+			result = await pubQuery(p,m,b_path,new_path);
 		}
 		else if (t === "yes"){
 			await new Promise(uj.checkFilesP);
