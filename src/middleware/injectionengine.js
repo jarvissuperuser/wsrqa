@@ -57,12 +57,7 @@ let pubQuery = async (p,m,b_path,new_path)=>{
 	return data_accumulated;
 };
 
-let getPubList = ()=>{
-
-};
-
 let sectionQuery = async (p) =>{
-    console.log(p);
 	let url_list = config.get_section_list(p);
 	let fileList = {};
 	fileList[p] = [];
@@ -72,7 +67,7 @@ let sectionQuery = async (p) =>{
 		let path = config.get_values(p,'path');
 		uj.fileName = `${path}${p}_${section}_${uj.timestamp}.png`;
 		await Promise.race( [ uj.gsFailOver() , uj.page.goto(url_list[url]) ]);
-		await uj.page.screenshot({path:uj.fileName});
+		await uj.page.screenshot({path:uj.fileName, fullPage:true });
 		let id = await log.log("Logged Section",uj.fileName,'log_info',1);
 		fileList[p].push({section:section,file:uj.fileName,db:id});
 	}
