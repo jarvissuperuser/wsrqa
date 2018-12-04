@@ -6,5 +6,6 @@ const injectionmiddleware = require("./middleware/injectionengine");
 /**
  * Mock input
  * */
-await injectionmiddleware("*","*","no");
+let res = await injectionmiddleware("*","*","no");
+ console.log(JSON.stringify(res));
 })();

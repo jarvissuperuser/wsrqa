@@ -45,10 +45,10 @@ let pubQuery = async (p,m,b_path,new_path)=>{
 			let obj = config.setup.empty;
 			data_accumulated["results"] = [];
 			for(let singleton in obj){
+                console.log(singleton);
 				let result = await sectionQuery(singleton);
 				data_accumulated.results.push(result);
 				data_accumulated[singleton] = result;
-				console.log(singleton);
 			}
 			break;
 		default:
@@ -62,14 +62,17 @@ let getPubList = ()=>{
 };
 
 let sectionQuery = async (p) =>{
+    console.log(p);
 	let url_list = config.get_section_list(p);
 	let fileList = {};
 	fileList[p] = [];
 	for(let url in url_list){
-		let section = url.split('/').reverse()[0];
+		let section = url_list[url].split('/').reverse()[1];
+		console.log(section);
 		let path = config.get_values(p,'path');
 		uj.fileName = `${path}${p}_${section}_${uj.timestamp}.png`;
-		await uj.page.goto(url);
+		await Promise.race( [ uj.gsFailOver() , uj.page.goto(url_list[url]) ]);
+		await uj.page.screenshot({path:uj.fileName});
 		let id = await log.log("Logged Section",uj.fileName,'log_info',1);
 		fileList[p].push({section:section,file:uj.fileName,db:id});
 	}
@@ -205,5 +208,5 @@ module.exports = async(p, m, t,form = "1366x768") => {
 	}catch (e) {
 		console.log(e, "from" ,uj.name , uj.testLocations);
 	}
-	console.log(result);
+	return result;
 };

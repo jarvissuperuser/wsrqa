@@ -56,9 +56,10 @@ class Setup{
         const sections = this.get_values(publication, "sections");
         let url_list = [];
         const t_alias = this;
-        sections.forEach((s)=>{
-            url_list.push(t_alias.get_section(publication,s));
-        });
+        if (sections.length > 0) //handle empty error
+            sections.forEach((s)=>{
+                url_list.push(t_alias.get_section(publication,s));
+            });
         return url_list;
     }
     init(filename){
