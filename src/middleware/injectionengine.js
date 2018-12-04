@@ -45,9 +45,9 @@ let pubQuery = async (p,m,b_path,new_path)=>{
 			let obj = config.setup.empty;
 			data_accumulated["results"] = [];
 			for(let singleton in obj){
-				/*let result = await sectionQuery(singleton);
+				let result = await sectionQuery(singleton);
 				data_accumulated.results.push(result);
-				data_accumulated[singleton] = result;*/
+				data_accumulated[singleton] = result;
 				console.log(singleton);
 			}
 			break;
@@ -189,7 +189,6 @@ module.exports = async(p, m, t,form = "1366x768") => {
 		uj.fileName = b_path + uj.name + uj.timestamp + ".png";
 		uj.testImg = uj.fileName + ".png";
 		if (t === 'no') {
-			///await runTestNative(m, b_path, new_path);
 			result = await pubQuery(p,m,b_path,new_path);
 		}
 		else if (t === "yes"){
