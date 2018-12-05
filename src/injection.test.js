@@ -1,11 +1,13 @@
 const injectionmiddleware = require("./middleware/injectionengine");
+const CFG = require("./setup");
 
-
+let setup = new CFG();
 
 (async function main() {
  /**
  * Mock input
  * */
- let res = await injectionmiddleware("*","*","no");
+ setup.init("./app.ini");
+ let res = await injectionmiddleware("*","login","no");
  console.log(JSON.stringify(res));
 })();

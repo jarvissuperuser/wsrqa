@@ -1,8 +1,10 @@
 const Setup = require("../setup");
 const UJC = require('../userjourney');
 const Logger = require('../multiLogger');
+const PM = require('../post_mn');
 
 let uj = undefined;
+let pm  = new PM();
 let log = new Logger();
 const desktopAgent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36';
 const mobileAgent = '';
@@ -34,25 +36,99 @@ let projects = {
 	"wo_home": "wanted"
 };
 
+let payWallQuery = async (p,cred = ["blank", "mugadzatt01@gmail.com", "Ttm331371"]) => {
+	await pm.login(config.get_url(p,'login'),cred[1],cred[2], async function () {
+
+    });
+};
 
 
+let authQuery = async (p) => {
+    await delay(2);
+    let ck = "";
+    let cookies = await uj.page.cookies(config.get_url(p));
+	cookies.some((cookie)=>{
+        if (cookie.name === "_cosmos_auth"){
+            ck = (cookie.value);
+            return true;
+        }
+    });
+	return ck;
+};
 
+let loginQuery = async (p,cred = ["blank", "mugadzatt01@gmail.com", "Ttm331371"]) =>{
+    let collection = {};
+	if (config.get_values(p,"login")) {
+        uj.cred = cred;
+        uj.name = config.get_values(p,'path') + `${p}` ;
+        await uj.login_(config.get_url(p,'login'));
+        let l_pic =  uj.name + `_login_complete_${uj.timestamp}.png`;
+        let e_pic = `${uj.name}` + `_login_email_${uj.timestamp}.png`;
+        collection["after_login"] = l_pic ;
+        collection["login_no"] = e_pic ;
+        await uj.page.screenshot({path: l_pic});
+        const msgLog_ =  "login no password @ " + uj.timestamp;
+        let insert_ = await log.log(msgLog_,e_pic,"log_info",1);
+        console.log("Logged @",insert_);
+        collection['db'] = insert_;
+        const msgLog = "login @ " + uj.timestamp;
+        let insert = await log.log(msgLog,l_pic,"log_info",1);
+        console.log("Logged @",insert);
+        collection['db2'] = insert;
+        collection["auth"] = await authQuery(p);
+    }
+    return collection;
+};
+
+let pubSectionQuery =
+	async (p,m,cred = ["blank", "mugadzatt01@gmail.com", "Ttm331371"]) =>{
+	let data_accumulated = {};
+	switch (m) {
+		case "*":
+            data_accumulated["section"] = [];
+            let result = await sectionQuery(p);
+            data_accumulated.section.push(result);
+            data_accumulated["login"] = [];
+            result = await loginQuery(p,cred);
+            data_accumulated.login.push(result);
+            // data_accumulated["payWall"] = [];
+            // result = await loginQuery(p);
+            // data_accumulated.login.push(result);
+			break;
+		case "section":
+            data_accumulated["section"] = [];
+            let r = await sectionQuery(p);
+            data_accumulated.section.push(r);
+			break;
+		case "login":
+            data_accumulated["login"] = [];
+            let re = await loginQuery(p);
+            data_accumulated.login.push(re);
+			break;
+        case "payWall":
+            // data_accumulated["payWall"] = [];
+            // result = await loginQuery(p);
+            // data_accumulated.login.push(result);
+            break;
+		default:
+    }
+    return data_accumulated;
+};
 
 let pubQuery = async (p,m,b_path,new_path)=>{
 	let data_accumulated = {};
 	switch (p) {
 		case '*':
 			let obj = config.setup.empty;
-			data_accumulated["results"] = [];
-			for(let singleton in obj){
-                console.log(singleton);
-				let result = await sectionQuery(singleton);
-				data_accumulated.results.push(result);
-				data_accumulated[singleton] = result;
+			data_accumulated["section"] = [];
+			for(let single_pub in obj){
+				uj.md(config.get_values(single_pub,'path'));
+				data_accumulated[single_pub] = await pubSectionQuery(single_pub,m);
 			}
 			break;
 		default:
-			await runTestNative(p,m,b_path,new_path);
+            uj.md(config.get_values(p,'path'));
+			data_accumulated[p] = await pubSectionQuery(p,m);
 	}
 	return data_accumulated;
 };

@@ -57,7 +57,7 @@ try {
     conf.add_to_file("dl","sections",
         ["news","politics","videos","lifestyle","sport","local-heroes","classifieds",
             "premium"]);
-    console.log(conf.get_url("tl",'buy'));
+    console.log(conf.get_url("tl",'login'));
     conf.env = "live";
     console.log(conf.get_section_list("bl"));
 } catch (error) {

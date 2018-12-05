@@ -148,10 +148,11 @@ class UserJourney{
             await this.page.goto(url,{waitUntil:"domcontentloaded"});
             await this.input_(this.email,this.cred[1]);
             await this.page.click("button[type]");
-            await this.page.screenshot({path:`${this.name}_${this.timestamp}_login_email.png`});
+            await this.page.screenshot({path:`${this.name}_login_email_${this.timestamp}.png`});
             await this.input_(this.password,this.cred[2]);
             await this.page.click("button[type]");
         }
+        return await this.page.cookies();
     }
     async input_(selector,data){
         await this.page.click(selector);
