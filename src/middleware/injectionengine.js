@@ -35,13 +35,63 @@ let projects = {
 	"sl_home": "sowetanlive",
 	"wo_home": "wanted"
 };
-
+let getAccessToken = async (p,cred = ["blank", "mugadzatt01@gmail.com", "Ttm331371"]) => {
+	await pm.login(config.get_url(p,'login'),cred[1],cred[2], async function (response) {
+		console.log(response);
+	});
+	return {};
+};
 let payWallQuery = async (p,cred = ["blank", "mugadzatt01@gmail.com", "Ttm331371"]) => {
-	await pm.login(config.get_url(p,'login'),cred[1],cred[2], async function () {
+	await pm.login(config.get_url(p,'login'),cred[1],cred[2], async function (response) {
 
     });
 };
 
+let articleCrosswords = async (p = "st",m = "crosswords") => {
+	if (config.get_values(p,m)){
+		uj.name = config.get_values(p,"path")+`${p}`;
+		let app = config.get_values(p,m);
+		for(let i in app){
+			await getAccessToken(p);
+			let url = app[i];
+			console.log(url);
+			await uj.page.goto(`${config.get_url(p)}${url}`);
+			let elem = await uj.getElementInFrame(url,"li");
+			elem.forEach((e)=>console.log(e.name(),e.url()));
+			let leagueB = await uj.getElementInFrame(
+				"https://team-talk-158109.appspot.com/sport/football/",
+				`li`);
+			//await leagueB.click();
+		}
+
+
+
+	}
+};
+
+let sportLiveEngine = async (p = "sl",m = "sportlive", instruction = "")=>{
+	let col = {}, full = [];
+	if (config.get_values(p,m)){
+		let sportlivePoints = config.get_values(p,m);
+		uj.testLocations = config.get_section(p,'sport') + `${m}/`;
+		uj.name = config.get_values(p,'path') + `${p}_${m}`;
+		await Promise.race( [ uj.gsFailOver() , uj.page.goto(uj.testLocations) ]);
+		for (let btn = 0;btn < sportlivePoints.football.length;btn++){
+			let league = sportlivePoints.football[btn];
+			uj.fileName = uj.name +`_${league}_${uj.timestamp}.png`;
+			let leagueB = await uj.getElementInFrame(
+				"https://team-talk-158109.appspot.com/sport/football/",
+				`li#${league}`);
+			await leagueB.click();
+			await delay(5);
+			await uj.page.screenshot({path:uj.fileName,fullPage:true});
+			const msg = `${m} League:${league.toUpperCase()}`;
+			col['db'] = await log.log(msg,uj.fileName,'log_info',1);col['file'] = uj.fileName;
+			full.push(col);
+		}
+	}
+	return full;
+};
 
 let authQuery = async (p) => {
     await delay(2);
@@ -83,9 +133,9 @@ let loginQuery = async (p,cred = ["blank", "mugadzatt01@gmail.com", "Ttm331371"]
 let pubSectionQuery =
 	async (p,m,cred = ["blank", "mugadzatt01@gmail.com", "Ttm331371"]) =>{
 	let data_accumulated = {};
+	data_accumulated[m==="*"&& m?"all":m] = [];
 	switch (m) {
 		case "*":
-            data_accumulated["section"] = [];
             let result = await sectionQuery(p);
             data_accumulated.section.push(result);
             data_accumulated["login"] = [];
@@ -96,14 +146,21 @@ let pubSectionQuery =
             // data_accumulated.login.push(result);
 			break;
 		case "section":
-            data_accumulated["section"] = [];
             let r = await sectionQuery(p);
             data_accumulated.section.push(r);
 			break;
 		case "login":
-            data_accumulated["login"] = [];
             let re = await loginQuery(p);
             data_accumulated.login.push(re);
+			break;
+		case "sportLive":
+		case "sportlive":
+			let res = await sportLiveEngine();
+			data_accumulated.sportlive.push(res);
+			break;
+		case "crosswords":
+			let res_ = await articleCrosswords();
+			data_accumulated.crosswords.push(res_);
 			break;
         case "payWall":
             // data_accumulated["payWall"] = [];
@@ -230,6 +287,7 @@ module.exports = async(p, m, t,form = "1366x768") => {
 	isMobile = m;
 	runTests = t;
 	config.init("./app.ini");
+	config.env = "live";
 	let b_path = "./public/images/";
 	let result = {};
 	uj = new UJC();
@@ -277,6 +335,7 @@ module.exports = async(p, m, t,form = "1366x768") => {
 		uj.closeBrowser();
 	}catch (e) {
 		console.log(e, "from" ,uj.name , uj.testLocations);
+		// this.promise.done = true;
 	}
 	return result;
 };

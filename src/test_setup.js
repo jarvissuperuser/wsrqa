@@ -13,7 +13,7 @@ try {
     conf.add_to_file("wo","base","http://wanted-staging.appspot.com");
     conf.add_to_file("hl","base","https://heraldlive.appspot.com");
     conf.add_to_file("dl","base","http://dispatchlive-1357.appspot.com");
-    //
+    // case env
     conf.add_to_file("tl","live","https://www.timeslive.co.za");
     conf.add_to_file("st","live","https://select.timeslive.co.za");
 	conf.add_to_file("sl","live","https://www.sowetanlive.co.za");
@@ -45,7 +45,15 @@ try {
     conf.add_to_file("dl","name","dispatchlive");
     conf.add_to_file("wo","name","wanted");
     conf.add_to_file("bl","name-test","businesslive");
+    // special articles, crosswords
+	pub_arr.forEach(el=>conf.add_to_file(el,"crosswords",""));
+	conf.add_to_file('st','crosswords',
+		[
+			"/lifestyle/2018-09-25-todays-cryptic-crossword/",
+			"/lifestyle/2018-06-07-todays-quick-crossword/"
+		]);
     //publications sections
+	conf.add_to_file("bl","name-test","businesslive");
     conf.add_to_file("tl","sections",
         ["news","politics","sport","tshisalive","lifestyle", "motoring","multimedia"]);
     conf.add_to_file("bl","sections",
@@ -57,9 +65,16 @@ try {
     conf.add_to_file("dl","sections",
         ["news","politics","videos","lifestyle","sport","local-heroes","classifieds",
             "premium"]);
+    conf.add_to_file("sl","sportlive",
+            {
+                "football":["psl","epl","uefa","fa","mtn8","nedbankcup","efl","tko"],
+                "rugby":[],
+                "cricket":[]
+            });
     console.log(conf.get_url("tl",'login'));
     conf.env = "live";
     console.log(conf.get_section_list("bl"));
+
 } catch (error) {
     console.log(error);
 }

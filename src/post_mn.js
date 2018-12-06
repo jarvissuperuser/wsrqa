@@ -112,8 +112,21 @@ Main.prototype.expect = function(comparable){
 
 Main.prototype.login = async function(url,email,password,callback){
 	 return await new Promise((w,f)=>{
-	 	let body = "";
-	 	let d = {};
+	 	console.log(url);
+
+	 	request.post(url,
+	 		{
+		    formData: {
+		    	email:email, password:password}
+	 	},
+		    (err, res, body) => {
+			    if (err) {
+				    f({error: err, headers: res});
+			    }
+			    callback(body);
+			    w({data: body, statusCode: res.statusCode, headers: res.headers, cookies: res.headers['set-cookie']});
+		    });
+		 // request(url, pData,);
 	 });
 };
 

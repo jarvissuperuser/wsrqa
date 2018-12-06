@@ -313,6 +313,12 @@ class UserJourney{
         selfer.diff_img = img_diff;
         await selfer.runDiff(img1,img2);//?? deprecate
     }
+    async getElementInFrame(_url, selector){
+	    const frames = await selfer.page.frames();
+	    //frames.forEach((f)=>console.log(f.name(),f._url));
+	    let frame = frames.find(f => f._url === _url);
+	    return frame?await frame.$(selector):frames;
+    }
 
 }
 module.exports = UserJourney;
