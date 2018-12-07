@@ -50,26 +50,28 @@ let getAuthToken = async (p,cred = ["blank", "mugadzatt01@gmail.com", "Ttm331371
 	let files = {};
 	await pm.sendRequest(config.get_url(p)+'/apiv1/auth/consumer/get-all',function (resp) {
 		let data = resp.json();
-		console.log(data[0].consumer_secret);
+		//console.log(data[0].consumer_secret);
 		files['secret'] = data[0].key;
 	});
-	await pm.sendRequest(config.get_url(p)+'/apiv1/company/get-all',function (res) {
-		console.log(res.resp,res.statusCode,config.get_url(p));
-	}).catch((e)=>{console.log(e)});
-	await pm.sendRequest(config.get_url(p)+'/apiv1/financial/calendar/get-all?consumer_key='+files.secret,function (res) {
-		//console.log(res.resp,res.statusCode,config.get_url(p));
-	}).catch((e)=>{console.log(e)});
 	await pm.sendRequest(config.get_url(p)+`/apiv1/auth/issue-request-token?consumer_key=${files.secret}&agent=tim`,function (res) {
 		//console.log(res.resp,res.statusCode,config.get_url(p));
 		files['request_token'] = res.json().token;
 		files['request_secret'] = res.json().secret;
 	}).catch((e)=>{console.error(e)});
 	await pm.sendRequest(`${config.get_url(p)}/apiv1/auth/issue-access-token?`+
-		`request_token=${files.request_token}&username=${cred[1]}&password=${cred[2]}`,function (res) {
-		//console.log(res.resp,res.statusCode,cfg.get_url(p));
+		`request_token=${files.request_token}`,function (res) {
+		console.log(res.json().token,res.statusCode,config.get_url(p));
 		files['access_token'] = res.json().token;
 		files['access_secret'] = res.json().secret;
-	}).catch((e)=>{console.error(e)});
+	},
+		{
+			method:"POST",
+			form:{
+				username:cred[1],
+				password:cred[2]
+			}
+		}
+	).catch((e)=>{console.error(e)});
 	return files.access_token;
 };
 
@@ -83,7 +85,7 @@ let articleCrosswords = async (p = "st",m = "crosswords") => {
 			uj.fileName = `${uj.name}_${m}_${i}_${uj.timestamp}.png`;
 			await uj.page.goto(`${config.get_url(p)}${url}?access_token=${at}`);
 			let leagueB = await uj.getElementInFrame("https://cdn2.amuselabs.com", `li:first-child`);
-			await delay(3);
+			await delay(2);
 			console.log(await leagueB.click().catch(e=>console.log(e.message)));
 			await delay(3);
 			await uj.page.screenshot({path:uj.fileName,fullPage:true});
@@ -161,11 +163,19 @@ let pubSectionQuery =
 	data_accumulated[m==="*"&& m?"all":m] = [];
 	switch (m) {
 		case "*":
+
+			data_accumulated.section = [];
             let result = await sectionQuery(p);
             data_accumulated.section.push(result);
             data_accumulated["login"] = [];
             result = await loginQuery(p,cred);
             data_accumulated.login.push(result);
+            data_accumulated["crossword"] = [];
+            result = await articleCrosswords(p,m);
+            data_accumulated.crossword.push(result);
+            data_accumulated["sportlive"] = [];
+            result = await sportLiveEngine(p);
+            data_accumulated.sportlive.push(result);
             // data_accumulated["payWall"] = [];
             // result = await loginQuery(p);
             // data_accumulated.login.push(result);

@@ -28,8 +28,9 @@ class Setup{
             throw Error(this.errNoConfig);
         }
     }
-    get_values(publication,type){
-        let raw = this.setup[type?type:"empty"][publication];
+    get_values(publication,type_){
+	    let raw = "";
+	    if (type_ !=="*") raw = this.setup[type_?type_:"empty"][publication];
         return raw?raw:"";
     }
     update_file(){
