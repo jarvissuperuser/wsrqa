@@ -315,8 +315,7 @@ class UserJourney{
     }
     async getElementInFrame(_url, selector){
 	    const frames = await selfer.page.frames();
-	    //frames.forEach((f)=>console.log(f.name(),f._url));
-	    let frame = frames.find(f => f._url === _url);
+	    let frame = frames.find(f => f._url.indexOf(_url.trim())>=0);
 	    return frame?await frame.$(selector):frames;
     }
 

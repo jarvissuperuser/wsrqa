@@ -46,27 +46,52 @@ let payWallQuery = async (p,cred = ["blank", "mugadzatt01@gmail.com", "Ttm331371
 
     });
 };
+let getAuthToken = async (p,cred = ["blank", "mugadzatt01@gmail.com", "Ttm331371"])=>{
+	let files = {};
+	await pm.sendRequest(config.get_url(p)+'/apiv1/auth/consumer/get-all',function (resp) {
+		let data = resp.json();
+		console.log(data[0].consumer_secret);
+		files['secret'] = data[0].key;
+	});
+	await pm.sendRequest(config.get_url(p)+'/apiv1/company/get-all',function (res) {
+		console.log(res.resp,res.statusCode,config.get_url(p));
+	}).catch((e)=>{console.log(e)});
+	await pm.sendRequest(config.get_url(p)+'/apiv1/financial/calendar/get-all?consumer_key='+files.secret,function (res) {
+		//console.log(res.resp,res.statusCode,config.get_url(p));
+	}).catch((e)=>{console.log(e)});
+	await pm.sendRequest(config.get_url(p)+`/apiv1/auth/issue-request-token?consumer_key=${files.secret}&agent=tim`,function (res) {
+		//console.log(res.resp,res.statusCode,config.get_url(p));
+		files['request_token'] = res.json().token;
+		files['request_secret'] = res.json().secret;
+	}).catch((e)=>{console.error(e)});
+	await pm.sendRequest(`${config.get_url(p)}/apiv1/auth/issue-access-token?`+
+		`request_token=${files.request_token}&username=${cred[1]}&password=${cred[2]}`,function (res) {
+		//console.log(res.resp,res.statusCode,cfg.get_url(p));
+		files['access_token'] = res.json().token;
+		files['access_secret'] = res.json().secret;
+	}).catch((e)=>{console.error(e)});
+	return files.access_token;
+};
 
 let articleCrosswords = async (p = "st",m = "crosswords") => {
+	let at = await getAuthToken(p,['',"mugadzat@tisoblackstar.co.za","Ttm331371"]);
+	let col = {};
 	if (config.get_values(p,m)){
-		uj.name = config.get_values(p,"path")+`${p}`;
-		let app = config.get_values(p,m);
+		uj.name = config.get_values(p,"path")+`${p}`;let app = config.get_values(p,m);
 		for(let i in app){
-			await getAccessToken(p);
 			let url = app[i];
-			console.log(url);
-			await uj.page.goto(`${config.get_url(p)}${url}`);
-			let elem = await uj.getElementInFrame(url,"li");
-			elem.forEach((e)=>console.log(e.name(),e.url()));
-			let leagueB = await uj.getElementInFrame(
-				"https://team-talk-158109.appspot.com/sport/football/",
-				`li`);
-			//await leagueB.click();
+			uj.fileName = `${uj.name}_${m}_${i}_${uj.timestamp}.png`;
+			await uj.page.goto(`${config.get_url(p)}${url}?access_token=${at}`);
+			let leagueB = await uj.getElementInFrame("https://cdn2.amuselabs.com", `li:first-child`);
+			await delay(3);
+			console.log(await leagueB.click().catch(e=>console.log(e.message)));
+			await delay(3);
+			await uj.page.screenshot({path:uj.fileName,fullPage:true});
+			const db= await log.log(m+url,uj.fileName,'log_info',1);
+			col[`${m}${i}`] = {file:uj.fileName,db:db};
 		}
-
-
-
 	}
+	return col;
 };
 
 let sportLiveEngine = async (p = "sl",m = "sportlive", instruction = "")=>{
