@@ -8,14 +8,14 @@ config.init("./app.ini");
 (async function main() {
 	await u.initBrowser('1366x768');
 	await u.page.goto(config.get_url(p,'buy'));
-	const btns = await u.page.$$('.button.subscribe');
-	const texts = await u.page.evaluate( () => Array.from( document.querySelectorAll( '.button.subscribe' ), element => element.outerHTML ) );
+	const btns = await u.page.$$('.subscribe');
+	const texts = await u.page.evaluate( () => Array.from( document.querySelectorAll( '.subscribe' ), element => element.outerHTML ) );
 	await u.gsFailOver();
 	console.log("btns :",btns.length);
-	for(let i = 1; i <= btns.length;i++){
-		await btns[i].focus();
-		//await u.page.focus(`.button.subscribe:nth-of-type(${i})` ).catch(e=>console.log(e.message, texts[i]));
-		await u.page.keyboard.type('\n');
+	for(let i = 0; i < btns.length;i++){
+		await u.page.$eval(".subscribe",btn => btn[i].click());
+		// await u.page.$(`.button.subscribe:nth-of-type(${i})` ).catch(e=>console.log(e.message, texts[i]));
+		// await u.page.keyboard.type('\n');
 		await u.gsFailOver();
 		await u.page.goto(config.get_url(p,'buy'));
 	}
