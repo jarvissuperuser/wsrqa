@@ -14,8 +14,6 @@ config.init("./app.ini");
 	console.log("btns :",btns.length);
 	for(let i = 0; i < btns.length;i++){
 		await u.page.$eval(".subscribe",btn => btn[i].click());
-		// await u.page.$(`.button.subscribe:nth-of-type(${i})` ).catch(e=>console.log(e.message, texts[i]));
-		// await u.page.keyboard.type('\n');
 		await u.gsFailOver();
 		await u.page.goto(config.get_url(p,'buy'));
 	}
