@@ -204,3 +204,26 @@ manager.prototype.transaction = function(qry) {
 module.exports = manager;
 
 */
+/*
+*
+* //
+		// await mouse.move(parseFloat(x), parseFloat(y));
+		// await mouse.click(parseFloat(x), parseFloat(y), {
+		// 	"button": "left",
+		// 	"clickCount": 1,
+		// 	"delay": 0
+		// });
+		//const btn = await u.page.evaluate(()=>{document.querySelector(".subscribe")});
+		//await console.log();
+		// //await btn[i].click().catch((e)=>{console.log(e)});
+		// await u.page.$eval("body",boby => {
+		// 	try {
+		// 		// console.log(btn);
+		// 		boby.querySelectorAll(".subscribe")[i].click();
+		//
+		// 	}catch (e) {
+		// 		console.log(e)
+		// 	}
+		// 	//throw Error(boby.querySelectorAll(".subscribe")[i]);
+		// }).catch((e)=>console.log(e));
+* */
