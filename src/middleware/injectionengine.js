@@ -367,7 +367,7 @@ module.exports = async(p, m, t,form = "1366x768") => {
 				await uj.runDiff(files[a]);
 		}
 		console.log("done");
-		uj.closeBrowser();
+		await uj.closeBrowser();
 	}catch (e) {
 		console.log(e, "from" ,uj.name , uj.testLocations);
 		// this.promise.done = true;
