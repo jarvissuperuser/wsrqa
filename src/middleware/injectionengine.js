@@ -85,8 +85,9 @@ let articleCrosswords = async (p = "st",m = "crosswords") => {
 			uj.fileName = `${uj.name}_${m}_${i}_${uj.timestamp}.png`;
 			await uj.page.goto(`${config.get_url(p)}${url}?access_token=${at}`);
 			let leagueB = await uj.getElementInFrame("https://cdn2.amuselabs.com", `li:first-child`);
-			await delay(2);
-			console.log(await leagueB.click().catch(e=>console.log(e.message)));
+			await delay(3);
+			await leagueB.click().catch(e=>console.log(e.message));
+			console.log("crosswords" , i);
 			await delay(3);
 			await uj.page.screenshot({path:uj.fileName,fullPage:true});
 			const db= await log.log(m+url,uj.fileName,'log_info',1);
@@ -171,7 +172,7 @@ let pubSectionQuery =
             result = await loginQuery(p,cred);
             data_accumulated.login.push(result);
             data_accumulated["crossword"] = [];
-            result = await articleCrosswords(p,m);
+            result = await articleCrosswords(p);
             data_accumulated.crossword.push(result);
             data_accumulated["sportlive"] = [];
             result = await sportLiveEngine(p);
@@ -194,7 +195,7 @@ let pubSectionQuery =
 			data_accumulated.sportlive.push(res);
 			break;
 		case "crosswords":
-			let res_ = await articleCrosswords();
+			let res_ = await articleCrosswords(p);
 			data_accumulated.crosswords.push(res_);
 			break;
         case "payWall":

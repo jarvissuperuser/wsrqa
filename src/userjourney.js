@@ -83,7 +83,7 @@ class UserJourney{
                 let qry = qb.insert("test", ["tname"], ['?']);
                 self.dbi.db.run(qry, [self.name] ,function (err, rows) {
                     self.project_id = this.lastID;
-                    win(self)
+                    w(self)
                 })
             } catch (e) {
                 f([e,selfer]);
