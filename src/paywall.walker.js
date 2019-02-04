@@ -6,10 +6,11 @@ const PM = require("./post_mn");
 let u = new UJMan();
 let config = new CFG();
 let pm = new PM();
-const p = 'tl';
+const p = 'bl';
 let success = false;
-let is_logged_in = false;
+let foundOffer = true;
 let build = null;
+let pageOffer = [];
 config.init("./app.ini");
 
 let getAuthToken = async (p,cred = ["blank", "mugadzatt01@gmail.com", "Ttm331371"])=>{
@@ -41,13 +42,50 @@ let getAuthToken = async (p,cred = ["blank", "mugadzatt01@gmail.com", "Ttm331371
 	return files.access_token;
 };
 
+let wording = async (wording = [], offerBody = [],count = 0)=> {
+
+};
+
 (async function main() {
 	await u.initBrowser('1366x768');
 	const auth = await getAuthToken(p);
 	await u.page.goto(config.get_url(p,'buy') + `?access_token=${auth}`);
 	await u.page.screenshot({path:"./payWall.png"});
 	const btns = await u.page.$$('.subscribe');
-	const texts = await u.page.evaluate( () => Array.from( document.querySelectorAll( '.subscribe' ), element => element.getAttribute("data-offer")));
+	const texts = await u.page.evaluate( () => Array.from( document.querySelectorAll( '.subscribe' ),
+			element => element.getAttribute("data-offer")))
+		.catch(e=>console.log(e.message));
+	pageOffer = await u.page.evaluate( () => Array.from( document.querySelectorAll( '.subscribe' ),
+			element =>
+				element.parentElement.parentElement.querySelector(".price").innerText.substr(1)))
+		.catch(e=>{console.log(e.message);foundOffer= false});
+	//for sunday-times
+	if (!foundOffer) {
+		foundOffer = true;
+		pageOffer = await u.page.evaluate(() => Array.from(document.querySelectorAll('.subscribe'),
+			element =>{
+				[
+					element.parentElement.cellIndex,
+					parentElement.parentElement.parentElement.innerText,
+					element.innerText
+				]
+
+		})).catch(e => {
+				console.log(e.message);
+				foundOffer = false
+		});
+	}
+	//for businesslive
+	if (!foundOffer) {
+		foundOffer =true;
+		pageOffer = await u.page.evaluate(() => Array.from(document.querySelectorAll('.subscribe'),
+			element =>
+				element.parentElement.parentElement.querySelector("u").innerText.substr(1)))
+			.catch(e => {
+				console.log(e.message);
+				foundOffer = false;
+			});
+	}
 	await u.page.waitFor(1000);
 	if (typeof await btns === "object")
 	for(let i = 0; i < btns.length;i++){
@@ -58,10 +96,15 @@ let getAuthToken = async (p,cred = ["blank", "mugadzatt01@gmail.com", "Ttm331371
 		await u.page.waitFor(3000);
 		if (success) {
 			await u.page.screenshot({path:`./offer${i}.png`,fullPage:true});
-			console.log(texts[i]);
+			//console.log(JSON.parse(texts[i]).options[0].price === Math.ceil( pageOffer[i]));
+			if (foundOffer)
+			await pm.test(`Offer ${i} File Price to be ${pageOffer[i]}`,async function (offer) {
+				await pm.expect(Math.ceil(pageOffer[i])).to.equal(JSON.parse(texts[i]).options[0].price);
+			});
+			await u.page.click(".prev-slide").catch(e=>console.log(e.message,i));
 		}
-		await u.page.click(".prev-slide").catch(e=>console.log(e.message,i));
 		await u.page.waitFor(3000);
+
 	}
 	await u.browser.close();
 })();

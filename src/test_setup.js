@@ -35,7 +35,7 @@ try {
     pub_arr.forEach(el=>conf.add_to_file(el,"buy","/buy/"));
     conf.add_to_file("wo","buy","");
     conf.add_to_file("sl","buy","");
-    conf.add_to_file("hl","buy","");
+    //conf.add_to_file("hl","buy","");
     //project names
     conf.add_to_file("tl","name","timeslive");
     conf.add_to_file("st","name","timesselect");
