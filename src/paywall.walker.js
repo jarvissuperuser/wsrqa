@@ -98,8 +98,15 @@ let wording = async (wording = [], offerBody = [],count = 0)=> {
 			await u.page.screenshot({path:`./offer${i}.png`,fullPage:true});
 			//console.log(JSON.parse(texts[i]).options[0].price === Math.ceil( pageOffer[i]));
 			if (foundOffer)
-			await pm.test(`Offer ${i} File Price to be ${pageOffer[i]}`,async function (offer) {
-				await pm.expect(Math.ceil(pageOffer[i])).to.equal(JSON.parse(texts[i]).options[0].price);
+			await pm.test(`Offer ${i} File Price to be ${pageOffer[i]}`,async function () {
+				let price = 0;
+			    if (JSON.parse(texts[i])) {
+			    	let obj = JSON.parse(texts[i]).options[0];
+			    	price = obj.phase1_price?obj.phase1_price:obj.price;
+					await pm.expect(Math.ceil(pageOffer[i])).to.equal(price);
+				}
+			    else
+			        console.log(texts[i]);
 			});
 			await u.page.click(".prev-slide").catch(e=>console.log(e.message,i));
 		}
