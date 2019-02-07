@@ -232,17 +232,23 @@ let pubQuery = async (p,m,b_path,new_path)=>{
 let sectionQuery = async (p) =>{
 	let url_list = config.get_section_list(p);
 	let fileList = {};
+	let path = config.get_values(p,'path');
 	fileList[p] = [];
 	for(let url in url_list){
 		let section = url_list[url].split('/').reverse()[1];
 		console.log(section);
-		let path = config.get_values(p,'path');
 		uj.fileName = `${path}${p}_${section}_${uj.timestamp}.png`;
 		await Promise.race( [ uj.gsFailOver() , uj.page.goto(url_list[url]) ]);
 		await uj.page.screenshot({path:uj.fileName, fullPage:true });
 		let id = await log.log("Logged Section",uj.fileName,'log_info',1);
 		fileList[p].push({section:section,file:uj.fileName,db:id});
 	}
+	//add
+	uj.fileName = `${path}${p}_empty_${uj.timestamp}.png`;
+	await Promise.race( [ uj.gsFailOver() , uj.page.goto(config.get_url(p)) ]);
+	await uj.page.screenshot({path:uj.fileName, fullPage:true });
+	let id = await log.log("Logged Section",uj.fileName,'log_info',1);
+	fileList[p].push({section:section,file:uj.fileName,db:id});
 	return fileList;
 };
 
