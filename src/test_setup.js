@@ -65,6 +65,9 @@ try {
     conf.add_to_file("dl","sections",
         ["news","politics","videos","lifestyle","sport","local-heroes","classifieds",
             "premium"]);
+    conf.add_to_file("wo","sections",
+        ["style","gift-guide","watches-and-jewellery","cars-bikes-boats","art-design","travel","tech",
+            "voices","navigator"]);
     conf.add_to_file("sl","sportlive",
             {
                 "football":["psl","epl","uefa","fa","mtn8","nedbankcup","efl","tko"],

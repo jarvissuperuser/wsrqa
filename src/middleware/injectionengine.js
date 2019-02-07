@@ -76,6 +76,8 @@ let getAuthToken = async (p,cred = ["blank", "mugadzatt01@gmail.com", "Ttm331371
 };
 
 let articleCrosswords = async (p = "st",m = "crosswords") => {
+	let oldEnv = config.env;
+	config.env = "live";
 	let at = await getAuthToken(p,['',"mugadzat@tisoblackstar.co.za","Ttm331371"]);
 	let col = {};
 	if (config.get_values(p,m)){
@@ -94,6 +96,7 @@ let articleCrosswords = async (p = "st",m = "crosswords") => {
 			col[`${m}${i}`] = {file:uj.fileName,db:db};
 		}
 	}
+	config.env = oldEnv;
 	return col;
 };
 
@@ -323,7 +326,7 @@ module.exports = async(p, m, t,form = "1366x768") => {
 	isMobile = m;
 	runTests = t;
 	config.init("./app.ini");
-	config.env = "live";
+	config.env = "base";
 	let b_path = "./public/images/";
 	let result = {};
 	uj = new UJC();
