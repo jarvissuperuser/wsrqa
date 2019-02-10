@@ -248,7 +248,7 @@ let sectionQuery = async (p) =>{
 	await Promise.race( [ uj.gsFailOver() , uj.page.goto(config.get_url(p)) ]);
 	await uj.page.screenshot({path:uj.fileName, fullPage:true });
 	let id = await log.log("Logged Section",uj.fileName,'log_info',1);
-	fileList[p].push({section:section,file:uj.fileName,db:id});
+	fileList[p].push({section:"empty",file:uj.fileName,db:id});
 	return fileList;
 };
 
