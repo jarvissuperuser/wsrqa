@@ -7,7 +7,6 @@ let uj = undefined;
 let pm  = new PM();
 let log = new Logger();
 const desktopAgent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36';
-const mobileAgent = '';
 let project = '';
 let isMobile = '';
 let runTests = '';
