@@ -1,9 +1,11 @@
 const sql_con = require('./sqlite_con_man');
-let dbc = new sql_con('../app.db');
+let dbc = new sql_con('./app.db');
 
+let self = null;
 class QueryBuilder {
     constructor() {
         this.db = dbc;
+        self = this;
     }
     slct(selection, table, lim) {
         //TODO: Implement Me
@@ -16,7 +18,6 @@ class QueryBuilder {
             qs += lim;
         }
         return qs;
-
     };
     update(table, colepar, id, val) {
         //TODO: Implement Me
@@ -110,6 +111,33 @@ class QueryBuilder {
                 new_[obj[a]] = old[a];
 
         }
+        return new_;
+    }
+    async transaction(qry){
+        let results = [];
+        return new Promise((w,f)=>{
+            self.dbi.run(qry,(err,rows)=>{
+                if (err){f(err)}
+                if (qry.indexOf('SELECT') > -1) {
+                    rows.forEach((row) => {
+                        results.push(row);
+                    });
+                    w(results)
+                }
+                else{
+                    w(rows)
+                }
+            });
+        });
+    }
+    silence(old,silenced=[],new_=[]){
+        let search = function(val){
+            return silenced.some((el)=>{return val===el });
+        };
+        old.forEach((value)=>{
+            if (!search(value))
+                new_.push(value);
+        });
         return new_;
     }
 }

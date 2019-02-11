@@ -1,8 +1,5 @@
 const fs = require("fs-extra");
-const webshot = require("webshot");
 const resemble = require("node-resemble-js");
-const dbl = require('./sqlite_con_man');
-//const async = require("async");
 const mmnt = require("moment");
 const puppet = require("puppeteer");
 const devices = require("./devDescExt");
@@ -68,9 +65,9 @@ class UserJourney{
         self.name = (projects === undefined) ? self.project : projects[p];
     }
     async initBrowser(dev){
-        this.browser = await puppet.launch({headless: true});
+        this.browser = await puppet.launch({headless: true, args:['--no-sandbox']});
         this.page = await this.browser.newPage();
-        let device = dev?dev:devices['1366x768'];
+        let device = dev?devices[dev]:devices['1366x768'];
         await this.page.emulate(device);
     }
     async closeBrowser(){
@@ -86,7 +83,7 @@ class UserJourney{
                 let qry = qb.insert("test", ["tname"], ['?']);
                 self.dbi.db.run(qry, [self.name] ,function (err, rows) {
                     self.project_id = this.lastID;
-                    win(self)
+                    w(self)
                 })
             } catch (e) {
                 f([e,selfer]);
@@ -151,10 +148,11 @@ class UserJourney{
             await this.page.goto(url,{waitUntil:"domcontentloaded"});
             await this.input_(this.email,this.cred[1]);
             await this.page.click("button[type]");
-            await this.page.screenshot({path:this.name + "_login_email.png"});
+            await this.page.screenshot({path:`${this.name}_login_email_${this.timestamp}.png`});
             await this.input_(this.password,this.cred[2]);
             await this.page.click("button[type]");
         }
+        return await this.page.cookies();
     }
     async input_(selector,data){
         await this.page.click(selector);
@@ -222,15 +220,15 @@ class UserJourney{
 
         try {
             console.log(self.fileName, "attempt for image");
-            webshot(self.testLocations, self.fileName, self.options, function(err) {
-                //console.log(self);
-                if (err) {
-                    console.log(err.trace);
-                    reject(err);
-                }
-               console.log("Building test cases", self.fileName);
-                resolve(true);
-            });
+            // webshot(self.testLocations, self.fileName, self.options, function(err) {
+            //     //console.log(self);
+            //     if (err) {
+            //         console.log(err.trace);
+            //         reject(err);
+            //     }
+            //    console.log("Building test cases", self.fileName);
+            //     resolve(true);
+            // });
             //if (self.page) resolve(self.page.screenshot({fullPage:true,path:self.fileName}));
         } catch (ex) {
             console.log("exception getscreen", ex);
@@ -254,28 +252,34 @@ class UserJourney{
         arr.reverse();
         return arr[0];
     }
-    runDiff (name, timestamp) {
-        let self = this;
-        try {
-            if (self.filesExist.pivot && self.filesExist.test)
-                resemble(self.pivotImg)
-                .compareTo(self.testImg).ignoreNothing().onComplete(function(data) {
+    runDiff (pivot, changed ) {
+        return new Promise(function(done,reject){
+            let self = this;
+            try {
+                resemble(pivot)
+                .compareTo(changed)
+                    .ignoreNothing()
+                    .onComplete(function(data) {
+                    // if (self.filesExist.pivot && self.filesExist.test)
+
                     if (data.misMatchPercentage > 5) {
                         console.log("name:" + name + ",datafailed:true", self.diff_img);
                         data.getDiffImage().pack().pipe(fs.createWriteStream(self.diff_img));
-                        self.genMessage("mismatchY",data.misMatchPercentage);
+                        done(self.diff_img);
+                        // self.genMessage("mismatchY",data.misMatchPercentage);
                     } else {
                         console.log("name:" + name + ",datafailed:false");
-                        self.genMessage("mismatchN",data.misMatchPercentage);
+                        done("neglegible difference");
+                        // self.genMessage("mismatchN",data.misMatchPercentage);
                     }
-                    self.logToDataBase("update test set t_val='"                    
-                        +data.misMatchPercentage + "' where id="+self.project_id+";");
+                    // self.logToDataBase("update test set t_val='"
+                    //     +data.misMatchPercentage + "' where id="+self.project_id+";");
                 });
-            else
-                throw ("runDiff error ");
-        } catch (ex) {
-            console.log(ex, "testfiles not found");
-        }
+            } catch (ex) {
+                reject(ex);
+            }
+        });
+
     }
 
     logToDataBase (qry) {
@@ -304,6 +308,15 @@ class UserJourney{
             fs.mkdirSync(filePath);
             fs.chmodSync(filePath, 777);
         }
+    }
+    async visual_diff(img1,img2,img_diff){
+        selfer.diff_img = img_diff;
+        await selfer.runDiff(img1,img2);//?? deprecate
+    }
+    async getElementInFrame(_url, selector){
+	    const frames = await selfer.page.frames();
+	    let frame = frames.find(f => f._url.indexOf(_url.trim())>=0);
+	    return frame?await frame.$(selector):frames;
     }
 
 }

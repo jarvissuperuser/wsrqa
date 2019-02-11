@@ -1,7 +1,7 @@
 let b = {
     testCases: [/timeslive+/g, /businesslive+/g, /wanted+/g, /sowetanlive+/g, /heraldlive+/g,
         /tl_home+/g, /bl_home/g, /w_home+/g, /sl_home+/g, /hl_home+/g],
-    projectSet: ["tl_home/", "bl_home/", "w_home/", "sl_home/", "hl_home/", "tl_article/"],
+    projectSet: ["tl/", "bl/", "w/", "sl/", "hl/", "tl/"],
     projectNames: ["timeslive", "businesslive", "wanted", "sowetanlive", "heraldlive", "test"],
     tableHideList:[1,2]
 };
@@ -47,12 +47,12 @@ let renderCompareImages = (target, data) => {
     console.log(targetElement);
     targetElement.innerHTML = "";
     dataRender.forEach(el => {
-        let src = `/images/${getProject(el.log_image)}${el.log_image}`;
+        let src = getProject(el.n);
         let oc = `onclick="imageOnClick(event)"`;
-        let alt = `alt="${el.log_image}"`;
-        let cl = "class='w3-col s12 l6'";
-        let cli = `class='w3-col s12 l12'`;
-        let divO = `<div ${cl}><p>${el.log_info}</p>`;
+        let alt = `alt="${el.t}"`;
+        let cl = "class='w3-col s12 l12'";
+        let cli = "class='w3-col s12 l12'";
+        let divO = `<div ${cl}><p>${el.t}</p>`;
         let img = `<img src="${src}" ${alt} ${oc} ${cli} />`;
         targetElement.innerHTML += `${divO}${img}</div>`;
     });
@@ -63,14 +63,24 @@ let renderCompareImages = (target, data) => {
 let getProject = (image) => {
     let x = 0;
     let dirPath = "";
-    b.testCases.forEach((rgx) => {
-        rgx.lastIndex = 0;
-        if (rgx.test(image)) {
-            dirPath = b.projectSet[x % 5];
-        }
-        x = x + 1;
-    });
-    return dirPath;
+    let im;
+    if(image.indexOf('public')<0){
+        b.testCases.forEach((rgx) => {
+            rgx.lastIndex = 0;
+            if (rgx.test(image)) {
+                dirPath = b.projectSet[x % 5];
+            }
+            x = x + 1;
+        });
+    } else{
+        let p_ele = image.split('/');
+        p_ele.reverse();
+        p_ele.pop();
+        p_ele.pop();
+        p_ele.reverse();
+        im = p_ele.join('/');
+    }
+    return dirPath?`/images/${dirPath}/${image}`:`/${im}`;
 };
 
 let imageOnClick = (e) => {
@@ -88,15 +98,18 @@ let hideBtnList = () => {
     let buttonContainer = document.querySelector(".w3-show");
     buttonContainer.classList.remove("w3-show");
 };
-
+/**
+ * URL/compare/
+ * */
 let btnCreate = (str, target) => {
     let btnString = "";
     let jsonObj = JSON.parse(str);
     b.targetElement = document.querySelector(target);
     jsonObj.forEach(k => {
+        const t_ = k.n.split('/').reverse()[0].split('.')[0];
         btnString += "<button class='w3-btn w3-bar-item' onclick='TargetOnCLick(\"" +
             +target + "\"," + k.k + ")'>" +
-            k.n + "  ON Date:  " + k.t + " ".concat('</button>');
+            t_ + "  Details:  " + k.t + " ".concat('</button>');
     });
     return btnString;
 };

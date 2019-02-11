@@ -83,32 +83,27 @@ function onError(error) {
 // connect sqlite db;
 
 
-var db = new dlib('../app.db');
-
-function listenCB() {
-    console.log(db.datamulti, "done setup");
-    db.e.removeListener('done', listenCB);
-   //db.db.close();
-    db = null; //delete
-}
+var db = new dlib('./app.db');
 db.multiquery([
     "CREATE TABLE IF NOT EXISTS test(" +
     "id INTEGER PRIMARY KEY," +
     "t_name VARCHAR(50)," +
     "t_val VARCHAR(7) DEFAULT '0'," +
-    "t_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP)",
+    "t_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP)"
+	,
     "CREATE TABLE IF NOT EXISTS log_info(" +
     "id INTEGER PRIMARY KEY," +
     "log_info VARCHAR(200)," +
 		"t_id INTEGER," +
-    "log_image VARCHAR(100))",
+    "log_image VARCHAR(100))"
+	,
     "CREATE TABLE IF NOT EXISTS test_cases_reg(" +
     "id INTEGER PRIMARY KEY,"+
     "tcr_name VARCHAR(50),"+
     "tcr_specs VARCHAR(200),"+
     "tcr_username VARCHAR(100)"+
     ")"
-    ,
+	,
     "CREATE TABLE IF NOT EXISTS test_cases(" +
     "id INTEGER PRIMARY KEY,"+
     "tcr_id INTEGER,"+
@@ -121,8 +116,7 @@ db.multiquery([
     "tc_comment VARCHAR(300)"+
     ")"
 ]);
-db.e.on('done', listenCB);
-
+console.log("setup complete");
 function onListening() {
     var addr = server.address();
     var bind = typeof addr === 'string' ?

@@ -1,8 +1,11 @@
+/**
+ * compatible with new version of SQLite_con_man
+ * */
 let express = require('express');
 let router = express.Router();
 let dbl = require("../sqlite_con_man");
 /* Render The Data for pictures in table for*/
- let dbo = new dbl("../app.db");
+ let dbo = new dbl("./app.db");
 let arr = {};
 let rsa = [];
 let testCases = [/timeslive+/g,/businesslive+/g,/wanted+/g,/sowetanlive+/g,/heraldlive+/g,
@@ -22,7 +25,7 @@ let get_project = (image) =>{
 		}
 		x=x+1;
 	});
-}
+};
 /** deprecated 
 
 let get_project = (image)=>{

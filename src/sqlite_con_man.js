@@ -1,6 +1,4 @@
 var init = require("sqlite3").verbose();
-var ev = require('events').EventEmitter;
-var e = new ev();
 var db = null;
 var qry = "";
 var datamulti = [];
@@ -12,44 +10,46 @@ var argv = "";
 
 var manager = function(path_name) {
     db = new init.Database(path_name);
-    this.db = db;
-    this.fires = 0;
-    this.fails = 0;
-    this.e = e;
-    e.on('res_done', this.listenercb);
-    process
 };
-
-manager.prototype.data = {};
-manager.prototype.datamulti = [];
-manager.prototype.list = [];
-manager.prototype.qry = "";
-manager.prototype.listenercb = function(data) {
-    datamulti.push(data.detail);
-    if (list)
-        if (datamulti.length === list.length) {
-            manager.prototype.datamulti = datamulti;
-            datamulti = [];
-            e.emit('done');
-        }
-};
-manager.prototype.listenercdn = null;
+manager.prototype.db = db;
+manager.prototype.data = [];
 /**
- @param [] lst 
+ @param lst
 */
-manager.prototype.multiquery = function(lst) {
-    var p = null;
-    var selff = this;
-    list = lst;
-    lst.forEach((qy) => {
-        qry = qy;
-        this.transaction(qry)
-    });
+manager.prototype.multiquery = async function(lst) {
+    if (Array.isArray(lst))
+        lst.forEach(async qry => {
+            await manager.prototype.transaction(qry).catch(err => {
+                console.log(err);
+            });
+        });
+    else {
+        let arr = lst.split(';');
+        arr.forEach(async qry => {
+            await manager.prototype.transaction(qry).catch(err => {
+                console.log(err);
+            });
+        });
+    }
+    return true;
 };
 
 manager.prototype.transaction = function(qry) {
-    db.all(qry, (err, row) => {
-        e.emit("res_done", { detail: err ? err : row });
+    return new Promise((w,f) => {
+        if(qry.indexOf('INSERT') < 0) {
+            db.all(qry, (err, row) => {
+                if (err) f(err);
+                w(row);
+            });
+        }else
+        {
+            db.run(qry,function (err) {
+                if(err)f(err);
+                w(this.lastID);
+            });
+        }
     });
 };
+
+
 module.exports = manager;

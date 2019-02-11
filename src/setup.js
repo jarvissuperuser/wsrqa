@@ -4,6 +4,7 @@ class Setup{
     constructor(){
         this.setup = {};
         this.config_file = "";
+        this.env = "base";
         this.errNoConfig = "No config File in setup"; 
     }
     verify_file (filename) {
@@ -27,8 +28,9 @@ class Setup{
             throw Error(this.errNoConfig);
         }
     }
-    get_values(publication,type){
-        let raw = this.setup[type?type:"empty"][publication];
+    get_values(publication,type_){
+	    let raw = "";
+	    if (type_ !=="*") raw = this.setup[type_?type_:"empty"][publication];
         return raw?raw:"";
     }
     update_file(){
@@ -41,10 +43,25 @@ class Setup{
             throw Error(this.errNoConfig);
         }
     }
-    get_url(publication,type){
-        let t = type?type:'empty';
-        let base = this.get_values(publication,'base');
-        return  (type==="base"||type==="empty")?base:base + this.get_values(publication,t);
+    get_url(publication,type="empty"){
+        const t = type?type:'empty';
+        const base = this.get_values(publication,this.env);
+        return  (t===this.env||t==="empty")?base:base + this.get_values(publication,t);
+    }
+    get_section(publication,section){
+        const base = this.get_values(publication,this.env);
+        const sect = isNaN(section)?section:this.get_values(publication,"sections")[section];
+        return `${base}/${sect}/`
+    }
+    get_section_list(publication){
+        const sections = this.get_values(publication, "sections");
+        let url_list = [];
+        const t_alias = this;
+        if (sections.length > 0) //handle empty error
+            sections.forEach((s)=>{
+                url_list.push(t_alias.get_section(publication,s));
+            });
+        return url_list;
     }
     init(filename){
         try{
