@@ -67,7 +67,7 @@ try {
             "premium"]);
     conf.add_to_file("wo","sections",
         ["style","gift-guide","watches-and-jewellery","cars-bikes-boats","art-design","travel","tech",
-            "voices","navigator"]);
+            "voices","navigator","voices/profiles/2018-02-20-better-half","voices/interviews/2019-02-11-david-attenborough-on-60-years-of-filming-wildlife-and-how-we-can-still-save-the-planet"]);
     conf.add_to_file("sl","sportlive",
             {
                 "football":["psl","epl","uefa","fa","mtn8","nedbankcup","efl","tko"],
