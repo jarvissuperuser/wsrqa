@@ -28,7 +28,7 @@ let wordingTest = (input = [], offerBody = "")=> {
     if (wording.hasOwnProperty('length')){
         wording.forEach(async (phrase,index)=>{
             score.win = (offerBody.indexOf(phrase)>0 && phrase)?score.win+1:score.win;
-            (offerBody.indexOf(phrase)>0 && phrase)?console.log(phrase):console.log("not found");
+            (offerBody.indexOf(phrase)>0 && phrase)?console.log("found",phrase):console.log("not found",phrase);
             if(!(offerBody.indexOf(phrase)>0) && phrase)score.failed.push(index);
         });
         score.result = score.win /wording.length ;

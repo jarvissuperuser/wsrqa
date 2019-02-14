@@ -7,7 +7,6 @@ let setup = new CFG();
  /**
  * Mock input
  * */
- setup.init("./app.ini");
- let res = await injectionmiddleware("wo","*","no");
+ let res = await injectionmiddleware("st","*","no");
  console.log(JSON.stringify(res));
 })();

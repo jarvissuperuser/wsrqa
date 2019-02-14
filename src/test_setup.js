@@ -56,6 +56,8 @@ try {
 	conf.add_to_file("bl","name-test","businesslive");
     conf.add_to_file("tl","sections",
         ["news","politics","sport","tshisalive","lifestyle", "motoring","multimedia"]);
+    conf.add_to_file("st","sections",
+        ["editions","news","business","ideas","lifestyle", "sport"]);
     conf.add_to_file("bl","sections",
         ["markets","opinion","news","politics","companies","economy","people","investing",
             "e-edition"]);
