@@ -1,6 +1,7 @@
 const UJMan = require("./userjourney");
 const PM = require("./post_mn");
 const CFG = require("./setup");
+const textFind = require("./textFind");
 
 let pm = new PM();
 let copy1 = [],copy2 = [];
@@ -33,7 +34,7 @@ let mrfSectionArticle = async(section)=>{
 };
 
 let comparator = (title ,mList = [])=>{
-    return mList.some(article =>{return title.indexOf(article)>-1});
+    return mList.some(article =>{return textFind(title,article,"l")});
 };
 
 ( async function main() {
@@ -80,6 +81,7 @@ let comparator = (title ,mList = [])=>{
     }
 
     //NEWS articles
+    articleList = await mrfSectionArticle('news');
     await pm.sendRequest("http://tl-st-staging.appspot.com/apiv1/workflow/get-all", function (response) {
             const res_data = (response.resp);
             console.log("\x1b[34m\n",
@@ -88,7 +90,10 @@ let comparator = (title ,mList = [])=>{
                 " +++++++++++++++++++++++++++++++++++++++++++++++++++", "\x1b[0m");
             try {
                 res_data.forEach((r) => {
-                    console.log("\x1b[31m", r.article.title, `\x1b[0m ; ${r.article.pub_url} ; ${r.article.sections[0].publication} ; \x1b[33m`, timeConvert(r.article.published), "\x1b[0m ");
+                    console.log("\x1b[31m", r.article.title,
+                        `\x1b[0m ; ${r.article.pub_url} ; ${r.article.sections[0].publication} ; \x1b[33m`,
+                        timeConvert(r.article.published),
+                        `\x1b[0m ; ${comparator(r.article.title,articleList)?"Found":"Not Found"} `);
                     copy1.push(r.article);
                 });
             } catch (e) {
@@ -106,12 +111,16 @@ let comparator = (title ,mList = [])=>{
                 }
         }
     );
-    articleList = await mrfSectionArticle('news');
+
     if (Array.isArray(articleList)){
         articleList.forEach((article,i)=>{
             console.log(`${article} ; ${i}`);
         });
     }
+
+    //Politics articles
+    articleList = await mrfSectionArticle('politics');
+
     await pm.sendRequest("http://tl-st-staging.appspot.com/apiv1/workflow/get-all", function (response) {
             const res_data = (response.resp);
             console.log("\x1b[34m\n",
@@ -120,7 +129,10 @@ let comparator = (title ,mList = [])=>{
                 " +++++++++++++++++++++++++++++++++++++++++++++++++++", "\x1b[0m");
             try {
                 res_data.forEach((r) => {
-                    console.log("\x1b[31m", r.article.title, `\x1b[0m ; ${r.article.pub_url} ; ${r.article.sections[0].publication} ; \x1b[33m`, timeConvert(r.article.published), "\x1b[0m ");
+                    console.log("\x1b[31m", r.article.title,
+                        `\x1b[0m ; ${r.article.pub_url} ; ${r.article.sections[0].publication} ; \x1b[33m`,
+                        timeConvert(r.article.published),
+                        `\x1b[0m ; ${comparator(r.article.title,articleList)?"Found":"Not Found"} `);
                     copy1.push(r.article);
                 });
             } catch (e) {
@@ -138,12 +150,13 @@ let comparator = (title ,mList = [])=>{
                 }
         }
     );
-    articleList = await mrfSectionArticle('politics');
     if (Array.isArray(articleList)){
         articleList.forEach((article,i)=>{
             console.log(`${article} ; ${i}`);
         });
     }
+    //Sport
+    articleList = await mrfSectionArticle('sport');
     await pm.sendRequest("http://tl-st-staging.appspot.com/apiv1/workflow/get-all", function (response) {
             const res_data = (response.resp);
             console.log("\x1b[34m\n",
@@ -152,7 +165,10 @@ let comparator = (title ,mList = [])=>{
                 " +++++++++++++++++++++++++++++++++++++++++++++++++++", "\x1b[0m");
             try {
                 res_data.forEach((r) => {
-                    console.log("\x1b[31m", r.article.title, `\x1b[0m ; ${r.article.pub_url} ; ${r.article.sections[0].publication} ; \x1b[33m`, timeConvert(r.article.published), "\x1b[0m ");
+                    console.log("\x1b[31m", r.article.title,
+                        `\x1b[0m ; ${r.article.pub_url} ; ${r.article.sections[0].publication} ; \x1b[33m`,
+                        timeConvert(r.article.published),
+                        `\x1b[0m ; ${comparator(r.article.title,articleList)?"Found":"Not Found"} `);
                     copy1.push(r.article);
                 });
             } catch (e) {
@@ -170,7 +186,6 @@ let comparator = (title ,mList = [])=>{
                 }
         }
     );
-    articleList = await mrfSectionArticle('sport');
     if (Array.isArray(articleList)){
         articleList.forEach((article,i)=>{
             console.log(`${article} ; ${i}`);

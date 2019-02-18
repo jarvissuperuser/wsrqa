@@ -1,12 +1,21 @@
+const { JSDOM }= require("jsdom");
 
-let specialCharacters = ['\'','"','!',',',';','\n','\t','|',"  ","   "];
+
+
+let unescaper = (htmlString)=>{
+    return (new (new JSDOM(``,{runScripts:"dangerously"})).window.DOMParser)
+        .parseFromString(htmlString,'text/html').querySelector("body").textContent.toString();
+};
+let specialCharacters = ["...",'\'','"','!',',',';','\n','\t','|',"  ","   "];
 
 let textCleaner = (haystack,needle)=>{
-    let new_haystack =  unescape(haystack.toLowerCase());
-    let new_needle = unescape(needle.toLowerCase());
+    let new_haystack =  unescaper(haystack.toLowerCase());
+    let new_needle = unescaper(needle.toLowerCase());
     specialCharacters.forEach(c=>{
-        new_haystack.replace(c,"");
-        new_needle.replace(c,"");
+       while(new_needle.indexOf(c)>-1||new_haystack.indexOf(c)>-1) {
+           new_haystack = new_haystack.replace(c, "");
+           new_needle = new_needle.replace(c, "");
+       }
     });
     return {haystack:new_haystack,needle:new_needle};
 };
@@ -23,7 +32,7 @@ let looseStrategy = (haystack,needle)=>{
     let obj = textCleaner(haystack,needle);
     return insensitiveStrategy(obj.haystack,obj.needle);
 };
-module.exports = async(haystack,needle,strategy = "STRICT")=>{
+module.exports = (haystack,needle,strategy = "STRICT")=>{
     let FOUND = false;
     switch (strategy.toLowerCase()) {
         case "s":

@@ -8,8 +8,16 @@ let pm = new PM();
 
 
 (async function main(){
-    await pm.test("textFile loose test true",async function (t) {
-        let result = tf("'Hel'lo' World!","HELlo", "Loose");
+    await pm.test("textFile loose test true",async function () {
+        let result = await tf("'Hel'lo' World!","HELlo", "Loose");
         await pm.expect(result).to.equal(true);
-    })
+    });
+    await pm.test("textFile &  loose test true ",async function () {
+        let result = await tf("'Hel'lo' &amp; World!"," & ", "Loose");
+        await pm.expect(result).to.equal(true);
+    });
+    await pm.test("textFile & loose test true",async function (t) {
+        let result = await tf("'Hel'lo' &AMP; World!"," & ", "Loose");
+        await pm.expect(result).to.equal(true);
+    });
 })();

@@ -2,12 +2,13 @@ const UJMan = require("./userjourney");
 const CFG = require("./setup");
 const PM = require("./post_mn");
 const fs = require("fs-extra");
+const textFind = require("./textFind");
 // const jd = require("diff");
 
 let u = new UJMan();
 let config = new CFG();
 let pm = new PM();
-const p = 'hl';
+const p = 'dl';
 let success = false;
 let foundOffer = true;
 let build = null;
@@ -22,14 +23,18 @@ let wordingTest = (input = [], offerBody = "")=> {
     let score = {};
     score.win = 0;
     score.failed = [];
-    const wording = Array.isArray(input)?input:input.split('\n');
-    delete wording[""];
+    let wording = Array.isArray(input)?input:input.split('\n');
+    wording = wording.filter(w=>w!=="");
     score.wording = wording;
+    console.log(Array.isArray(wording));
+    console.log(wording.length);
+    console.log(wording);
+
     if (wording.hasOwnProperty('length')){
-        wording.forEach(async (phrase,index)=>{
-            score.win = (offerBody.indexOf(phrase)>0 && phrase)?score.win+1:score.win;
-            (offerBody.indexOf(phrase)>0 && phrase)?console.log("found",phrase):console.log("not found",phrase);
-            if(!(offerBody.indexOf(phrase)>0) && phrase)score.failed.push(index);
+        wording.forEach((phrase,index)=>{
+            score.win = (textFind(offerBody,phrase,'l')&&phrase)?score.win+1:score.win;
+            (textFind(offerBody,phrase,'l'))?console.log("found",phrase):console.log("not found",phrase);
+            if(!(textFind(offerBody,phrase,'l')) && phrase)score.failed.push(index);
         });
         score.result = score.win /wording.length ;
     }
@@ -43,7 +48,7 @@ let scoring = (score) =>{
             console.log("fail", score.wording[f]);
         });
     }
-    console.log("Phrases:", score.count.len,  " > found:",score.win ," >> results: " );
+    console.log("Phrases:", score.count.len,  " > found:",score.win ,` >> results: ${score.result * 100}%`);
 };
 
 let getAuthToken = async (p,cred = ["blank", "mugadzatt01@gmail.com", "Ttm331371"])=>{
