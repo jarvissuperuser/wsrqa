@@ -2,6 +2,8 @@ const UJMan = require("./userjourney");
 const PM = require("./post_mn");
 const CFG = require("./setup");
 const textFind = require("./textFind");
+const moment =  require("moment");
+const dev =  require("./devDescExt");
 
 let pm = new PM();
 let copy1 = [],copy2 = [];
@@ -25,8 +27,11 @@ let timeConvert = (timeStamp )=>{
 
 let mrfSectionArticle = async(section)=>{
     let url = section?config.get_section(p,section):config.get_url(p);
+    await u.page.waitFor(2000);
     await u.page.goto(url);
-    await u.page.screenshot({path:`mrf_${section}_${u.timestamp}.png`,fullPage:true});
+    await u.page.reload();
+    await u.page.waitFor(2000);
+    //await u.page.screenshot({path:`mrf_${section}_${u.timestamp}.png`,fullPage:true});
     return await u.page.evaluate(()=>
         Array.from(document.querySelectorAll('.mrf-article__title'),
                 element=>
@@ -40,7 +45,11 @@ let comparator = (title ,mList = [])=>{
 ( async function main() {
     await u.initBrowser('Galaxy S5'); //initialise browser emulating Galaxy S5
     //await u.page.goto();
-    let articleList = await mrfSectionArticle('');
+    const context = await u.browser.createIncognitoBrowserContext();
+    u.page = await context.newPage();
+    await u.page.emulate(dev["Galaxy S5"]);
+    console.log(moment());
+    let articleList = await mrfSectionArticle('').catch(e=>console.log("\x1b[31m\n",e.message,"\x1b[0m"));
     await pm.sendRequest("http://tl-st-staging.appspot.com/apiv1/workflow/get-all", function (response) {
             const res_data = (response.resp);
             console.log("\x1b[34m\n",
@@ -81,7 +90,7 @@ let comparator = (title ,mList = [])=>{
     }
 
     //NEWS articles
-    articleList = await mrfSectionArticle('news');
+    articleList = await mrfSectionArticle('news').catch(e=>console.log("\x1b[31m\n",e.message,"\x1b[0m"));
     await pm.sendRequest("http://tl-st-staging.appspot.com/apiv1/workflow/get-all", function (response) {
             const res_data = (response.resp);
             console.log("\x1b[34m\n",
@@ -119,7 +128,7 @@ let comparator = (title ,mList = [])=>{
     }
 
     //Politics articles
-    articleList = await mrfSectionArticle('politics');
+    articleList = await mrfSectionArticle('politics').catch(e=>console.log("\x1b[31m\n",e.message,"\x1b[0m"));
 
     await pm.sendRequest("http://tl-st-staging.appspot.com/apiv1/workflow/get-all", function (response) {
             const res_data = (response.resp);
@@ -156,7 +165,7 @@ let comparator = (title ,mList = [])=>{
         });
     }
     //Sport
-    articleList = await mrfSectionArticle('sport');
+    articleList = await mrfSectionArticle('sport').catch(e=>console.log("\x1b[31m\n",e.message,"\x1b[0m"));
     await pm.sendRequest("http://tl-st-staging.appspot.com/apiv1/workflow/get-all", function (response) {
             const res_data = (response.resp);
             console.log("\x1b[34m\n",
