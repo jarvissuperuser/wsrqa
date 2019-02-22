@@ -1,6 +1,5 @@
 const assert =  require("assert");
 const request = require("request");
-const fetch = require("node-fetch");
 
 class assert_to{
     constructor(comparable,message){
