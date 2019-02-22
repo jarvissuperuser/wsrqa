@@ -13,8 +13,11 @@ config.init("./app.ini");
 
 (async function main() {
     await pm.sendRequest("https://www.businesslive.co.za/apiv1/nova/data/search-image",
-        function () {
-
+        function (r) {
+    	    if(Array.isArray(r)){
+    	    	console.log("Length: ",r.length);
+    	    	r.forEach((e,i)=>{console.log("Data",i,">>",e)});
+	        }
         },
         {
             method:"POST",
