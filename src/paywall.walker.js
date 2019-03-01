@@ -12,6 +12,8 @@ let foundOffer = true;
 let build = null;
 let pageOffer = [];
 config.init("./app.ini");
+config.env = "live"
+
 
 let getAuthToken = async (p,cred = ["blank", "mugadzatt01@gmail.com", "Ttm331371"])=>{
 	let files = {};
@@ -58,7 +60,7 @@ let wordingTest = async (input = [], offerBody = "")=> {
 };
 
 (async function main() {
-	await u.initBrowser('1366x768');
+	await u.initBrowser();
 	const auth = await getAuthToken(p);
 	await u.page.goto(config.get_url(p,'buy') + `?access_token=${auth}`);
 	await u.page.screenshot({path:"./payWall.png"});
@@ -107,7 +109,7 @@ let wordingTest = async (input = [], offerBody = "")=> {
 		await u.page.waitFor(2000);
 		const button = await btns[i].asElement();
 		await button.click().catch(e=>{console.log(e.message,i);success = false;});
-		await u.page.waitFor(3500);
+		await u.page.waitFor(4500);
 		if (success) {
 			await u.page.screenshot({path:`./offer${i}.png`,fullPage:true});
 			//console.log(JSON.parse(texts[i]).options[0].price === Math.ceil( pageOffer[i]));
@@ -125,7 +127,6 @@ let wordingTest = async (input = [], offerBody = "")=> {
 			await u.page.click(".prev-slide").catch(e=>console.log(e.message,i));
 		}
 		await u.page.waitFor(3000);
-
 	}
 	await u.browser.close();
 })();

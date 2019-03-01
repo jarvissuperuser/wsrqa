@@ -11,6 +11,7 @@ let u = new UJMan();
 const p = "tl";
 let config = new CFG();
 config.init("./app.ini");
+config.env = "live";
 //?access_token=3f1cf4105e806a42f6ca789273c9c6b190dfcdbb"
 
 let timeConvert = (timeStamp )=>{

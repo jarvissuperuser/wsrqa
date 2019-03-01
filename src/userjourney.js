@@ -134,7 +134,7 @@ class UserJourney{
 
             case "update":
                 msg = "";
-                q=update+ pID+",\""+ msg+"\",\""
+                q=unamepdate+ pID+",\""+ msg+"\",\""
                     +self.extractFile(fileFound)+"\")";
                 break ;
             default:
@@ -253,8 +253,8 @@ class UserJourney{
         return arr[0];
     }
     runDiff (pivot, changed ) {
+        let self = this;
         return new Promise(function(done,reject){
-            let self = this;
             try {
                 resemble(pivot)
                 .compareTo(changed)
@@ -263,12 +263,12 @@ class UserJourney{
                     // if (self.filesExist.pivot && self.filesExist.test)
 
                     if (data.misMatchPercentage > 5) {
-                        console.log("name:" + name + ",datafailed:true", self.diff_img);
+                        console.log("name:" + ",datafailed:true", self.diff_img);
                         data.getDiffImage().pack().pipe(fs.createWriteStream(self.diff_img));
                         done(self.diff_img);
                         // self.genMessage("mismatchY",data.misMatchPercentage);
                     } else {
-                        console.log("name:" + name + ",datafailed:false");
+                        console.log("name:" + ",datafailed:false");
                         done("neglegible difference");
                         // self.genMessage("mismatchN",data.misMatchPercentage);
                     }
