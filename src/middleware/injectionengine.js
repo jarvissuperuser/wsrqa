@@ -1,7 +1,14 @@
+/***
+ * @doc regression middleware
+ * @version module 0.0.2
+ *
+ * **/
+
 const Setup = require("../setup");
 const UJC = require('../userjourney');
 const Logger = require('../multiLogger');
 const PM = require('../post_mn');
+const fs = require('fs-extra');
 
 let uj = undefined;
 let pm  = new PM();
@@ -84,7 +91,7 @@ let articleCrosswords = async (p = "st",m = "crosswords") => {
 		for(let i in app){
 			let url = app[i];
 			uj.fileName = `${uj.name}_${m}_${i}_${uj.timestamp}.png`;
-			await uj.page.goto(`${config.get_url(p)}${url}?access_token=${at}`);
+			await Promise.race([uj.page.goto(`${config.get_url(p)}${url}?access_token=${at}`),uj.waitFor(4000)]);
 			let leagueB = await uj.getElementInFrame("https://cdn2.amuselabs.com", `li:first-child`);
 			await delay(3);
 			await leagueB.click().catch(e=>console.log(e.message));
@@ -100,14 +107,14 @@ let articleCrosswords = async (p = "st",m = "crosswords") => {
 };
 
 let sportLiveEngine = async (p = "sl",m = "sportlive", instruction = "")=>{
-	let col = {}, full = [];
+	let full = [],col = {};
 	if (config.get_values(p,m)){
 		let sportlivePoints = config.get_values(p,m);
 		uj.testLocations = config.get_section(p,'sport') + `${m}/`;
 		uj.name = config.get_values(p,'path') + `${p}_${m}`;
 		await Promise.race( [ uj.gsFailOver() , uj.page.goto(uj.testLocations) ]);
 		for (let btn = 0;btn < sportlivePoints.football.length;btn++){
-			let league = sportlivePoints.football[btn];
+			let league = sportlivePoints.football[btn];col = {};
 			uj.fileName = uj.name +`_${league}_${uj.timestamp}.png`;
 			let leagueB = await uj.getElementInFrame(
 				"https://team-talk-158109.appspot.com/sport/football/",
@@ -116,7 +123,9 @@ let sportLiveEngine = async (p = "sl",m = "sportlive", instruction = "")=>{
 			await delay(5);
 			await uj.page.screenshot({path:uj.fileName,fullPage:true});
 			const msg = `${m} League:${league.toUpperCase()}`;
+			col['league'] = league.toUpperCase();
 			col['db'] = await log.log(msg,uj.fileName,'log_info',1);col['file'] = uj.fileName;
+			console.log(col);
 			full.push(col);
 		}
 	}
@@ -141,21 +150,23 @@ let loginQuery = async (p,cred = ["blank", "mugadzatt01@gmail.com", "Ttm331371"]
 	if (config.get_values(p,"login")) {
         uj.cred = cred;
         uj.name = config.get_values(p,'path') + `${p}` ;
+		collection["after_login"] = {} ;
+		collection["login_no"] = {} ;//
         await uj.login_(config.get_url(p,'login'));
         let l_pic =  uj.name + `_login_complete_${uj.timestamp}.png`;
         let e_pic = `${uj.name}` + `_login_email_${uj.timestamp}.png`;
-        collection["after_login"] = l_pic ;
-        collection["login_no"] = e_pic ;
+        collection["after_login"]['file'] = l_pic ;
+        collection["login_no"]['file'] = e_pic ;
         await uj.page.screenshot({path: l_pic});
         const msgLog_ =  "login no password @ " + uj.timestamp;
         let insert_ = await log.log(msgLog_,e_pic,"log_info",1);
         console.log("Logged @",insert_);
-        collection['db'] = insert_;
         const msgLog = "login @ " + uj.timestamp;
         let insert = await log.log(msgLog,l_pic,"log_info",1);
         console.log("Logged @",insert);
-        collection['db2'] = insert;
-        collection["auth"] = await authQuery(p);
+        collection['after_login']['db'] = insert;
+		collection["login_no"]['db'] = insert_;
+        collection["after_login"]['auth'] = await authQuery(p);
     }
     return collection;
 };
@@ -179,6 +190,7 @@ let pubSectionQuery =
             data_accumulated["sportlive"] = [];
             result = await sportLiveEngine(p);
             data_accumulated.sportlive.push(result);
+            console.log(result);
             // data_accumulated["payWall"] = [];
             // result = await loginQuery(p);
             // data_accumulated.login.push(result);
@@ -193,8 +205,9 @@ let pubSectionQuery =
 			break;
 		case "sportLive":
 		case "sportlive":
-			let res = await sportLiveEngine();
+			let res = await sportLiveEngine(p);
 			data_accumulated.sportlive.push(res);
+			console.log(res);
 			break;
 		case "crosswords":
 			let res_ = await articleCrosswords(p);
@@ -266,6 +279,160 @@ function delay(sec){
 		setTimeout(()=>{w('done')},(sec?sec*1000:4000));
 	});
 }
+
+let hasProp = (path = [],obj={})=>{
+	let o = obj;
+	let found = true;
+	return path.every(e=>{
+		found = o.hasOwnProperty(e);
+		// console.log("has prop",e,found,path);
+		o = o.hasOwnProperty(e)?o[e]:undefined;
+		return found;
+	});
+};
+let getProp = (path = [],obj = {}) =>{
+	let o = obj;
+	let found = true;
+	path.every(e=>{
+		found = o.hasOwnProperty(e);
+		o = o.hasOwnProperty(e)?o[e]:undefined;
+		return found;
+	});
+	return o;
+};
+let read = (filename) => {
+	return fs.readJsonSync(filename);
+};
+let write = (filename,data) => {
+	console.log(filename,'written');
+	fs.writeJsonSync(filename,data);
+};
+let compare = (d1 = {}, d2 = {}) => {
+	let result = {};
+	let path = [];
+
+	try {
+		for (let data in d1) {
+			console.log(`data >> ${data}`);
+			let infoLevel1 = d1[data];
+
+			for (let inner1  in  infoLevel1){
+				if (inner1 === 'section')
+					console.log(`\tinner 1 >> ${inner1}`);
+				infoLevel1[inner1].forEach((e,i)=>{
+					if(e[data]){
+						e[data].forEach(async (element,index)=>{
+							path.push(data);path.push(inner1);path.push(i);path.push(data);path.push(index);
+							if (hasProp(path,d2)) {
+								result[data] = result[data]?result[data]:{};
+								result[data][element.section] = result[data][element.section]?result[data][element.section]:{};
+								console.log("\t\td2>>", d2[data][inner1][i][data][index].file);
+								console.log("\t\td1>>", d1[data][inner1][i][data][index].file);
+								u.diff_img = `${data}.${d2[data][inner1][i][data][index].section}.${u.timestamp}.diff.png`;
+								console.log('\t\tdiff>>',u.diff_img,element.section);
+								//await u.runDiff(d1[data][inner1][i][data][index].file,d2[data][inner1][i][data][index].file);
+								result[data][element.section].f1 = d1[data][inner1][i][data][index].file;
+								result[data][element.section].f2 = d2[data][inner1][i][data][index].file;
+								result[data][element.section].diff = u.diff_img;
+							}
+							path = [];
+						});
+					}
+				});
+
+				if (inner1 === 'sportlive') {
+					console.log(`\tinner 1 >> ${inner1}`,'infoLevel1[inner1][0]');
+					infoLevel1[inner1][0].forEach((element,index)=>{
+						path.push(data);path.push(inner1);path.push(0);path.push(index);
+						if(hasProp(path,d2)) {
+							result[data] = result[data] ? result[data] : {};
+							result[data][element.league] = result[data][element.league]?result[data][element.league]:{};
+							let obj2 = getProp(path,d2);
+							let obj1 = getProp(path,d1);
+							console.log("\t\td2>>", obj2.file);
+							console.log("\t\td1>>", obj1.file);
+							u.diff_img = `${data}.${obj2.league}.${u.timestamp}.diff.png`;
+							console.log('\t\tdiff>>',u.diff_img,element.league);
+							//await u.runDiff(d1[data][inner1][i][data][index].file,d2[data][inner1][i][data][index].file);
+							result[data][element.league].f1 = obj1.file;
+							result[data][element.league].f2 = obj2.file;
+							result[data][element.league].diff = u.diff_img;
+						}
+						path = []
+					});
+				}
+
+				//FIXME
+				if (inner1 === 'crossword' && data ==='st') {
+					console.log(`\tinner 1 >> ${inner1}`, 'infoLevel1[inner1][0]');
+					for(let element in infoLevel1[inner1][0]){
+						// console.log(element," count");
+						path.push(data);path.push(inner1);path.push(0);path.push(element);
+						// console.log(element," count", hasProp(path,d2));
+						if(hasProp(path,d2)) {
+							result[data] = result[data] ? result[data] : {};
+							result[data][element] = result[data][element]?result[data][element]:{};
+							let obj2 = getProp(path,d2);
+							let obj1 = getProp(path,d1);
+							console.log("\t\td2>>", obj2.file);
+							console.log("\t\td1>>", obj1.file);
+							u.diff_img = `${data}.${element}.${u.timestamp}.diff.png`;
+							console.log('\t\tdiff>>',u.diff_img,"crosswords");
+							result[data][element].f1 = obj1.file;
+							result[data][element].f2 = obj2.file;
+							result[data][element].diff = u.diff_img;
+						}
+						path = []
+					}// * */
+				}
+				if (inner1 === 'login') {
+					console.log(`\tinner 1 >> ${inner1}`,'infoLevel1[inner1]');
+					for(let element in infoLevel1[inner1][0]){
+						path.push(data);path.push(inner1);path.push(0);path.push(element)
+						//console.log(element);
+						if(hasProp(path,d2)) {
+							result[data] = result[data] ? result[data] : {};
+							result[data][element] = result[data][element]?result[data][element]:{};
+							let obj2 = getProp(path,d2);
+							let obj1 = getProp(path,d1);
+							console.log("\t\td1>>", obj1.file);
+							console.log("\t\td2>>", obj2.file);
+							u.diff_img = `${data}.${element}.${u.timestamp}.diff.png`;
+							console.log('\t\tdiff>>',u.diff_img);
+							result[data][element].f1 = obj1.file;
+							result[data][element].f2 = obj2.file;
+							result[data][element].diff = u.diff_img;
+						}
+						path = []
+					}//*/
+				}
+
+			}
+
+		}
+	}
+	catch (e) {
+		console.log(e.message , ">> error");
+	}
+	return result;
+};
+
+let diff = async (com)=>{
+	for (let pub in com){
+		for (let aspect in com[pub]){
+			u.diff_img = com[pub][aspect].diff;
+			console.log(com[pub][aspect].diff,pub);
+			let img = await u.runDiff(com[pub][aspect].f1, com[pub][aspect].f2).catch(e => console.log(e.message));
+			if (img !== "neglegible difference"){
+				await pm.sendRequest("https://hooks.slack.com/services/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",function (r) {
+					console.log("SentMessage>> ",r.resp);
+				},{method:"POST",json:{
+						text:`Pub:${pub} SECTION:${aspect} \nDIFF: ${img} \nIMG0: ${com[pub][aspect].f1} \nIMG1:${com[pub][aspect].f2}`
+					}});
+			}
+		}
+	}//*/
+};
 
 async function runTestNative(m,b_path,new_path){
 	let files = [];
@@ -341,6 +508,8 @@ module.exports = async(p, m, t,form = "1366x768") => {
 	uj.testImg = '';
 	uj.pivotImg = '';
 	uj.name = (projects[project] === undefined) ? project : projects[project];
+	let fileName = `${p==='*'?'all':p}.result.json`;
+	let fileLatest = `${p==='*'?'all':p}.${u.timestamp}.json`;
 	console.log("Loading Tests app at " , uj.timestamp);
 	try {
 		special_tag = p.substring(0, 2);
@@ -363,17 +532,25 @@ module.exports = async(p, m, t,form = "1366x768") => {
 		uj.diff_img = b_path + uj.name + uj.timestamp + "diff.png";
 		uj.fileName = b_path + uj.name + uj.timestamp + ".png";
 		uj.testImg = uj.fileName + ".png";
-		if (t === 'no') {
-			result = await pubQuery(p,m,b_path,new_path);
-		}
-		else if (t === "yes"){
-			await new Promise(uj.checkFilesP);
-			let files = await runTestNative(m,b_path,new_path);
-			uj.filesExist["test"] = true;
-			uj.testImg = files[0];
-			console.log(files,"generated");
-			for (var a = 0; a < files.length;a++)
-				await uj.runDiff(files[a]);
+
+
+		result = await pubQuery(p,m,b_path,new_path);
+		let fileExists = await fs.pathExists(fileName);
+		if (t === "yes"){
+
+			if (fileExists) {
+				//compare`${p==='*'?'all':p}.${u.timestamp}.json`
+				let latest = read(fileName);
+
+				let com = compare(latest,result);
+				await diff(com);
+				write(fileLatest,result);
+
+
+			} else {
+				//save file
+				write(fileName,result);
+			}
 		}
 		console.log("done");
 		await uj.closeBrowser();

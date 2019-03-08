@@ -8,7 +8,7 @@ const dev =  require("./devDescExt");
 let pm = new PM();
 let copy1 = [],copy2 = [];
 let u = new UJMan();
-const p = "tl";
+const p = "tl",pub = "sunday-times";
 let config = new CFG();
 config.init("./app.ini");
 config.env = "live";
@@ -40,7 +40,9 @@ let mrfSectionArticle = async(section)=>{
 };
 
 let comparator = (title ,mList = [])=>{
-    return mList.some(article =>{return textFind(title,article,"l")});
+    // return mList.some(article =>{return true;//textFind(title,article,"l")
+    //     });
+    return false;
 };
 
 ( async function main() {
@@ -50,8 +52,8 @@ let comparator = (title ,mList = [])=>{
     u.page = await context.newPage();
     await u.page.emulate(dev["Galaxy S5"]);
     console.log(moment());
-    let articleList = await mrfSectionArticle('').catch(e=>console.log("\x1b[31m\n",e.message,"\x1b[0m"));
-    await pm.sendRequest("http://tl-st-staging.appspot.com/apiv1/workflow/get-all", function (response) {
+    let articleList = [];//await mrfSectionArticle('').catch(e=>console.log("\x1b[31m\n",e.message,"\x1b[0m"));
+    await pm.sendRequest(`${config.get_url(p)}/apiv1/workflow/get-all`, function (response) {
             const res_data = (response.resp);
             console.log("\x1b[34m\n",
                 "+++++++++++++++++++++++++++++++++++++++++++++++++++\n" +
@@ -61,13 +63,13 @@ let comparator = (title ,mList = [])=>{
 
                 res_data.forEach((r) => {
                     console.log("\x1b[31m", r.article.title,
-                        `\x1b[0m ; ${r.article.pub_url} ; ${r.article.sections[0].publication} ; \x1b[33m`,
+                        `\x1b[0m ; ${r.article.content_type} ; ${r.article.sections[0].publication} ; \x1b[33m`,
                         timeConvert(r.article.published),
                         `\x1b[0m ; ${comparator(r.article.title,articleList)?"Found":"Not Found"} `);
                     copy1.push(r.article);
                 });
             } catch (e) {
-                console.log(res_data);
+                console.log(e.message);
             }
         console.log("\x1b[32m\n",
             "+++++++++++++++++++++++++++++++++++++++++++++++++++\n", "\x1b[0m");
@@ -78,21 +80,21 @@ let comparator = (title ,mList = [])=>{
                     status: "featured",
                     limit: 50,
                     offset: 0,
-                    publication: "times-live",
+                    publication: pub,
                     section: "home"
                 }
         }
 
     );
-    if (Array.isArray(articleList)){
-        articleList.forEach((article,i)=>{
-            console.log(`${article} ; ${i}`);
-        });
-    }
+    // if (Array.isArray(articleList)){
+    //     articleList.forEach((article,i)=>{
+    //         console.log(`${article} ; ${i}`);
+    //     });
+    // }
 
     //NEWS articles
-    articleList = await mrfSectionArticle('news').catch(e=>console.log("\x1b[31m\n",e.message,"\x1b[0m"));
-    await pm.sendRequest("http://tl-st-staging.appspot.com/apiv1/workflow/get-all", function (response) {
+    //articleList = await mrfSectionArticle('news').catch(e=>console.log("\x1b[31m\n",e.message,"\x1b[0m"));
+    await pm.sendRequest(`${config.get_url(p)}/apiv1/workflow/get-all`, function (response) {
             const res_data = (response.resp);
             console.log("\x1b[34m\n",
                 "+++++++++++++++++++++++++++++++++++++++++++++++++++\n" +
@@ -107,7 +109,7 @@ let comparator = (title ,mList = [])=>{
                     copy1.push(r.article);
                 });
             } catch (e) {
-                console.log(res_data);
+                console.log(e.message);
             }
         }, {
             method: "POST",
@@ -122,14 +124,14 @@ let comparator = (title ,mList = [])=>{
         }
     );
 
-    if (Array.isArray(articleList)){
-        articleList.forEach((article,i)=>{
-            console.log(`${article} ; ${i}`);
-        });
-    }
+    // if (Array.isArray(articleList)){
+    //     articleList.forEach((article,i)=>{
+    //         console.log(`${article} ; ${i}`);
+    //     });
+    // }
 
     //Politics articles
-    articleList = await mrfSectionArticle('politics').catch(e=>console.log("\x1b[31m\n",e.message,"\x1b[0m"));
+    //articleList = await mrfSectionArticle('politics').catch(e=>console.log("\x1b[31m\n",e.message,"\x1b[0m"));
 
     await pm.sendRequest("http://tl-st-staging.appspot.com/apiv1/workflow/get-all", function (response) {
             const res_data = (response.resp);
@@ -146,7 +148,7 @@ let comparator = (title ,mList = [])=>{
                     copy1.push(r.article);
                 });
             } catch (e) {
-                console.log(res_data);
+                console.log(e.message);
             }
         }, {
             method: "POST",
@@ -160,13 +162,13 @@ let comparator = (title ,mList = [])=>{
                 }
         }
     );
-    if (Array.isArray(articleList)){
-        articleList.forEach((article,i)=>{
-            console.log(`${article} ; ${i}`);
-        });
-    }
+    // if (Array.isArray(articleList)){
+    //     articleList.forEach((article,i)=>{
+    //         console.log(`${article} ; ${i}`);
+    //     });
+    // }
     //Sport
-    articleList = await mrfSectionArticle('sport').catch(e=>console.log("\x1b[31m\n",e.message,"\x1b[0m"));
+    //articleList = await mrfSectionArticle('sport').catch(e=>console.log("\x1b[31m\n",e.message,"\x1b[0m"));
     await pm.sendRequest("http://tl-st-staging.appspot.com/apiv1/workflow/get-all", function (response) {
             const res_data = (response.resp);
             console.log("\x1b[34m\n",
@@ -182,7 +184,7 @@ let comparator = (title ,mList = [])=>{
                     copy1.push(r.article);
                 });
             } catch (e) {
-                console.log(res_data);
+                console.log(e.message);
             }
         }, {
             method: "POST",
@@ -196,10 +198,10 @@ let comparator = (title ,mList = [])=>{
                 }
         }
     );
-    if (Array.isArray(articleList)){
-        articleList.forEach((article,i)=>{
-            console.log(`${article} ; ${i}`);
-        });
-    }
+    // if (Array.isArray(articleList)){
+    //     articleList.forEach((article,i)=>{
+    //         console.log(`${article} ; ${i}`);
+    //     });
+    // }
     await u.closeBrowser();
 })();
