@@ -162,7 +162,7 @@ let diff = async (com)=>{
       await pm.sendRequest("https://hooks.slack.com/services/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",function (r) {
         console.log("SentMessage>> ",r.resp);
        },{method:"POST",json:{
-         text:`Pub:${pub} SECTION:${aspect} \nDIFF: ${img} \nIMG0: ${com[pub][aspect].f1} \nIMG1:${com[pub][aspect].f2}`
+         text:`Problem detected on Pub:${pub} SECTION:${aspect} \nDIFF: ${img} \nIMG0: ${com[pub][aspect].f1} \nIMG1:${com[pub][aspect].f2} \n `
         }});
      }
    }

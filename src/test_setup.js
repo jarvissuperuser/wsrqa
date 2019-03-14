@@ -6,13 +6,13 @@ try {
     let pub_arr = ["tl","st","wo","sl","dl","hl","bl"];
 
     // case add to file and update
-    conf.add_to_file("tl","base","http://tl-st-staging.appspot.com");
-    conf.add_to_file("st","base","http://timesselect-stage.appspot.com");
-    conf.add_to_file("sl","base","http://sowetan-staging.appspot.com");
-    conf.add_to_file("bl","base","http://cosmos-stage-qa.appspot.com");
-    conf.add_to_file("wo","base","http://wanted-staging.appspot.com");
+    conf.add_to_file("tl","base","https://tl-st-staging.appspot.com");
+    conf.add_to_file("st","base","https://timesselect-stage.appspot.com");
+    conf.add_to_file("sl","base","https://sowetan-staging.appspot.com");
+    conf.add_to_file("bl","base","https://cosmos-stage-qa.appspot.com");
+    conf.add_to_file("wo","base","https://wanted-staging.appspot.com");
     conf.add_to_file("hl","base","https://heraldlive.appspot.com");
-    conf.add_to_file("dl","base","http://dispatchlive-1357.appspot.com");
+    conf.add_to_file("dl","base","https://dispatchlive-1357.appspot.com");
     // case env
     conf.add_to_file("tl","live","https://www.timeslive.co.za");
     conf.add_to_file("st","live","https://select.timeslive.co.za");
