@@ -328,12 +328,12 @@ let compare = (d1 = {}, d2 = {}) => {
 								result[data][element.section] = result[data][element.section]?result[data][element.section]:{};
 								console.log("\t\td2>>", d2[data][inner1][i][data][index].file);
 								console.log("\t\td1>>", d1[data][inner1][i][data][index].file);
-								u.diff_img = `${data}.${d2[data][inner1][i][data][index].section}.${u.timestamp}.diff.png`;
-								console.log('\t\tdiff>>',u.diff_img,element.section);
-								//await u.runDiff(d1[data][inner1][i][data][index].file,d2[data][inner1][i][data][index].file);
+								uj.diff_img = `${data}.${d2[data][inner1][i][data][index].section}.${uj.timestamp}.diff.png`;
+								console.log('\t\tdiff>>',uj.diff_img,element.section);
+								//await uj.runDiff(d1[data][inner1][i][data][index].file,d2[data][inner1][i][data][index].file);
 								result[data][element.section].f1 = d1[data][inner1][i][data][index].file;
 								result[data][element.section].f2 = d2[data][inner1][i][data][index].file;
-								result[data][element.section].diff = u.diff_img;
+								result[data][element.section].diff = uj.diff_img;
 							}
 							path = [];
 						});
@@ -351,12 +351,12 @@ let compare = (d1 = {}, d2 = {}) => {
 							let obj1 = getProp(path,d1);
 							console.log("\t\td2>>", obj2.file);
 							console.log("\t\td1>>", obj1.file);
-							u.diff_img = `${data}.${obj2.league}.${u.timestamp}.diff.png`;
-							console.log('\t\tdiff>>',u.diff_img,element.league);
-							//await u.runDiff(d1[data][inner1][i][data][index].file,d2[data][inner1][i][data][index].file);
+							uj.diff_img = `${data}.${obj2.league}.${uj.timestamp}.diff.png`;
+							console.log('\t\tdiff>>',uj.diff_img,element.league);
+							//await uj.runDiff(d1[data][inner1][i][data][index].file,d2[data][inner1][i][data][index].file);
 							result[data][element.league].f1 = obj1.file;
 							result[data][element.league].f2 = obj2.file;
-							result[data][element.league].diff = u.diff_img;
+							result[data][element.league].diff = uj.diff_img;
 						}
 						path = []
 					});
@@ -376,11 +376,11 @@ let compare = (d1 = {}, d2 = {}) => {
 							let obj1 = getProp(path,d1);
 							console.log("\t\td2>>", obj2.file);
 							console.log("\t\td1>>", obj1.file);
-							u.diff_img = `${data}.${element}.${u.timestamp}.diff.png`;
-							console.log('\t\tdiff>>',u.diff_img,"crosswords");
+							uj.diff_img = `${data}.${element}.${uj.timestamp}.diff.png`;
+							console.log('\t\tdiff>>',uj.diff_img,"crosswords");
 							result[data][element].f1 = obj1.file;
 							result[data][element].f2 = obj2.file;
-							result[data][element].diff = u.diff_img;
+							result[data][element].diff = uj.diff_img;
 						}
 						path = []
 					}// * */
@@ -397,11 +397,11 @@ let compare = (d1 = {}, d2 = {}) => {
 							let obj1 = getProp(path,d1);
 							console.log("\t\td1>>", obj1.file);
 							console.log("\t\td2>>", obj2.file);
-							u.diff_img = `${data}.${element}.${u.timestamp}.diff.png`;
-							console.log('\t\tdiff>>',u.diff_img);
+							uj.diff_img = `${data}.${element}.${uj.timestamp}.diff.png`;
+							console.log('\t\tdiff>>',uj.diff_img);
 							result[data][element].f1 = obj1.file;
 							result[data][element].f2 = obj2.file;
-							result[data][element].diff = u.diff_img;
+							result[data][element].diff = uj.diff_img;
 						}
 						path = []
 					}//*/
@@ -420,9 +420,9 @@ let compare = (d1 = {}, d2 = {}) => {
 let diff = async (com)=>{
 	for (let pub in com){
 		for (let aspect in com[pub]){
-			u.diff_img = com[pub][aspect].diff;
+			uj.diff_img = com[pub][aspect].diff;
 			console.log(com[pub][aspect].diff,pub);
-			let img = await u.runDiff(com[pub][aspect].f1, com[pub][aspect].f2).catch(e => console.log(e.message));
+			let img = await uj.runDiff(com[pub][aspect].f1, com[pub][aspect].f2).catch(e => console.log(e.message));
 			if (img !== "neglegible difference"){
 				await pm.sendRequest("https://hooks.slack.com/services/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",function (r) {
 					console.log("SentMessage>> ",r.resp);
@@ -509,7 +509,7 @@ module.exports = async(p, m, t,form = "1366x768") => {
 	uj.pivotImg = '';
 	uj.name = (projects[project] === undefined) ? project : projects[project];
 	let fileName = `${p==='*'?'all':p}.result.json`;
-	let fileLatest = `${p==='*'?'all':p}.${u.timestamp}.json`;
+	let fileLatest = `${p==='*'?'all':p}.${uj.timestamp}.json`;
 	console.log("Loading Tests app at " , uj.timestamp);
 	try {
 		special_tag = p.substring(0, 2);
@@ -539,7 +539,6 @@ module.exports = async(p, m, t,form = "1366x768") => {
 		if (t === "yes"){
 
 			if (fileExists) {
-				//compare`${p==='*'?'all':p}.${u.timestamp}.json`
 				let latest = read(fileName);
 
 				let com = compare(latest,result);
