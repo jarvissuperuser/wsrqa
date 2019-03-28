@@ -8,3 +8,6 @@ app.ini
 src/app.ini
 src/app.db
 */*.png
+src/all.*.json
+src/sl.*.json
+src/ts.*.json

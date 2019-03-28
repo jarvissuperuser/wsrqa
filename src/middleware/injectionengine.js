@@ -498,7 +498,7 @@ module.exports = async(p, m, t,form = "1366x768") => {
 	isMobile = m;
 	runTests = t;
 	config.init("./app.ini");
-	config.env = "base";
+	config.env = "live";
 	let b_path = "./public/images/";
 	let result = {};
 	uj = new UJC();

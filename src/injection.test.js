@@ -8,7 +8,7 @@ const PM = require("./post_mn");
 
 let setup = new CFG();
 let u = new UJ();
-let p = '*';
+let p = 'sl';
 let fileName = `${p==='*'?'all':p}.result.json`;
 // let fileNameCurrent = ;
 let pm = new PM();
