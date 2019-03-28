@@ -1,6 +1,5 @@
 const assert =  require("assert");
 const request = require("request");
-const fetch = require("node-fetch");
 
 class assert_to{
     constructor(comparable,message){
@@ -71,7 +70,10 @@ Main.prototype.request = (url,cb,pData = undefined)=>{
         if(!pData) {
             request(url, (err, res, body) => {
                 cb(body);
-                w({data: body, statusCode: res.statusCode, headers: res.headers, cookies: res.headers['set-cookie']});
+                if (res.statusCode&&res.headers)
+                    w({data: body, statusCode: res.statusCode, headers: res.headers, cookies: res.headers['set-cookie']});
+                else
+                    f({error: "failed to load",obj:res,msg:"no status code or headers"});
                 if (err) {
                     f({error: err, headers: res})
                 }
