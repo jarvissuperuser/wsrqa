@@ -1,6 +1,13 @@
 const assert =  require("assert");
 const request = require("request");
 
+/***
+ * TODO
+ * --> investigate soap to json
+ * ----> processing cost for conversion.
+ * NB!! > is edge case most likely
+ * */
+
 class assert_to{
     constructor(comparable,message){
         this.compara = comparable;
@@ -63,7 +70,7 @@ let data = "";
 /**
  * @param url string
  * @param cb function
- * @param pData { method:"method", <data>:[<{name:"",value:""}>]}
+ * @param pData { method:"method", data:[<{name:"",value:""}>]}
  * */
 Main.prototype.request = (url,cb,pData = undefined)=>{
     return new Promise((w,f)=>{
@@ -82,7 +89,7 @@ Main.prototype.request = (url,cb,pData = undefined)=>{
             request(url, pData,
                 (err, res, body) => {
                 cb(body);
-                w({data: body, statusCode: res.statusCode?res.statusCode:500, headers: res.headers, cookies: res.headers['set-cookie']});
+                w({data: body, statusCode: res?res.statusCode:500, headers: res.headers, cookies: res.headers['set-cookie']});
                 if (err) {
                     f({error: err, headers: res})
                 }

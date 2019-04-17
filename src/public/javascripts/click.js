@@ -147,6 +147,7 @@ let serialize = (form, obj) => {
 
 let mysubmit = function (e) {
     e.preventDefault();
+    console.log("mysubmit");
     let el = e.target;
     let obj = serialize(el, {});
     obj['submit'] = hasClass(el,"case-add")?'add_case':'add_case_reg';
@@ -172,13 +173,45 @@ let mysubmit = function (e) {
                 console.log(JSON.parse(this.responseText)[0]);
             }
 
-    })
+    });
 
+};
+
+let actionSubmit = (e) => {
+    // console.log("actionSubmit");
+    let el = e.target;
+    let obj = serialize(el, {});
+    // obj['submit'] = hasClass(el,"case-add")?'add_case':'add_case_reg';
+    if (b.projectId)
+        obj['id'] = b.projectId;
+    let data = x_encode(obj);
+    let config = {
+        method:"POST",
+        endPoint:"/dev/actions",
+        header:
+            [{
+                header:"Content-Type",
+                value:"application/x-www-form-urlencoded"
+            }],
+        data:data
+    };
+    // console.log(config.endPoint);
+    ajax(config,function () {
+        if (this.readyState === 4 && this.status === 200)
+            if (!JSON.parse(this.responseText)[0]){
+                // location = "/quality/qa#" + (b.projectId?b.projectId:JSON.parse(this.responseText)['data']);
+                // if (obj['submit']  ==="add_case"){table_fetch();hideModal()}
+            } else {
+                //console.log(JSON.parse(this.responseText)[0]);
+                document.querySelector("textarea").value = this.responseText;
+            }
+    });
 };
 
 let ajax = (config,callBk)=>{
     b.ajax = b.ajax || new XMLHttpRequest();
     b.ajax.onreadystatechange = callBk;
+    console.log(config.endPoint,"ajax");
     b.ajax.open(config.method,config.endPoint);
     if (config.header)
         config.header.forEach((h)=>{
@@ -216,7 +249,7 @@ function td_click(e) {
 }
 let table_data_render= function(){
     let vp = b.view_port.getAttribute('vp');
-}
+};
 let table_fetch = function () {
     let data = {
         submit:"get_case_reg",
@@ -380,7 +413,7 @@ let onload = function () {
         btn.addEventListener("click", hideModal);
     });
     b.view_port =(document.querySelector('view-port'));
-    if (b.view_port)table_fetch();
+    if (b.view_port && location.href.indexOf('quality')>=0)table_fetch();
 };
 document.addEventListener('DOMContentLoaded', onload);
 

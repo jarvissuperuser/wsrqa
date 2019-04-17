@@ -1,0 +1,29 @@
+extends layout
+
+block content
+    h1.w3-center= title
+    view-port(hidden='true', vp=`${view}`)
+
+    div.w3-container.w3-content
+        div.w3-card.w3-col.l4.s10.w3-black
+            code.w3-text Select the what you want to do
+            form.w3-card(onsubmit='event.preventDefault();return actionSubmit(event);')
+                select.w3-input(name="pub")
+                    option(value='tl') times-live
+                    option(value='sl') sowetan-live
+                    option(value='bl') business-live
+                    option(value='st') times-select
+                    option(value='hl') herald-live
+                    option(value='dl') dispatch-live
+                select#action.w3-input(name='actions', required)
+                    option(value='get-reg') GetUserDetails
+                    option(value='get-subs') ListSubscriptions
+                input#path.w3-input(type="text", name="path", placeholder="Object Paths")
+                input#email.w3-input(type="email", required, name="email", placeholder="Email")
+                input#password.w3-input(type="password", required, name="password", placeholder="Password")
+                input#submit.w3-btn.w3-col.s6.w3-blue.w3-bar-item(type='submit', value='Check')
+                input#clear.w3-btn.w3-col.s6.w3-green.w3-bar-item(type='reset', value='Clear')
+
+
+        div.results
+            textarea.display(placeholder='Results Displayed Here...', rows="10")
