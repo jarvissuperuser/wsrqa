@@ -8,8 +8,8 @@ const dev =  require("./devDescExt");
 let pm = new PM();
 let wPath = ['type'],copy2 = [];
 let u = new UJMan();
-const p = 'bl';
-const pub = 'bl';
+const p = 'tl';
+const pub = 'times-live';
 let config = new CFG();
 config.init("./app.ini");
 // config.get_url(p)
@@ -17,14 +17,15 @@ config.env = "live";
 let getFromPath=(obj ={},path =[])=>{
     let result = obj;
     path.forEach(e=>{
-        if (result.hasOwnProperty(e))
+        if (result&&result.hasOwnProperty(e))
             result = result[e];
     });
     return result;
 };
 let search = (widgetName)=>{
-    // let widgets = ["iono","gallery","jwplayer","polldaddy","facebook_video","youtube","tweet",'instagram',"quote"];
-    let widgets = ['image','iono','gallery','instagram','tweet'];
+    let widgets = ["hmr","giphy","facebook_post",'iframel',"gallery","ioo","facebook_video",'quoe',"instagrm",'tweet',
+        'scribd','soundcloud','chartblocks','infoblock','article_list','youtbe','hr'];
+    // let widgets = ['soundcloud','html','gallery','tweet','facebook_video','youtube'];
     return widgets.some((w)=>{return w===widgetName});
 };
 
@@ -38,10 +39,10 @@ let search = (widgetName)=>{
                 console.log("Response is array");
                 r.resp.forEach((article)=>{
                     if (Array.isArray(article.article.widgets)){
-                        article.article.widgets.some((w)=>{
+                        article.article.widgets.some((w,id)=>{
                             let widgetValue = getFromPath(w,wPath);
                             if (search(widgetValue)){
-                                console.log("\t",article.article.title,config.get_url(p) + article.article.pub_url,w.type);
+                                console.log("\t",article.article.title,config.get_url(p) + article.article.pub_url,id,w.type,article.article.widgets.length);
                                 // console.log("\n",w,"\n");
                                 return true;
                             }
@@ -62,12 +63,11 @@ let search = (widgetName)=>{
                     limit: 50,
                     offset: 0,
                     publication: pub,
-                    section: "home"
+                    section: "world"
                 }
 
         });
-
-
+    console.log("Query>>e");
     await pm.sendRequest( config.get_url(p)+'/apiv1/pub/articles/get-all',
         function (r) {
             console.log(Array.isArray(r.resp), "r.resp");
@@ -76,11 +76,11 @@ let search = (widgetName)=>{
                 r.resp.forEach((article)=>{
                     if (Array.isArray(article.widgets)){
                         //console.log(article.title,"\t\tarticle");
-                        article.widgets.some((w)=>{
+                        article.widgets.some((w,id)=>{
                             // console.log("\t\t\t",w.type)
                             let widgetValue = getFromPath(w,wPath);
                             if (search(widgetValue)){
-                                console.log("\t",article.title,config.get_url(p) + article.pub_url,w.type);
+                                console.log("\t",article.title,config.get_url(p) + article.pub_url,id,w.type,article.widgets.length);
                                 // console.log("\n",w,"\n");
                                 return true;
                             }
@@ -98,7 +98,6 @@ let search = (widgetName)=>{
                             //     return true;
                             // }
                         });
-
                     }
                 });
             }else{
@@ -127,10 +126,10 @@ let search = (widgetName)=>{
                 console.log("Response is array");
                 r.resp.forEach((article)=>{
                     if (Array.isArray(article.article.widgets)){
-                        article.article.widgets.some((w)=>{
+                        article.article.widgets.some((w,id)=>{
                             let widgetValue = getFromPath(w,wPath);
                             if (search(widgetValue) ){
-                                console.log("\t",article.article.title,config.get_url(p) + article.article.pub_url,w.type);
+                                console.log("\t",article.article.title,config.get_url(p) + article.article.pub_url,id,w.type,article.article.widgets.length);
                                 return true;
                             }
                         });
@@ -152,7 +151,7 @@ let search = (widgetName)=>{
 
         });
 
-    console.log("Markets URL >>");
+    console.log("Ent URL >>");
     await pm.sendRequest(config.get_url(p) + "/apiv1/workflow/get-all",
         function (r) {
             console.log(Array.isArray(r.resp), "r.resp");
@@ -161,10 +160,10 @@ let search = (widgetName)=>{
                 r.resp.forEach(({article})=>{
                     if (Array.isArray(article.widgets)){
 
-                        article.widgets.some((w)=>{
+                        article.widgets.some((w,id)=>{
                             let widgetValue = getFromPath(w,wPath);
                             if (search(widgetValue)){
-                                console.log("\t",article.title,config.get_url(p) + article.pub_url,w.type);
+                                console.log("\t",article.title,config.get_url(p) + article.pub_url,id,w.type,article.widgets.length);
                                 // console.log("\n",w,"\n");
                                 return true;
                             }
@@ -185,11 +184,11 @@ let search = (widgetName)=>{
                     limit: 50,
                     offset: 0,
                     publication: pub,
-                    section: "markets"
+                    section: "lifestyle"
                 }
 
         });
-    console.log("Opinions URL >>");
+    console.log("Buzz URL >>");
     await pm.sendRequest(config.get_url(p) + "/apiv1/workflow/get-all",
         function (r) {
             console.log(Array.isArray(r.resp), "r.resp");
@@ -197,10 +196,10 @@ let search = (widgetName)=>{
                 console.log("Response is array");
                 r.resp.forEach((article)=>{
                     if (Array.isArray(article.article.widgets)){
-                        article.article.widgets.some((w)=>{
+                        article.article.widgets.some((w,id)=>{
                             let widgetValue = getFromPath(w,wPath);
                             if (search(widgetValue)){
-                                console.log("\t",article.article.title,config.get_url(p) + article.article.pub_url,w.type);
+                                console.log("\t",article.article.title,config.get_url(p) + article.article.pub_url,id,w.type,article.article.widgets.length);
                                 return true;
                             }
                         });
@@ -220,7 +219,42 @@ let search = (widgetName)=>{
                     limit: 50,
                     offset: 0,
                     publication: pub,
-                    section: "opinion"
+                    section: "business"
+                }
+
+        });
+    console.log("opined URL >>");
+    await pm.sendRequest(config.get_url(p) + "/apiv1/workflow/get-all",
+        function (r) {
+            console.log(Array.isArray(r.resp), "r.resp");
+            if (Array.isArray(r.resp)){
+                console.log("Response is array");
+                r.resp.forEach((article)=>{
+                    if (Array.isArray(article.article.widgets)){
+                        article.article.widgets.some((w,id)=>{
+                            let widgetValue = getFromPath(w,wPath);
+                            if (search(widgetValue)){
+                                console.log("\t",article.article.title,config.get_url(p) + article.article.pub_url,id,w.type,article.article.widgets.length);
+                                return true;
+                            }
+                        });
+                    }
+                    // if (article.article.external_url){
+                    //     console.log("external_url",article.article.title);
+                    // }
+                });
+            }else {
+                console.log(r.resp,">> error");
+            }
+        },{
+            method : "POST",
+            json:
+                {
+                    status: "featured",
+                    limit: 50,
+                    offset: 0,
+                    publication: pub,
+                    section: "ideas"
                 }
 
         });
@@ -232,7 +266,7 @@ let search = (widgetName)=>{
     //             console.log("Response is array",r.resp.length);
     //             r.resp.forEach((article)=>{
     //                 if (Array.isArray(article.widgets)){
-    //                     console.log(article.title,"\t\tarticle");
+    //                     console.log(article.title,config.get_url('sl')+article.pub_url,"\t\tarticle");
     //                     article.widgets.some((w)=>{
     //                         console.log("\t\t\t",w.type)
     //                         // if (search(w.type)){

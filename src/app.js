@@ -15,6 +15,7 @@ let compare = require('./routes/compare');
 let search = require('./routes/searchjson');
 let quality = require('./routes/quality');
 let multiInjection = require("./routes/multiInjection");
+let devUtils = require("./routes/devUtils");
 
 let app = express();
 
@@ -42,6 +43,7 @@ app.use('/compare', compare);
 app.use('/search', search);
 app.use('/quality', quality);
 app.use('/multi', quality);
+app.use('/dev',devUtils);
 app.use(function(req, res, next) {
     var err = new Error('Not Found');
   err.status = 404;

@@ -1,6 +1,13 @@
 const assert =  require("assert");
 const request = require("request");
 
+/***
+ * TODO
+ * --> investigate soap to json
+ * ----> processing cost for conversion.
+ * NB!! > is edge case most likely
+ * */
+
 class assert_to{
     constructor(comparable,message){
         this.compara = comparable;
@@ -63,15 +70,15 @@ let data = "";
 /**
  * @param url string
  * @param cb function
- * @param pData { method:"method", <data>:[<{name:"",value:""}>]}
+ * @param pData { method:"method", data:[<{name:"",value:""}>]}
  * */
 Main.prototype.request = (url,cb,pData = undefined)=>{
     return new Promise((w,f)=>{
         if(!pData) {
             request(url, (err, res, body) => {
                 cb(body);
-                if (res.statusCode&&res.headers)
-                    w({data: body, statusCode: res.statusCode, headers: res.headers, cookies: res.headers['set-cookie']});
+                if (res&&res.statusCode&&res.headers)
+                    w({data: body, statusCode: res?res.statusCode:500, headers: res?res.headers:"none", cookies: res?res.headers['set-cookie']:"none"});
                 else
                     f({error: "failed to load",obj:res,msg:"no status code or headers"});
                 if (err) {
@@ -82,7 +89,7 @@ Main.prototype.request = (url,cb,pData = undefined)=>{
             request(url, pData,
                 (err, res, body) => {
                 cb(body);
-                w({data: body, statusCode: res.statusCode, headers: res.headers, cookies: res.headers['set-cookie']});
+                w({data: body, statusCode: res?res.statusCode:500, headers: res.headers, cookies: res.headers['set-cookie']});
                 if (err) {
                     f({error: err, headers: res})
                 }
@@ -93,9 +100,12 @@ Main.prototype.request = (url,cb,pData = undefined)=>{
 
 Main.prototype.sendRequest = async function(url,callback,rData = undefined){
     Main.prototype.url = url;
-    data = await Main.prototype.request(url,async (rs)=> await Main.prototype.dataResponse(rs),rData);
-    Main.prototype.response = new req_response(data);
-    await callback(Main.prototype.response);
+    data = await Main.prototype.request(url,async (rs)=> await Main.prototype.dataResponse(rs),rData).catch(e=>console.log(e.message));
+    if (data) {
+        Main.prototype.response = new req_response(data);
+        await callback(Main.prototype.response);
+    }else
+        await callback(null);
 };
 
 Main.prototype.dataResponse = async function(resp){
