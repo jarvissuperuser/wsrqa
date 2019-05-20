@@ -23,7 +23,29 @@ block content
                 input#password.w3-input(type="password", required, name="password", placeholder="Password")
                 input#submit.w3-btn.w3-col.s6.w3-blue.w3-bar-item(type='submit', value='Check')
                 input#clear.w3-btn.w3-col.s6.w3-green.w3-bar-item(type='reset', value='Clear')
+        div.w3-card.w3-col.l4.s10.w3-black
+            code.w3-text.w3-blue Search for Widgets
+            form.w3-card(onsubmit='event.preventDefault();return actionSubmit(event);')
+                select.w3-input(name="pub")
+                    option(value='tl') times-live
+                    option(value='sl') sowetan-live
+                    option(value='bl') business-live
+                    option(value='st') times-select
+                    option(value='hl') herald-live
+                    option(value='dl') dispatch-live
+                select.w3-input(name='actions', required)
+                    option(value='get-widget') Get Articles with widgets.
+                select.w3-input(name='path', required)
+                    option(value='0') section 1
+                    option(value='1') section 2
+                    option(value='2') section 3
+                    option(value='3') section 4
+                    option(value='4') section 5
+                    option(value='5') section 6
+                input.w3-input(type="text", required, name="email", placeholder="Widgets Names separated by ','")
+                input.w3-btn.w3-blue(type='submit', value="request")
 
 
-        div.results
+        div.results.w3-col.l4
             textarea.display(placeholder='Results Displayed Here...', rows="10")
+        div.result-list.w3-card.w3-col.l10.s10.w3-black.w3-content.w3-container

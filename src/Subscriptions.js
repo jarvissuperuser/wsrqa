@@ -19,6 +19,15 @@ config.init("./app.ini");
 // config.get_url(p)
 config.env = "live";
 
+let getFromPath=(obj ={},path =[])=>{
+    let result = obj;
+    path.forEach(e=>{
+        if (result&&result.hasOwnProperty(e))
+            result = result[e];
+    });
+    return result;
+};
+
 let getAuthtradeToken = async (p,cred = ["blank", "mugadzatt01@gmail.com", "Ttm331371"])=>{
     let files = {};
     await pm.sendRequest(config.get_url(p)+'/apiv1/auth/consumer/get-all',function (resp) {
@@ -49,8 +58,9 @@ let getAuthtradeToken = async (p,cred = ["blank", "mugadzatt01@gmail.com", "Ttm3
     return files.access_token;
 };
 
-let getUser = async (pub,email,token)=>{
+let getUser = async (pub,email,token,path ="")=>{
     let response  = {};
+    let final_response = [];
     await pm.sendRequest(config.get_url(p)+"/apiv1/user/subscriptions?access_token="+token,function (r) {
         response = (r.resp);
     },{
@@ -59,12 +69,19 @@ let getUser = async (pub,email,token)=>{
             email : email
         }
     });
-    return response;
+    if (Array.isArray(response) && path.length>2){
+
+        response.forEach(e=>{
+            final_response.push(getFromPath(e,path.split(",")));
+        });
+    }
+    return final_response.length>0?final_response:response;
 };
 
-let getSubs = async (pub,email,token)=>{
+let getSubs = async (pub,email,token,path = "")=>{
     let response = {};
-    await pm.sendRequest(config.get_url(p)+"/apiv1/subscriptions/get-tx?access_token="+token,function (r) {
+    let final_response = [];
+    await pm.sendRequest(config.get_url(p)+"/apiv1/subscriptions/me?access_token="+token,function (r) {
         response = r.resp;
     },{
         method: "POST",
@@ -72,22 +89,57 @@ let getSubs = async (pub,email,token)=>{
             email : email
         }
     });
-    return response;
-};
 
-let getTestParadise = async (pub,userId,token)=>{
-    let response = {};
-    await pm.sendRequest(config.get_url(p)+"/apiv1/test/paradise-user-subs?access_token="+token,function (r) {
-        response = (r.resp);
-    },{
-        method: "POST",
-        json :{
-            user_id : userId
+    if (Array.isArray(response) && path.length>2){
+        response.forEach(e=>{
+            final_response.push(getFromPath(e,path.split(",")));
+        });
+    }else{
+        if( path.length>2){
+            final_response.push(getFromPath(response,path.split(",")))
         }
-    });
-    return response;
+    }
+
+    return final_response.length>0?final_response:response;
 };
 
+let search = (widgetName,widgets = [])=>{
+    return widgets.some((w)=>{return w===widgetName});
+};
+
+const articleWidgetList = (w,id, article,widgetsList = [],pub="bl")=>{
+    let widgetValue = getFromPath(w,wPath);
+    let result = [];
+    if (search(widgetValue,widgetsList)){
+        result = (
+            `<div class="w3-container w3-border-gray"><a href='${ config.get_url(pub) }${ article["pub_url"] }' `+
+            `class="w3-red w3-button w3-bar-item">${ article.title}</a><div class="w3-bar-item">`+
+            "</div><div class='w3-bar-item'>Position:" +id+"</div><div class='w3-bar-item'>WidgetType:"+ w.type+"</div><div class='w3-bar-item'>" +article["widgets"].length+"</div></div>");
+        // console.log("\t",widgetValue, id,">>");
+    }
+    return result;
+};
+
+const articleWidgetSearch = (article,widgetsList =[],pub="tl")=>{
+
+    let result = "";
+    if (article["widgets"]){
+        article["widgets"].some((w,id)=>{
+            let val = (articleWidgetList(w,id,article,widgetsList,pub));
+            if(val.length>0){
+                result = val;
+                return true;
+            }
+        });
+    }
+    return result;
+};
+
+
+/**
+ * @Doc
+ * The get-widget case is unmaintainable
+ * */
 let Subs = async function (data) {
     // console.log(data);
     const { path, email, password, actions, pub } = data;
@@ -95,10 +147,68 @@ let Subs = async function (data) {
     const token = await getAuthtradeToken(pub,cred);
     switch (actions) {
         case "get-subs":
-            return await getSubs(pub,email,token);
+            return await getSubs(pub,email,token,path);
         case "get-reg":
-            return await getUser(pub,email,token);
-        case "get":
+            return await getUser(pub,email,token,path);
+        case "get-widget":
+            let result = [];
+            let widgetsList = email.split(',');
+            await pm.sendRequest(config.get_url(pub) + "/apiv1/workflow/get-all",
+                function (r) {
+                    if (Array.isArray(r.resp)){
+                        r.resp.forEach(( { article } )=>{
+                            let val  = articleWidgetSearch(article,widgetsList,pub);
+                            if (val.length>0)
+                                result.push(val);
+                        });
+                    }else {
+                        console.log(r.resp,">> error");
+                    }
+                },{
+                    method : "POST",
+                    json:
+                        {
+                            status: "featured",
+                            limit: 50,
+                            offset: 0,
+                            publication: config.get_values(pub,"publication"),
+                            section: config.get_values(pub,"sections")[path?path:0]
+                        }
+                });
+            return result;
+        case "get-search-widget":
+            let res= [];
+            let wList = path.split(",");
+            await pm.sendRequest( config.get_url(pub)+'/apiv1/pub/articles/get-all?access_token=d2b5fcdb34d9739637444befb469e05e2d49e271',
+                function (r) {
+                    // console.log(Array.isArray(r.resp), "r.resp");
+                    if (Array.isArray(r.resp)){
+                        // console.log("Response is array",r.resp.length);
+                        r.resp.forEach((article)=>{
+                            // if (Array.isArray(article.widgets)){
+                                let val = articleWidgetSearch(article,wList,pub);
+                                if(val.length>0){
+                                    res.push(val);
+                                }
+                            // }
+                        });
+                    } else {
+                        console.log(r.resp,r,'>>Error 2');
+                    }
+                },{
+                    method : "POST",
+                    json:
+                        {
+                            status: "published,draft",
+                            query: email,
+                            limit: 100,
+                            offset: 0,
+                            access_token: "d2b5fcdb34d9739637444befb469e05e2d49e271",
+                            stripped: true
+                        },
+
+                });
+            return res;
     }
     return {none:null};
 };

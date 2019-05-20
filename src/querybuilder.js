@@ -13,7 +13,7 @@ class QueryBuilder {
         qs += this.arrayJustify(selection);
         qs += " FROM ";
         qs += this.arrayJustify(table);
-        if (!!lim.trim()) {
+        if (!!lim&&!!lim.trim()) {
             qs += " WHERE ";
             qs += lim;
         }

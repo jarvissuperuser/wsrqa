@@ -89,7 +89,7 @@ Main.prototype.request = (url,cb,pData = undefined)=>{
             request(url, pData,
                 (err, res, body) => {
                 cb(body);
-                w({data: body, statusCode: res?res.statusCode:500, headers: res.headers, cookies: res.headers['set-cookie']});
+                w({data: body, statusCode: res?res.statusCode:500, headers: res?res.headers:"none", cookies: res.headers['set-cookie']});
                 if (err) {
                     f({error: err, headers: res})
                 }

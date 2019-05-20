@@ -44,6 +44,13 @@ try {
     conf.add_to_file("hl","name","heraldlive");
     conf.add_to_file("dl","name","dispatchlive");
     conf.add_to_file("wo","name","wanted");
+    conf.add_to_file("tl","publication","times-live");
+    conf.add_to_file("st","publication","times-select");
+    conf.add_to_file("sl","publication","sowetan-live");
+    conf.add_to_file("bl","publication","bl");
+    conf.add_to_file("hl","publication","herald-live");
+    conf.add_to_file("dl","publication","dispatch-live");
+    conf.add_to_file("wo","publication","wanted");
     conf.add_to_file("bl","name-test","businesslive");
     // special articles, crosswords
 	pub_arr.forEach(el=>conf.add_to_file(el,"crosswords",""));

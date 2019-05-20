@@ -178,7 +178,7 @@ let mysubmit = function (e) {
 };
 
 let actionSubmit = (e) => {
-    // console.log("actionSubmit");
+    console.log("actionSubmit");
     let el = e.target;
     let obj = serialize(el, {});
     // obj['submit'] = hasClass(el,"case-add")?'add_case':'add_case_reg';
@@ -199,11 +199,34 @@ let actionSubmit = (e) => {
     ajax(config,function () {
         if (this.readyState === 4 && this.status === 200)
             if (!JSON.parse(this.responseText)[0]){
+                // console.log(this.responseText);
+
+                try {
+                    document.querySelector(".result-list").innerHTML = "";
+                    JSON.parse(this.responseText).forEach(e=>{
+                        document.querySelector(".result-list").innerHTML+=e;
+                    });
+
+                }catch (e) {
+                    document.querySelector("textarea").value = this.responseText;
+                    console.error(e);
+                }
                 // location = "/quality/qa#" + (b.projectId?b.projectId:JSON.parse(this.responseText)['data']);
                 // if (obj['submit']  ==="add_case"){table_fetch();hideModal()}
             } else {
                 //console.log(JSON.parse(this.responseText)[0]);
-                document.querySelector("textarea").value = this.responseText;
+                // document.querySelector("textarea").value = this.responseText;
+                // console.log(this.responseText);
+                try {
+                    document.querySelector(".result-list").innerHTML = "";
+                    JSON.parse(this.responseText).forEach(e=>{
+                        document.querySelector(".result-list").innerHTML+=e;
+                    });
+
+                }catch (e) {
+                    document.querySelector("textarea").value = this.responseText;
+                    console.error(e);
+                }
             }
     });
 };
