@@ -15,7 +15,7 @@
     "fs": "0.0.1-security",
     "fs-extra": "^6.0.1",
     "jsdom": "^13.2.0",
-    "minimist": "^1.2.0",
+    "minimist": "^1.2.6",
     "moment": "^2.22.2",
     "morgan": "^1.9.1",
     "node-fetch": "^2.2.0",
